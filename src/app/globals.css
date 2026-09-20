@@ -26,6 +26,9 @@
   --color-warning: #8A4B08;
   --color-warning-subtle: #FFF4D6;
   --color-focus: #356B55;
+  --editor-font-size: 1.1875rem;
+  --editor-line-height: 1.65;
+  --manuscript-width: 68ch;
   --shadow-soft: 0 1px 2px rgb(20 35 27 / 0.06), 0 4px 12px rgb(20 35 27 / 0.04);
   --shadow-floating: 0 8px 24px rgb(20 35 27 / 0.12);
 }
@@ -129,4 +132,13 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+[data-reduce-motion='true'] *,
+[data-reduce-motion='true'] *::before,
+[data-reduce-motion='true'] *::after {
+  scroll-behavior: auto !important;
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
 }

@@ -61,6 +61,6 @@ fases correspondentes.
 
 1. **Concluída nesta entrega:** fundação, pastas e Supabase.
 2. **Concluída:** design system, tokens e componentes-base.
-3. Preferências e controles de acessibilidade.
+3. **Concluída:** preferências e controles de acessibilidade.
 4. Cadastro funcional e onboarding.
 5. Login, recuperação de senha e proteção do workspace.
