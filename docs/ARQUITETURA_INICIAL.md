@@ -1,10 +1,66 @@
 # Autor Copilot — arquitetura inicial
 
-- `src/app`: rotas Next.js; grupos `(site)`, `(auth)` e `(workspace)` preparados para páginas futuras. A página `/` é uma apresentação inicial.
-- `src/components`: componentes reutilizáveis de layout, interface e editor.
-- `src/features`: código organizado por domínio (conta, projetos, manuscrito, personagens, cronologia e análise).
-- `src/lib`, `src/hooks`, `src/types`, `src/styles`: utilitários, hooks, tipos e estilos adicionais.
-- `images`: arquivos originais informados pelo autor; `public/images`: cópia acessível pela aplicação, com favicon e logos.
-- Cores e tipografia: `DESIGN.md`; Tailwind 3.4.1 em `tailwind.config.ts` e `src/app/globals.css`.
+## Objetivo desta fase
 
-Ainda não há autenticação, banco de dados, editor persistente nem pagamentos; os diretórios representam os limites iniciais dos módulos.
+A fase 1 estabelece os limites do projeto, a integração-base com Supabase e o
+ambiente de desenvolvimento. Ela não implementa páginas, formulários ou fluxos
+de autenticação.
+
+## Estrutura
+
+```text
+src/
+├── app/                    # Rotas e layouts do Next.js App Router
+│   ├── (site)/             # Conteúdo público e institucional
+│   ├── (auth)/             # Login, cadastro e recuperação de senha
+│   ├── (onboarding)/       # Configuração inicial após o cadastro
+│   └── (workspace)/        # Área autenticada do escritor
+├── components/             # Componentes compartilhados de UI, layout e editor
+├── config/                 # Configuração tipada da aplicação
+├── features/               # Casos de uso agrupados por domínio
+├── hooks/                  # Hooks compartilhados entre funcionalidades
+├── lib/                    # Adaptadores de infraestrutura e integrações
+│   └── supabase/           # Clientes separados para navegador e servidor
+├── styles/                 # Estilos compartilhados futuros
+└── types/                  # Contratos globais e tipos gerados do banco
+
+supabase/
+├── config.toml             # Configuração do ambiente Supabase local
+├── migrations/             # Histórico versionado do esquema PostgreSQL
+└── seed.sql                # Dados repetíveis apenas para desenvolvimento
+```
+
+Os grupos entre parênteses organizam o código sem alterar a URL. As pastas de
+rota reservadas ainda não possuem `page.tsx`; portanto, `/login`, `/register`,
+`/forgot-password`, `/onboarding` e `/dashboard` serão ativadas somente nas
+fases correspondentes.
+
+## Regras de dependência
+
+1. `app` compõe páginas e chama funcionalidades; regras de negócio não devem
+   ficar nos arquivos de rota.
+2. `features` contém ações, componentes e validações específicas de cada
+   domínio. Uma feature não acessa arquivos internos de outra feature.
+3. `components` contém apenas elementos realmente compartilhados.
+4. `lib` adapta serviços externos. Componentes não criam clientes Supabase
+   diretamente fora dos helpers em `lib/supabase`.
+5. Segredos nunca usam o prefixo `NEXT_PUBLIC_` e nunca são enviados ao Git.
+6. Toda tabela exposta precisa de Row Level Security antes de ser usada pela
+   aplicação.
+
+## Supabase
+
+- `client.ts`: cliente para Client Components.
+- `server.ts`: cliente para Server Components, Server Actions e Route Handlers.
+- `database.generated.ts`: contrato temporário; será regenerado pelas migrations
+  com `npm run db:types`.
+- O proxy responsável por renovar cookies será criado junto do login funcional,
+  quando as regras de proteção das rotas estiverem definidas.
+
+## Próximas fases
+
+1. **Concluída nesta entrega:** fundação, pastas e Supabase.
+2. Design system, tokens e componentes-base.
+3. Preferências e controles de acessibilidade.
+4. Cadastro funcional e onboarding.
+5. Login, recuperação de senha e proteção do workspace.
