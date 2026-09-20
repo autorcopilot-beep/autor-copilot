@@ -15,7 +15,9 @@ faz parte do planejamento.
 | Cadastro, login e recuperação de conta | Funcionais |
 | Cadastro e onboarding editoriais em etapas | Funcionais |
 | Dashboard autenticada | Funcional e redesenhada |
-| Ambiente “Escrever” e editor | Primeira versão funcional local-first |
+| Biblioteca e catálogos | Funcionais com persistência no Supabase |
+| Visão geral, atividade e metas | Funcionais por obra |
+| Ambiente “Escrever” e editor | Funcional com salvamento local e no Supabase |
 | Central de configurações da conta | Estrutura completa; perfil e e-mail funcionais |
 | Foto de perfil e nome de usuário único | Funcionais |
 | God Mode — The Vault | Steps 1 e 2 concluídos |
@@ -201,29 +203,71 @@ As seguintes áreas já aparecem na navegação e continuam bloqueadas com indic
 
 ## Ambiente de escrita e editor
 
-A rota protegida `/write` inicia o núcleo de escrita do produto:
+As rotas protegidas `/write/editor`, `/write/chapters`, `/write/scenes` e
+`/write/notes` formam o núcleo de escrita do produto:
 
 - estrutura de capítulos recolhível;
 - página central de manuscrito;
 - inspetor de sinopse, status e meta;
-- criação e alternância entre capítulos;
+- deep links para cada visão e para o documento aberto;
+- criação e alternância entre páginas, capítulos, cenas, notas, pastas e
+  rascunhos;
+- menu contextual para mover, categorizar e apagar itens do manuscrito;
+- visões funcionais e filtradas de capítulos, cenas e notas;
 - formatação textual essencial;
 - menu do shadcn/ui com menus, atalhos e submenu;
 - quebra de cena;
 - contador de palavras e caracteres;
 - progresso da meta;
-- salvamento contínuo no dispositivo;
+- salvamento contínuo no dispositivo e no Supabase;
+- estado visível de sincronização, modo offline e falha de nuvem;
 - restauração após recarregar;
-- instantâneos locais;
+- instantâneos locais e remotos;
 - exportação do capítulo em Markdown;
 - modo sem distrações;
 - modo máquina de escrever;
 - interface adaptada ao celular;
 - entrada liberada na sidebar e na dashboard.
 
-A sincronização em nuvem, cortiça, outline, comentários, busca global e
-compilação continuam planejados. O escopo detalhado está em
+Resolução explícita de conflitos entre dispositivos, cortiça, outline,
+comentários, busca global e compilação continuam planejados. O escopo detalhado está em
 [EDITOR.md](EDITOR.md).
+
+## Biblioteca editorial
+
+A Biblioteca está disponível por deep links e integrada ao editor:
+
+- `/library/all` reúne todas as obras ativas;
+- `/library/recent` mostra os projetos atualizados por último;
+- `/library/favorites` mantém a seleção do autor;
+- `/library/archived` guarda projetos retirados da estante;
+- `/library/catalogs` reúne coleções personalizadas;
+- `/library/catalogs/<id>` abre uma coleção específica;
+- `/write/editor?work=<id>` abre diretamente o manuscrito escolhido.
+
+O módulo permite criar obras e catálogos, pesquisar, ordenar, favoritar,
+arquivar, restaurar, mudar o estágio editorial e associar uma obra a várias
+coleções. As capas usam tons editoriais e exibem contagem de documentos,
+palavras e progresso da meta. A dashboard apresenta os números e projetos
+recentes reais da Biblioteca.
+
+As tabelas `library_catalogs` e `library_catalog_works` usam RLS por autor. Os
+metadados editoriais, favoritos e arquivamento ficam na tabela `works`.
+
+## Visão geral da obra
+
+O módulo `/overview` usa dados reais do manuscrito e mantém a obra selecionada
+nos deep links:
+
+- `/overview/dashboard` apresenta palavras, capítulos, cenas, notas, documentos
+  finalizados, progresso geral e documentos recentes;
+- `/overview/activity` organiza as últimas alterações dos documentos em uma
+  linha do tempo;
+- `/overview/goals` permite criar, concluir, reabrir e apagar metas de palavras,
+  capítulos ou prazo editorial;
+- o parâmetro `?work=<id>` abre diretamente o painel de uma obra.
+
+As metas são persistidas em `writing_goals`, com RLS por autor e vínculo à obra.
 
 ## Acessibilidade e preferências de leitura
 
@@ -359,9 +403,17 @@ npm run admin:create-master
 3. `20260920152224_create_admin_vault.sql`
 4. `20260920170720_add_account_profile_fields.sql`
 5. `20260920180328_add_profile_username_and_avatar_storage.sql`
+6. `20260920191906_create_writing_core.sql`
+7. `20260920203000_stabilize_writing_bootstrap.sql`
+8. `20260920204000_ensure_initial_writing_documents.sql`
+9. `20260920210000_create_library_hub.sql`
+10. `20260920220000_create_writing_goals.sql`
 
-Todas foram aplicadas ao projeto remoto. A estrutura, o bucket, as políticas, a
-unicidade dos nomes e uma atualização autenticada sob RLS foram verificados.
+Todas foram aplicadas ao projeto remoto. A estrutura do editor inclui `works`,
+`writing_documents` e `writing_snapshots`, com RLS por autor, árvore ordenada,
+categorias de documento e limites de conteúdo. A estrutura, o bucket, as
+políticas, a unicidade dos nomes e uma atualização autenticada sob RLS foram
+verificados nos ciclos correspondentes.
 
 ## Rotas principais
 
@@ -374,7 +426,20 @@ unicidade dos nomes e uma atualização autenticada sob RLS foram verificados.
 | `/auth/callback` | Callback PKCE funcional |
 | `/onboarding` | Onboarding funcional |
 | `/dashboard` | Dashboard autenticada funcional |
-| `/write` | Editor local-first funcional |
+| `/library/all` | Acervo completo e funcional |
+| `/library/recent` | Obras recentes |
+| `/library/favorites` | Obras favoritas |
+| `/library/archived` | Arquivo de obras |
+| `/library/catalogs` | Catálogos editoriais |
+| `/library/catalogs/[id]` | Conteúdo de um catálogo |
+| `/overview/dashboard` | Painel de métricas da obra |
+| `/overview/activity` | Atividade recente do manuscrito |
+| `/overview/goals` | Metas editoriais funcionais |
+| `/write` | Redireciona para `/write/editor` |
+| `/write/editor` | Editor com persistência local e no Supabase |
+| `/write/chapters` | Lista funcional de capítulos |
+| `/write/scenes` | Lista funcional de cenas |
+| `/write/notes` | Lista funcional de notas |
 | `/account` | Central da conta funcional |
 | `/account/profile` | Perfil, username e avatar funcionais |
 | `/account/login` | E-mail e dados de acesso funcionais |

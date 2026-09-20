@@ -16,7 +16,7 @@ export default async function WritingViewPage({
   searchParams,
 }: {
   params: Promise<{ view: string }>;
-  searchParams: Promise<{ document?: string }>;
+  searchParams: Promise<{ document?: string; work?: string }>;
 }) {
   const [{ view }, query] = await Promise.all([params, searchParams]);
   if (!isWritingView(view)) notFound();
@@ -25,13 +25,14 @@ export default async function WritingViewPage({
   const { data: claimsData } = await supabase.auth.getClaims();
   const userId = claimsData?.claims?.sub;
   if (!userId) {
-    const next = view === 'editor' && query.document
-      ? `/write/editor?document=${encodeURIComponent(query.document)}`
-      : `/write/${view}`;
+    const nextParams = new URLSearchParams();
+    if (query.work) nextParams.set('work', query.work);
+    if (view === 'editor' && query.document) nextParams.set('document', query.document);
+    const next = `/write/${view}${nextParams.size ? `?${nextParams}` : ''}`;
     redirect(`/login?next=${encodeURIComponent(next)}`);
   }
 
-  const project = await loadWritingProject(supabase, userId, query.document);
+  const project = await loadWritingProject(supabase, userId, query.document, query.work);
 
   return <WritingStudio userId={userId} initialProject={project} initialView={view} />;
 }

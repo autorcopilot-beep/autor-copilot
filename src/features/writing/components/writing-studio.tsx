@@ -497,14 +497,14 @@ export function WritingStudio({
       activeDocumentId: id,
       documents: [...current.documents, nextDocument],
     }));
-    router.push(`/write/editor?document=${id}`);
-  }, [project.documents, router]);
+    router.push(`/write/editor?work=${project.id}&document=${id}`);
+  }, [project.documents, project.id, router]);
 
   const selectDocument = useCallback((id: string) => {
     renderedDocumentRef.current = '';
     setProject((current) => ({ ...current, activeDocumentId: id }));
-    router.replace(`/write/editor?document=${id}`, { scroll: false });
-  }, [router]);
+    router.replace(`/write/editor?work=${project.id}&document=${id}`, { scroll: false });
+  }, [project.id, router]);
 
   const createSnapshot = useCallback(async (documentToSnapshot = activeDocument) => {
     try {
@@ -566,7 +566,7 @@ export function WritingStudio({
     const nextActiveId = documentId === project.activeDocumentId ? remaining[0].id : project.activeDocumentId;
     renderedDocumentRef.current = '';
     setProject((current) => ({ ...current, documents: remaining, activeDocumentId: nextActiveId }));
-    router.replace(`/write/editor?document=${nextActiveId}`);
+    router.replace(`/write/editor?work=${project.id}&document=${nextActiveId}`);
   }, [createSnapshot, project, router, supabase, userId]);
 
   const exportMarkdown = useCallback(() => {
@@ -710,7 +710,7 @@ export function WritingStudio({
               ['scenes', 'Cenas'],
               ['notes', 'Notas'],
             ] as const).map(([view, label]) => (
-              <Link key={view} href={`/write/${view}`} className={cn('inline-flex min-h-8 items-center rounded-control px-3 text-xs font-medium transition-colors', initialView === view ? 'bg-accent-subtle text-accent' : 'text-muted hover:bg-surface-muted hover:text-ink')}>{label}</Link>
+              <Link key={view} href={`/write/${view}?work=${project.id}`} className={cn('inline-flex min-h-8 items-center rounded-control px-3 text-xs font-medium transition-colors', initialView === view ? 'bg-accent-subtle text-accent' : 'text-muted hover:bg-surface-muted hover:text-ink')}>{label}</Link>
             ))}
           </nav>
 

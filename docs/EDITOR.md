@@ -11,14 +11,26 @@ O editor do Autor Copilot é orientado a livros longos:
 - o trabalho é salvo sem depender de uma ação manual;
 - o formato aberto será a saída padrão para evitar aprisionamento.
 
-## Primeira entrega funcional
+## Entrega funcional atual
 
-A rota protegida `/write` oferece:
+O ambiente protegido usa URLs próprias para cada visão:
+
+- `/write/editor` para o manuscrito;
+- `/write/chapters` para capítulos;
+- `/write/scenes` para cenas;
+- `/write/notes` para notas;
+- `/write/editor?work=<uuid>` para abrir uma obra específica;
+- `/write/editor?work=<uuid>&document=<uuid>` para abrir um documento específico.
+
+`/write` continua válido e redireciona para o editor. O ambiente oferece:
 
 - estrutura da obra à esquerda;
 - manuscrito no centro;
 - inspetor do capítulo à direita;
-- criação e troca de capítulos;
+- criação e troca de páginas, capítulos, cenas, notas, pastas e rascunhos;
+- ações de mover, categorizar e apagar na árvore do manuscrito;
+- exclusão protegida pela criação de um instantâneo;
+- visões funcionais de capítulos, cenas e notas;
 - título da obra e do capítulo editáveis;
 - sinopse, status e meta de palavras por capítulo;
 - contador de palavras e caracteres;
@@ -28,8 +40,8 @@ A rota protegida `/write` oferece:
 - desfazer e refazer;
 - menu persistente baseado no Menubar do shadcn/ui, inclusive com submenu;
 - exportação do capítulo em Markdown;
-- instantâneos locais limitados aos vinte mais recentes;
-- salvamento contínuo no dispositivo, isolado pela identidade do usuário;
+- instantâneos locais limitados aos vinte mais recentes e cópias no Supabase;
+- salvamento contínuo no dispositivo e sincronização automática com o Supabase;
 - atalho para salvar;
 - modo máquina de escrever;
 - modo sem distrações;
@@ -48,24 +60,31 @@ Atalhos atuais:
 | Modo sem distrações | `Ctrl/Cmd + Shift + F` |
 | Modo máquina de escrever | `Ctrl/Cmd + Alt + T` |
 
-## Limite atual de persistência
+## Persistência e segurança
 
-Esta primeira entrega é local-first no navegador e ainda não envia o manuscrito
-para o Supabase. O status “Salvo neste dispositivo” descreve exatamente essa
-garantia. A sincronização em nuvem só deve ser apresentada como concluída depois
-da criação das tabelas, RLS, fila de sincronização, resolução de conflitos e
-teste de restauração.
+O editor mantém uma cópia local para resposta imediata e envia a obra para as
+tabelas `works`, `writing_documents` e `writing_snapshots`. O salvamento local
+ocorre primeiro; a interface diferencia sincronização concluída, sincronização
+em andamento, trabalho offline e erro de nuvem.
+
+As três tabelas usam RLS e vinculam cada registro ao usuário autenticado. As
+políticas permitem que cada autor leia e altere somente as próprias obras. O
+conteúdo de cada documento é limitado a 5 MB e os vínculos compostos impedem
+associar um documento ou uma pasta a uma obra de outro usuário.
+
+Rascunhos locais criados na versão anterior são normalizados e enviados para a
+nuvem quando o editor autenticado é aberto. O servidor cria a primeira obra e
+os documentos iniciais quando a conta ainda não possui conteúdo.
 
 ## Próximas etapas
 
-1. Persistência de obras e documentos no Supabase com RLS.
-2. Sincronização local/nuvem e tratamento de conflito.
-3. Pastas, cenas, reordenação e exclusão protegida por snapshot.
-4. Quadro de cortiça e outline.
-5. Comentários, notas inline e notas de rodapé.
-6. Busca global e localizar/substituir com instantâneo automático.
-7. Entidades vinculadas por `@`.
-8. Comparação e restauração de versões.
-9. Compilação em DOCX, PDF e EPUB.
-10. Testes de escala com manuscritos extensos e processamento fora da thread de
+1. Resolução explícita de conflitos entre dispositivos e modo offline durável.
+2. Hierarquia visual completa de pastas e arraste para reordenação.
+3. Quadro de cortiça e outline.
+4. Comentários, notas inline e notas de rodapé.
+5. Busca global e localizar/substituir com instantâneo automático.
+6. Entidades vinculadas por `@`.
+7. Comparação e restauração de versões.
+8. Compilação em DOCX, PDF e EPUB.
+9. Testes de escala com manuscritos extensos e processamento fora da thread de
     digitação.

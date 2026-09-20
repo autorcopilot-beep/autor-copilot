@@ -12,7 +12,6 @@ import {
   Lightbulb,
   LockKeyhole,
   PenLine,
-  Plus,
   Sparkles,
   Target,
   UserRound,
@@ -20,6 +19,7 @@ import {
 } from 'lucide-react';
 
 import { Badge, buttonVariants } from '@/components/ui';
+import { loadLibrary } from '@/features/library/server';
 import { cn } from '@/lib/cn';
 import { createClient } from '@/lib/supabase/server';
 
@@ -67,6 +67,9 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
 
   const authorName = profile.pen_name || profile.nickname || profile.display_name;
   const dateLabel = new Intl.DateTimeFormat('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
+  const library = await loadLibrary(supabase, userId, 'recent');
+  const lastWork = library.works[0];
+  const writingHref = lastWork ? `/write/editor?work=${lastWork.id}` : '/write/editor';
 
   return (
     <div className="mx-auto w-full max-w-7xl py-4 sm:py-7">
@@ -83,10 +86,10 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
           <h1 id="desk-title" className="mt-6 max-w-2xl font-serif text-4xl font-semibold leading-[1.08] text-ink sm:text-5xl lg:text-6xl">Toda história começa com uma página, {authorName}.</h1>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">Organize suas ideias, desenvolva seu universo e transforme o próximo rascunho em uma obra.</p>
           <div className="mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-            <Link href="/write/editor" className={cn(buttonVariants({ size: 'wide' }))}><PenLine className="size-4" />Começar a escrever</Link>
+            <Link href={writingHref} className={cn(buttonVariants({ size: 'wide' }))}><PenLine className="size-4" />{lastWork ? 'Continuar escrevendo' : 'Começar a escrever'}</Link>
             <Link href="/account/profile" className="inline-flex min-h-11 items-center gap-2 rounded-control px-3 text-sm font-medium text-ink transition-colors hover:bg-surface-muted"><UserRound className="size-4 text-accent" />Revisar meu perfil<ArrowRight className="size-3.5 text-muted" /></Link>
           </div>
-          <p id="create-work-note" className="mt-2 text-xs text-muted"><Check className="mr-1 inline size-3 text-success" />Seu primeiro manuscrito já pode ser escrito e salvo neste dispositivo.</p>
+          <p id="create-work-note" className="mt-2 text-xs text-muted"><Check className="mr-1 inline size-3 text-success" />Seus manuscritos são sincronizados com sua biblioteca.</p>
         </div>
         <div
           className="pointer-events-none absolute -bottom-14 -right-20 z-0 size-80 opacity-75 sm:-bottom-24 sm:-right-12 sm:size-[30rem] sm:opacity-85 xl:-bottom-32 xl:right-2 xl:size-[36rem]"
@@ -100,8 +103,8 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
       </section>
 
       <section className="auth-enter-delayed grid border-b border-line sm:grid-cols-3" aria-label="Resumo da mesa de escrita">
-        <div className="flex items-center gap-4 border-b border-line py-5 sm:border-b-0 sm:border-r sm:px-5 sm:pl-0"><BookOpen className="size-5 text-accent" /><div><p className="text-2xl font-semibold text-ink">0</p><p className="text-xs text-muted">obras na biblioteca</p></div></div>
-        <div className="flex items-center gap-4 border-b border-line py-5 sm:border-b-0 sm:border-r sm:px-5"><Feather className="size-5 text-accent" /><div><p className="text-2xl font-semibold text-ink">0</p><p className="text-xs text-muted">palavras registradas</p></div></div>
+        <div className="flex items-center gap-4 border-b border-line py-5 sm:border-b-0 sm:border-r sm:px-5 sm:pl-0"><BookOpen className="size-5 text-accent" /><div><p className="text-2xl font-semibold text-ink">{library.stats.active}</p><p className="text-xs text-muted">obras na biblioteca</p></div></div>
+        <div className="flex items-center gap-4 border-b border-line py-5 sm:border-b-0 sm:border-r sm:px-5"><Feather className="size-5 text-accent" /><div><p className="text-2xl font-semibold text-ink">{new Intl.NumberFormat('pt-BR').format(library.stats.words)}</p><p className="text-xs text-muted">palavras registradas</p></div></div>
         <div className="flex items-center gap-4 py-5 sm:px-5 sm:pr-0"><Check className="size-5 text-success" /><div><p className="text-sm font-semibold text-ink">Perfil preparado</p><p className="text-xs text-muted">Tudo pronto para começar</p></div></div>
       </section>
 
@@ -109,16 +112,10 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         <section aria-labelledby="library-title">
           <div className="flex items-end justify-between gap-4 border-b border-line pb-4">
             <div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">Sua biblioteca</p><h2 id="library-title" className="mt-1 font-serif text-2xl font-semibold text-ink">Obras recentes</h2></div>
-            <span className="inline-flex items-center gap-1.5 text-xs text-muted"><LockKeyhole className="size-3" />Em breve</span>
+            <Link href="/library/all" className="inline-flex items-center gap-1.5 text-xs font-medium text-accent hover:underline">Ver biblioteca<ArrowRight className="size-3" /></Link>
           </div>
 
-          <div className="relative mt-5 overflow-hidden rounded-card border border-line bg-editor px-6 py-8 sm:px-8 sm:py-10">
-            <div className="absolute inset-y-0 left-0 w-1 bg-accent/60" />
-            <div className="flex max-w-xl items-start gap-4">
-              <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-accent-subtle text-accent"><BookOpen className="size-5" /></span>
-              <div><h3 className="font-serif text-xl font-semibold text-ink">Sua estante ainda espera a primeira lombada</h3><p className="mt-2 text-sm leading-relaxed text-muted">Quando a criação de obras for liberada, seus projetos recentes, capítulos e progresso aparecerão aqui.</p><button type="button" disabled className="mt-5 inline-flex min-h-10 cursor-not-allowed items-center gap-2 text-sm font-medium text-muted"><Plus className="size-4" />Adicionar obra<LockKeyhole className="size-3" /></button></div>
-            </div>
-          </div>
+          <div className="mt-3 divide-y divide-line">{library.works.slice(0, 3).map((work) => <Link key={work.id} href={`/write/editor?work=${work.id}`} className="group flex items-center gap-4 py-4"><span className="flex size-11 shrink-0 items-center justify-center rounded-control bg-accent-subtle text-accent"><BookOpen className="size-5" /></span><span className="min-w-0 flex-1"><span className="block truncate font-serif text-lg font-semibold text-ink">{work.title}</span><span className="mt-0.5 block text-xs text-muted">{new Intl.NumberFormat('pt-BR').format(work.wordCount)} palavras · {work.genre}</span></span><ArrowRight className="size-4 text-muted transition-transform group-hover:translate-x-1 group-hover:text-accent" /></Link>)}</div>
 
           <section className="mt-8" aria-labelledby="journey-title">
             <div className="flex items-center gap-3"><Target className="size-5 text-accent" /><h2 id="journey-title" className="font-serif text-xl font-semibold text-ink">Sua jornada de autor</h2></div>

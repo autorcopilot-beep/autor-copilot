@@ -33,9 +33,9 @@ export type WorkspaceNavItem = {
 };
 
 export const workNavigation: WorkspaceNavItem[] = [
-  { label: 'Biblioteca', icon: Library, tag: 'Em breve', children: [{ label: 'Todas as obras', tag: 'Em breve' }, { label: 'Recentes', tag: 'Em breve' }, { label: 'Favoritas', tag: 'Em breve' }, { label: 'Arquivadas', tag: 'Em breve' }] },
-  { label: 'Visão Geral', icon: BarChart3, tag: 'Em breve', children: [{ label: 'Painel da obra', tag: 'Em breve' }, { label: 'Atividade', tag: 'Em breve' }, { label: 'Metas de escrita', tag: 'Em breve' }] },
-  { label: 'Escrever', icon: PenLine, tag: 'Beta', href: '/write/editor', children: [{ label: 'Editor', tag: 'Beta', href: '/write/editor' }, { label: 'Capítulos', tag: 'Beta', href: '/write/chapters' }, { label: 'Cenas', tag: 'Beta', href: '/write/scenes' }, { label: 'Notas', tag: 'Beta', href: '/write/notes' }] },
+  { label: 'Biblioteca', icon: Library, tag: null, href: '/library/all', children: [{ label: 'Todas as obras', tag: null, href: '/library/all' }, { label: 'Recentes', tag: null, href: '/library/recent' }, { label: 'Favoritas', tag: null, href: '/library/favorites' }, { label: 'Arquivadas', tag: null, href: '/library/archived' }, { label: 'Catálogos', tag: null, href: '/library/catalogs' }] },
+  { label: 'Visão Geral', icon: BarChart3, tag: null, href: '/overview/dashboard', children: [{ label: 'Painel da obra', tag: null, href: '/overview/dashboard' }, { label: 'Atividade', tag: null, href: '/overview/activity' }, { label: 'Metas de escrita', tag: null, href: '/overview/goals' }] },
+  { label: 'Escrever', icon: PenLine, tag: null, href: '/write/editor', children: [{ label: 'Editor', tag: null, href: '/write/editor' }, { label: 'Capítulos', tag: null, href: '/write/chapters' }, { label: 'Cenas', tag: null, href: '/write/scenes' }, { label: 'Notas', tag: null, href: '/write/notes' }] },
   { label: 'Planejar', icon: FolderKanban, tag: 'Em breve', children: [{ label: 'Estrutura', tag: 'Em breve' }, { label: 'Enredo', tag: 'Em breve' }, { label: 'Personagens', tag: 'Em breve' }, { label: 'Cenários', tag: 'Em breve' }] },
   { label: 'Enciclopédia', icon: BookOpen, tag: 'Em breve', children: [{ label: 'Mundo', tag: 'Em breve' }, { label: 'Personagens', tag: 'Em breve' }, { label: 'Locais', tag: 'Em breve' }, { label: 'Objetos', tag: 'Em breve' }] },
   { label: 'Cronologia', icon: Timer, tag: 'Em breve', children: [{ label: 'Linha do tempo', tag: 'Em breve' }, { label: 'Eventos', tag: 'Em breve' }, { label: 'Calendários', tag: 'Em breve' }] },

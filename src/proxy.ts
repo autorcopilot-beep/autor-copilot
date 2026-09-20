@@ -18,6 +18,8 @@ export const config = {
     '/update-password',
     '/onboarding/:path*',
     '/dashboard/:path*',
+    '/library/:path*',
+    '/overview/:path*',
     '/write/:path*',
     '/account/:path*',
     '/admin/:path*',

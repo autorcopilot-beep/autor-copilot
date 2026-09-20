@@ -43,7 +43,7 @@ function initials(name: string) {
 function ResponsiveBreadcrumb() {
   const pathname = usePathname();
   const isAccountArea = pathname === '/account' || pathname.startsWith('/account/');
-  const current = pathname === '/dashboard' ? 'Visão geral' : pathname === '/account' ? 'Conta' : pathname.startsWith('/account/') ? 'Configurações' : 'Área de trabalho';
+  const current = pathname === '/dashboard' ? 'Mesa de escrita' : pathname.startsWith('/overview') ? 'Visão geral' : pathname.startsWith('/library') ? 'Biblioteca' : pathname === '/account' ? 'Conta' : pathname.startsWith('/account/') ? 'Configurações' : 'Área de trabalho';
   return (
     <Breadcrumb>
       <BreadcrumbList className="flex-nowrap">
@@ -56,8 +56,8 @@ function ResponsiveBreadcrumb() {
             <DropdownMenuTrigger className="rounded-control outline-none hover:text-ink" aria-label="Abrir caminhos anteriores"><BreadcrumbEllipsis /></DropdownMenuTrigger>
             <DropdownMenuContent align="start">
               <DropdownMenuLabel>Caminhos anteriores</DropdownMenuLabel>
-              <DropdownMenuItem disabled>Biblioteca <OperationalTagBadge tag="Em breve" compact /></DropdownMenuItem>
-              <DropdownMenuItem disabled>Minha primeira obra <OperationalTagBadge tag="Em breve" compact /></DropdownMenuItem>
+              <DropdownMenuItem asChild><Link href="/library/all">Biblioteca</Link></DropdownMenuItem>
+              <DropdownMenuItem asChild><Link href="/write/editor">Minha obra atual</Link></DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </BreadcrumbItem>}

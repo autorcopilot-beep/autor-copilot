@@ -3,6 +3,7 @@
 import { BookOpenText, ChevronDown, ChevronRight, ChevronsUpDown, LogOut, PanelLeftClose, PanelLeftOpen, Plus, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 
@@ -33,11 +34,13 @@ function ContextSelector({ collapsed = false }: { collapsed?: boolean }) {
 
 function WorkItem({ item, collapsed = false }: { item: (typeof workNavigation)[number]; collapsed?: boolean }) {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const active = Boolean(item.href && (pathname === item.href || pathname.startsWith(`${item.href.split('/').slice(0, 2).join('/')}/`)));
   const Icon = item.icon;
   if (collapsed) {
     if (item.href) {
       return (
-        <Link href={item.href} title={item.label} aria-label={item.label} className="relative flex min-h-10 w-full items-center justify-center rounded-control text-muted transition-colors hover:bg-accent-subtle hover:text-accent">
+        <Link href={item.href} title={item.label} aria-label={item.label} aria-current={active ? 'page' : undefined} className={`relative flex min-h-10 w-full items-center justify-center rounded-control transition-colors hover:bg-accent-subtle hover:text-accent ${active ? 'bg-accent-subtle text-accent' : 'text-muted'}`}>
           <Icon className="size-[18px]" aria-hidden="true" />
         </Link>
       );
@@ -50,17 +53,30 @@ function WorkItem({ item, collapsed = false }: { item: (typeof workNavigation)[n
   }
 
   return (
-    <Collapsible open={open} onOpenChange={setOpen}>
-      <CollapsibleTrigger className="group flex min-h-10 w-full items-center gap-2 rounded-control px-2.5 text-left text-sm text-ink transition-colors hover:bg-surface-muted">
-        <Icon className="size-4 shrink-0 text-muted group-hover:text-accent" aria-hidden="true" />
-        <span className="min-w-0 flex-1 truncate font-medium">{item.label}</span>
-        {item.tag && <OperationalTagBadge tag={item.tag} compact />}
-        {open ? <ChevronDown className="size-3.5 text-muted" /> : <ChevronRight className="size-3.5 text-muted" />}
-      </CollapsibleTrigger>
+    <Collapsible open={open || active} onOpenChange={setOpen}>
+      {item.href ? (
+        <div className={`group flex min-h-10 w-full items-center rounded-control text-sm transition-colors hover:bg-surface-muted ${active ? 'bg-accent-subtle text-accent' : 'text-ink'}`}>
+          <Link href={item.href} aria-current={active ? 'page' : undefined} className="flex min-w-0 flex-1 items-center gap-2 self-stretch px-2.5">
+            <Icon className={`size-4 shrink-0 ${active ? 'text-accent' : 'text-muted group-hover:text-accent'}`} aria-hidden="true" />
+            <span className="min-w-0 flex-1 truncate font-medium">{item.label}</span>
+            {item.tag && <OperationalTagBadge tag={item.tag} compact />}
+          </Link>
+          <CollapsibleTrigger className="flex size-10 shrink-0 items-center justify-center rounded-control text-muted hover:text-accent" aria-label={`${open || active ? 'Recolher' : 'Expandir'} ${item.label}`}>
+            {open || active ? <ChevronDown className="size-3.5" /> : <ChevronRight className="size-3.5" />}
+          </CollapsibleTrigger>
+        </div>
+      ) : (
+        <CollapsibleTrigger className="group flex min-h-10 w-full items-center gap-2 rounded-control px-2.5 text-left text-sm text-ink transition-colors hover:bg-surface-muted">
+          <Icon className="size-4 shrink-0 text-muted group-hover:text-accent" aria-hidden="true" />
+          <span className="min-w-0 flex-1 truncate font-medium">{item.label}</span>
+          {item.tag && <OperationalTagBadge tag={item.tag} compact />}
+          {open ? <ChevronDown className="size-3.5 text-muted" /> : <ChevronRight className="size-3.5 text-muted" />}
+        </CollapsibleTrigger>
+      )}
       <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-[auth-fade-out_100ms_ease-in] data-[state=open]:animate-[auth-fade-in_150ms_ease-out]">
         <div className="ml-4 border-l border-line py-1 pl-3">
           {item.children.map((child) => child.href ? (
-            <Link key={child.label} href={child.href} className="flex min-h-9 w-full items-center gap-2 rounded-control px-2 text-left text-xs text-muted transition-colors hover:bg-accent-subtle hover:text-accent">
+            <Link key={child.label} href={child.href} aria-current={pathname === child.href ? 'page' : undefined} className={`flex min-h-9 w-full items-center gap-2 rounded-control px-2 text-left text-xs transition-colors hover:bg-accent-subtle hover:text-accent ${pathname === child.href ? 'bg-accent-subtle font-medium text-accent' : 'text-muted'}`}>
               <span className="flex-1">{child.label}</span>{child.tag && <OperationalTagBadge tag={child.tag} compact />}
             </Link>
           ) : (

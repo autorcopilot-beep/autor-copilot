@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      library_catalog_works: {
+        Row: {
+          added_at: string
+          catalog_id: string
+          owner_id: string
+          work_id: string
+        }
+        Insert: {
+          added_at?: string
+          catalog_id: string
+          owner_id: string
+          work_id: string
+        }
+        Update: {
+          added_at?: string
+          catalog_id?: string
+          owner_id?: string
+          work_id?: string
+        }
+        Relationships: []
+      }
+      library_catalogs: {
+        Row: {
+          color: string
+          created_at: string
+          description: string
+          id: string
+          name: string
+          owner_id: string
+          position: number
+          updated_at: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          description?: string
+          id?: string
+          name: string
+          owner_id: string
+          position?: number
+          updated_at?: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          description?: string
+          id?: string
+          name?: string
+          owner_id?: string
+          position?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       admin_accounts: {
         Row: {
           created_at: string
@@ -175,25 +229,52 @@ export type Database = {
       }
       works: {
         Row: {
+          archived_at: string | null
+          cover_tone: string
           created_at: string
+          genre: string
           id: string
+          is_favorite: boolean
+          is_primary: boolean
           owner_id: string
+          status: Database["public"]["Enums"]["library_work_status"]
+          subtitle: string
+          synopsis: string
           title: string
           updated_at: string
+          word_goal: number
         }
         Insert: {
+          archived_at?: string | null
+          cover_tone?: string
           created_at?: string
+          genre?: string
           id?: string
+          is_favorite?: boolean
+          is_primary?: boolean
           owner_id: string
+          status?: Database["public"]["Enums"]["library_work_status"]
+          subtitle?: string
+          synopsis?: string
           title?: string
           updated_at?: string
+          word_goal?: number
         }
         Update: {
+          archived_at?: string | null
+          cover_tone?: string
           created_at?: string
+          genre?: string
           id?: string
+          is_favorite?: boolean
+          is_primary?: boolean
           owner_id?: string
+          status?: Database["public"]["Enums"]["library_work_status"]
+          subtitle?: string
+          synopsis?: string
           title?: string
           updated_at?: string
+          word_goal?: number
         }
         Relationships: []
       }
@@ -260,6 +341,45 @@ export type Database = {
           },
         ]
       }
+      writing_goals: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          due_date: string | null
+          goal_type: Database["public"]["Enums"]["writing_goal_type"]
+          id: string
+          owner_id: string
+          target_value: number
+          title: string
+          updated_at: string
+          work_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          due_date?: string | null
+          goal_type: Database["public"]["Enums"]["writing_goal_type"]
+          id?: string
+          owner_id: string
+          target_value?: number
+          title: string
+          updated_at?: string
+          work_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          due_date?: string | null
+          goal_type?: Database["public"]["Enums"]["writing_goal_type"]
+          id?: string
+          owner_id?: string
+          target_value?: number
+          title?: string
+          updated_at?: string
+          work_id?: string
+        }
+        Relationships: []
+      }
       writing_snapshots: {
         Row: {
           content_html: string
@@ -306,7 +426,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      ensure_initial_writing_documents: {
+        Args: { target_work_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       admin_role:
@@ -317,6 +440,7 @@ export type Database = {
         | "finance"
         | "product"
       admin_status: "active" | "suspended"
+      library_work_status: "planning" | "drafting" | "revising" | "complete"
       writing_document_kind:
         | "folder"
         | "page"
@@ -325,6 +449,7 @@ export type Database = {
         | "note"
         | "draft"
       writing_document_status: "draft" | "review" | "final"
+      writing_goal_type: "word_count" | "chapter_count" | "deadline"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -461,6 +586,7 @@ export const Constants = {
         "product",
       ],
       admin_status: ["active", "suspended"],
+      library_work_status: ["planning", "drafting", "revising", "complete"],
       writing_document_kind: [
         "folder",
         "page",
@@ -470,7 +596,7 @@ export const Constants = {
         "draft",
       ],
       writing_document_status: ["draft", "review", "final"],
+      writing_goal_type: ["word_count", "chapter_count", "deadline"],
     },
   },
 } as const
-
