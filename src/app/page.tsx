@@ -38,13 +38,15 @@ export default function Home() {
             Um ambiente sereno para escrever, planejar e organizar as histórias
             que você quer contar.
           </p>
-          <Link
-            href="#visao"
-            className={cn(buttonVariants({ size: 'wide' }), 'mt-8')}
-          >
-            Conhecer a proposta
-            <ArrowRight size={18} aria-hidden="true" />
-          </Link>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href="/register" className={buttonVariants({ size: 'wide' })}>
+              Criar meu espaço
+              <ArrowRight size={18} aria-hidden="true" />
+            </Link>
+            <Link href="#visao" className={cn(buttonVariants({ variant: 'secondary', size: 'wide' }))}>
+              Conhecer a proposta
+            </Link>
+          </div>
         </div>
 
         <Card id="visao" aria-labelledby="preview-title" className="bg-editor">
