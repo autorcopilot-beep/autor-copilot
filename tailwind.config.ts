@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+import animate from 'tailwindcss-animate';
 
 const config: Config = {
   darkMode: ['selector', '[data-theme="dark"]'],
@@ -12,6 +13,28 @@ const config: Config = {
     },
     extend: {
       colors: {
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
+        card: {
+          DEFAULT: 'var(--card)',
+          foreground: 'var(--card-foreground)',
+        },
+        popover: {
+          DEFAULT: 'var(--popover)',
+          foreground: 'var(--popover-foreground)',
+        },
+        primary: {
+          DEFAULT: 'var(--primary)',
+          foreground: 'var(--primary-foreground)',
+        },
+        secondary: {
+          DEFAULT: 'var(--secondary)',
+          foreground: 'var(--secondary-foreground)',
+        },
+        destructive: 'var(--destructive)',
+        border: 'var(--border)',
+        input: 'var(--input)',
+        ring: 'var(--ring)',
         canvas: 'var(--color-canvas)',
         editor: 'var(--color-editor)',
         surface: 'var(--color-surface)',
@@ -65,6 +88,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [animate],
 };
 export default config;

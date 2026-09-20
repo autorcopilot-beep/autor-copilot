@@ -1,0 +1,138 @@
+{
+  "colecao": "Aquarela Literária — Abas",
+  "versao": "1.0.0",
+  "paleta": {
+    "papel": "#F7F5EC",
+    "floresta": "#254D3D",
+    "salvia": "#9AAE99",
+    "oliva": "#7C8767"
+  },
+  "itens": [
+    {
+      "id": "dashboard",
+      "titulo": "Dashboard",
+      "descricao": "A calm editorial desk still life: three overlapping blank ivory dashboard cards arranged asymmetrically, one with simple unlabeled sage bar shapes, one with a graceful unlabeled curve and one with three small green circular markers, an olive sprig partially behind. Concept: overview/dashboard. Absolutely no text or numbers.",
+      "formato": "SVG híbrido com PNG incorporado",
+      "viewBox": "0 0 1254 1254",
+      "fundo": "papel marfim opaco",
+      "sem_texto": true,
+      "arquivo": "01_svg/dashboard.svg",
+      "original_png": "02_png/dashboard.png",
+      "geracao": "aquarela digital gerada com IA",
+      "resolucao_px": [
+        1254,
+        1254
+      ],
+      "bytes_svg": 3274516,
+      "sha256_svg": "d2e9774af68e133f837ded1dd22ce9fe632590c59fe455db4b239dc46e98195c"
+    },
+    {
+      "id": "configuracoes",
+      "titulo": "Configurações",
+      "descricao": "A finely crafted forest-green brass adjustment dial with three delicate concentric rings beside two small ivory slider mechanisms, one understated eucalyptus leaf. Concept: settings/customization, artisan instrument rather than cliché gear. No symbols, letters or numbers.",
+      "formato": "SVG híbrido com PNG incorporado",
+      "viewBox": "0 0 1254 1254",
+      "fundo": "papel marfim opaco",
+      "sem_texto": true,
+      "arquivo": "01_svg/configuracoes.svg",
+      "original_png": "02_png/configuracoes.png",
+      "geracao": "aquarela digital gerada com IA",
+      "resolucao_px": [
+        1254,
+        1254
+      ],
+      "bytes_svg": 3404394,
+      "sha256_svg": "396d64a17717368b2b99934021327bde9a4978696fd298bfd4bedbb2c0f9993d"
+    },
+    {
+      "id": "chat-ia",
+      "titulo": "Chat com IA",
+      "descricao": "Two sculpted translucent ivory and sage speech bubbles, overlapped at gentle angles, with one small botanical branch connecting them and tiny unmarked glowing accent. Concept: intelligent writing companion and dialogue, no robot face. Bubble interiors entirely blank. No text, characters or dots suggesting letters.",
+      "formato": "SVG híbrido com PNG incorporado",
+      "viewBox": "0 0 1254 1254",
+      "fundo": "papel marfim opaco",
+      "sem_texto": true,
+      "arquivo": "01_svg/chat-ia.svg",
+      "original_png": "02_png/chat-ia.png",
+      "geracao": "aquarela digital gerada com IA",
+      "resolucao_px": [
+        1254,
+        1254
+      ],
+      "bytes_svg": 3293998,
+      "sha256_svg": "8bc146364ea84de12c3839823c3889549a52ca1c6c5d6a33d3f125f2c0d7f470"
+    },
+    {
+      "id": "biblioteca",
+      "titulo": "Biblioteca",
+      "descricao": "Three antique closed book volumes with blank spines in ivory and sage stacked beside a simple open book, one botanical leaf tucked between pages. Concept: personal library. All covers and spines entirely blank, no letters or numerals.",
+      "formato": "SVG híbrido com PNG incorporado",
+      "viewBox": "0 0 1254 1254",
+      "fundo": "papel marfim opaco",
+      "sem_texto": true,
+      "arquivo": "01_svg/biblioteca.svg",
+      "original_png": "02_png/biblioteca.png",
+      "geracao": "aquarela digital gerada com IA",
+      "resolucao_px": [
+        1254,
+        1254
+      ],
+      "bytes_svg": 3347087,
+      "sha256_svg": "4950bfd563d48f9b26486cdec5cf1f1809d249e352c6de944c6849248f89efa0"
+    },
+    {
+      "id": "personagens",
+      "titulo": "Personagens",
+      "descricao": "Three distinct blank cameo portrait silhouettes rendered in soft forest-green watercolor on overlapping unmarked ivory character cards, suggesting different fictional people, elegant restrained varied profiles. No facial caricatures, no text, no letters, no numerals.",
+      "formato": "SVG híbrido com PNG incorporado",
+      "viewBox": "0 0 1254 1254",
+      "fundo": "papel marfim opaco",
+      "sem_texto": true,
+      "arquivo": "01_svg/personagens.svg",
+      "original_png": "02_png/personagens.png",
+      "geracao": "aquarela digital gerada com IA",
+      "resolucao_px": [
+        1254,
+        1254
+      ],
+      "bytes_svg": 3487234,
+      "sha256_svg": "1babe482a33bd0e19a43d5b2a9c5f8074677c515039c4a92374500eeaed80e36"
+    },
+    {
+      "id": "linha-do-tempo",
+      "titulo": "Linha do tempo",
+      "descricao": "A curving fine olive path across a folded blank ivory paper strip, marked by three small unlabeled wax-seal-like sage medallions and delicate leaves, suggesting narrative chronology. No calendar, numerals, text, arrows or letters.",
+      "formato": "SVG híbrido com PNG incorporado",
+      "viewBox": "0 0 1254 1254",
+      "fundo": "papel marfim opaco",
+      "sem_texto": true,
+      "arquivo": "01_svg/linha-do-tempo.svg",
+      "original_png": "02_png/linha-do-tempo.png",
+      "geracao": "aquarela digital gerada com IA",
+      "resolucao_px": [
+        1254,
+        1254
+      ],
+      "bytes_svg": 2888819,
+      "sha256_svg": "6e9ea6705db839218056b0877fe6ff5758f2698348874a00fec75d84929f0d44"
+    },
+    {
+      "id": "notificacoes",
+      "titulo": "Notificações",
+      "descricao": "A small antique dark green desk bell beside a sealed ivory envelope and a sprig of foliage, serene literary product illustration, envelope entirely blank. Concept: updates or notifications, no alert badge, text or numbers.",
+      "formato": "SVG híbrido com PNG incorporado",
+      "viewBox": "0 0 1254 1254",
+      "fundo": "papel marfim opaco",
+      "sem_texto": true,
+      "arquivo": "01_svg/notificacoes.svg",
+      "original_png": "02_png/notificacoes.png",
+      "geracao": "aquarela digital gerada com IA",
+      "resolucao_px": [
+        1254,
+        1254
+      ],
+      "bytes_svg": 3080725,
+      "sha256_svg": "7d2b161e4063252d8eafe84fdcb145b786336294881f664cba18c55838e665b6"
+    }
+  ]
+}

@@ -7,13 +7,14 @@ import { Input, Label } from '@/components/ui';
 
 type PasswordFieldProps = {
   id: string;
+  name?: string;
   label: string;
   autoComplete: 'current-password' | 'new-password';
   error?: string;
   hint?: string;
 };
 
-export function PasswordField({ id, label, autoComplete, error, hint }: PasswordFieldProps) {
+export function PasswordField({ id, name = id, label, autoComplete, error, hint }: PasswordFieldProps) {
   const [visible, setVisible] = useState(false);
   const descriptionId = error ? `${id}-error` : hint ? `${id}-hint` : undefined;
 
@@ -23,7 +24,7 @@ export function PasswordField({ id, label, autoComplete, error, hint }: Password
       <div className="relative mt-2">
         <Input
           id={id}
-          name={id}
+          name={name}
           type={visible ? 'text' : 'password'}
           className="pr-12"
           autoComplete={autoComplete}

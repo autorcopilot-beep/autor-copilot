@@ -1,88 +1,149 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { BookDashed, Check, Feather, Library, Plus } from 'lucide-react';
+import {
+  ArrowRight,
+  BookOpen,
+  Check,
+  Feather,
+  FileSearch,
+  FolderKanban,
+  Lightbulb,
+  LockKeyhole,
+  PenLine,
+  Plus,
+  Sparkles,
+  Target,
+  UserRound,
+  UsersRound,
+} from 'lucide-react';
 
-import { Badge, Button, Card, CardContent } from '@/components/ui';
-import { AccountPanel } from '@/features/auth/components/account-panel';
-import { AuthBrand } from '@/features/auth/components/auth-brand';
+import { Badge, buttonVariants } from '@/components/ui';
+import { cn } from '@/lib/cn';
 import { createClient } from '@/lib/supabase/server';
 
 export const metadata: Metadata = { title: 'Mesa de escrita' };
 
-const focusLabels: Record<string, string> = {
-  fiction: 'Romance ou ficção',
-  nonfiction: 'Não ficção',
-  poetry: 'Poesia',
-  screenplay: 'Roteiro',
-  other: 'Outro formato',
-};
+const quickActions = [
+  { label: 'Começar a escrever', description: 'Abra o editor no ponto em que parou.', icon: PenLine },
+  { label: 'Planejar uma obra', description: 'Organize estrutura, cenas e enredo.', icon: FolderKanban },
+  { label: 'Criar personagem', description: 'Registre voz, motivações e relações.', icon: UsersRound },
+  { label: 'Guardar pesquisa', description: 'Reúna referências e fontes importantes.', icon: FileSearch },
+] as const;
+
+function QuickAction({ label, description, icon: Icon }: (typeof quickActions)[number]) {
+  if (label === 'Começar a escrever') {
+    return (
+      <Link href="/write/editor" className="group flex min-h-20 w-full items-center gap-4 border-b border-line py-4 text-left transition-colors hover:bg-surface-muted last:border-b-0 sm:px-2">
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent text-on-accent"><Icon className="size-4.5" aria-hidden="true" /></span>
+        <span className="min-w-0 flex-1"><span className="block text-sm font-medium text-ink">{label}</span><span className="mt-0.5 block text-xs leading-relaxed text-muted">{description}</span></span>
+        <ArrowRight className="size-3.5 shrink-0 text-accent transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+      </Link>
+    );
+  }
+  return (
+    <button type="button" disabled className="group flex min-h-20 w-full cursor-not-allowed items-center gap-4 border-b border-line py-4 text-left opacity-70 last:border-b-0 sm:px-2" aria-label={`${label}, em breve`} title="Em breve">
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent-subtle text-accent"><Icon className="size-4.5" aria-hidden="true" /></span>
+      <span className="min-w-0 flex-1"><span className="block text-sm font-medium text-ink">{label}</span><span className="mt-0.5 block text-xs leading-relaxed text-muted">{description}</span></span>
+      <LockKeyhole className="size-3.5 shrink-0 text-muted" aria-hidden="true" />
+    </button>
+  );
+}
 
 export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const { status } = await searchParams;
   const supabase = await createClient();
   const { data: claimsData } = await supabase.auth.getClaims();
   const userId = claimsData?.claims?.sub;
-
   if (!userId) redirect('/login?next=/dashboard');
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('display_name, pen_name, writing_focus, onboarding_completed_at')
+    .select('display_name, nickname, pen_name, writing_focus, experience_level, onboarding_completed_at')
     .eq('id', userId)
     .single();
-
   if (!profile?.onboarding_completed_at) redirect('/onboarding');
 
-  const email = typeof claimsData.claims.email === 'string' ? claimsData.claims.email : undefined;
-  const focus = profile.writing_focus ? focusLabels[profile.writing_focus] : undefined;
-  const account = { displayName: profile.display_name, email, penName: profile.pen_name ?? undefined, writingFocus: focus };
+  const authorName = profile.pen_name || profile.nickname || profile.display_name;
+  const dateLabel = new Intl.DateTimeFormat('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date());
 
   return (
-    <main className="min-h-screen px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
-      <header className="mx-auto flex max-w-6xl items-center justify-between rounded-card border border-line bg-surface px-3 py-2.5 shadow-soft sm:px-5">
-        <AuthBrand />
-        <div className="lg:hidden"><AccountPanel {...account} mobile /></div>
-        <div className="hidden items-center gap-2 text-sm text-muted lg:flex"><Library className="size-4 text-accent" aria-hidden="true" />Biblioteca particular</div>
-      </header>
+    <div className="mx-auto w-full max-w-7xl py-4 sm:py-7">
+      {status === 'ready' && <div className="auth-enter mb-5 flex items-center gap-3 rounded-control border border-success bg-success-subtle px-4 py-3 text-sm text-ink" role="status"><Check className="size-4 text-success" aria-hidden="true" />Seu perfil de escrita está pronto.</div>}
 
-      <div className="mx-auto grid max-w-6xl gap-6 py-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:py-10">
-        <div className="space-y-6">
-          {status === 'ready' && <div className="auth-enter flex items-center gap-3 rounded-card border border-success bg-success-subtle px-4 py-3 text-sm text-ink" role="status"><Check className="size-4 text-success" aria-hidden="true" />Seu perfil de escrita está pronto.</div>}
-
-          <section className="auth-enter" aria-labelledby="desk-title">
+      <section className="auth-enter relative isolate min-h-[27rem] overflow-hidden rounded-card border border-line bg-editor shadow-soft sm:min-h-[29rem]" aria-labelledby="desk-title">
+        <div className="absolute inset-0 -z-20 bg-[url('/images/kit_marca/03_backgrounds/papel-claro.svg')] bg-cover opacity-55 dark:opacity-10" />
+        <div className="absolute -left-24 -top-32 -z-10 size-80 rounded-full bg-accent-subtle/70 blur-3xl" />
+        <div className="relative z-10 flex min-h-[27rem] max-w-3xl flex-col justify-center p-6 pb-44 sm:min-h-[29rem] sm:p-10 sm:pb-40 lg:px-12 lg:py-12">
+          <div className="flex flex-wrap items-center gap-3">
             <Badge>Mesa de escrita</Badge>
-            <h1 id="desk-title" className="mt-5 font-serif text-4xl font-semibold leading-tight text-ink sm:text-5xl">Bom retorno, {profile.pen_name || profile.display_name}.</h1>
-            <p className="mt-4 max-w-2xl text-lg leading-relaxed text-muted">Seu espaço está preparado. A primeira obra será criada na próxima etapa do produto.</p>
-          </section>
-
-          <Card className="auth-enter-delayed overflow-hidden bg-editor" aria-labelledby="empty-library-title">
-            <CardContent className="grid gap-8 p-7 sm:p-10 md:grid-cols-[1fr_auto] md:items-center">
-              <div>
-                <BookDashed className="size-8 text-accent" aria-hidden="true" />
-                <h2 id="empty-library-title" className="mt-5 font-serif text-2xl font-semibold text-ink">A primeira lombada da estante</h2>
-                <p className="mt-3 max-w-xl leading-relaxed text-muted">Aqui aparecerão suas obras, com o capítulo atual, progresso e o último ponto de escrita.</p>
-              </div>
-              <Button disabled aria-describedby="project-coming-soon"><Plus className="size-4" aria-hidden="true" />Criar primeira obra</Button>
-              <p id="project-coming-soon" className="sr-only">A criação de obras será habilitada na próxima fase.</p>
-            </CardContent>
-          </Card>
-
-          <section className="grid gap-3 sm:grid-cols-3" aria-label="Progresso da preparação">
-            {([
-              ['Conta', 'Confirmada', true],
-              ['Perfil', 'Preparado', true],
-              ['Primeira obra', 'Próxima etapa', false],
-            ] as const).map(([title, copy, complete]) => (
-              <div key={String(title)} className="rounded-card border border-line bg-surface p-4">
-                <span className={`flex size-7 items-center justify-center rounded-full ${complete ? 'bg-success-subtle text-success' : 'bg-surface-muted text-muted'}`}><Check className="size-3.5" aria-hidden="true" /></span>
-                <p className="mt-4 font-medium text-ink">{title}</p><p className="mt-1 text-sm text-muted">{copy}</p>
-              </div>
-            ))}
-          </section>
+            <span className="text-xs capitalize text-muted">{dateLabel}</span>
+          </div>
+          <h1 id="desk-title" className="mt-6 max-w-2xl font-serif text-4xl font-semibold leading-[1.08] text-ink sm:text-5xl lg:text-6xl">Toda história começa com uma página, {authorName}.</h1>
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-muted sm:text-lg">Organize suas ideias, desenvolva seu universo e transforme o próximo rascunho em uma obra.</p>
+          <div className="mt-7 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+            <Link href="/write/editor" className={cn(buttonVariants({ size: 'wide' }))}><PenLine className="size-4" />Começar a escrever</Link>
+            <Link href="/account/profile" className="inline-flex min-h-11 items-center gap-2 rounded-control px-3 text-sm font-medium text-ink transition-colors hover:bg-surface-muted"><UserRound className="size-4 text-accent" />Revisar meu perfil<ArrowRight className="size-3.5 text-muted" /></Link>
+          </div>
+          <p id="create-work-note" className="mt-2 text-xs text-muted"><Check className="mr-1 inline size-3 text-success" />Seu primeiro manuscrito já pode ser escrito e salvo neste dispositivo.</p>
         </div>
+        <div
+          className="pointer-events-none absolute -bottom-14 -right-20 z-0 size-80 opacity-75 sm:-bottom-24 sm:-right-12 sm:size-[30rem] sm:opacity-85 xl:-bottom-32 xl:right-2 xl:size-[36rem]"
+          style={{
+            WebkitMaskImage: 'radial-gradient(circle at 54% 54%, #000 38%, rgb(0 0 0 / 0.92) 57%, transparent 79%)',
+            maskImage: 'radial-gradient(circle at 54% 54%, #000 38%, rgb(0 0 0 / 0.92) 57%, transparent 79%)',
+          }}
+        >
+          <Image src="/images/Aquarela_Literaria_Abas/02_png/dashboard.png" alt="" fill priority quality={88} sizes="(max-width: 600px) 320px, (max-width: 1280px) 480px, 576px" className="scale-105 object-contain mix-blend-multiply saturate-[0.92] contrast-[0.98] dark:mix-blend-screen dark:opacity-45" />
+        </div>
+      </section>
 
-        <aside className="auth-enter-delayed hidden rounded-card border border-line bg-surface p-6 shadow-soft lg:block" aria-label="Conta do autor"><div className="mb-8 flex items-center gap-2 text-sm font-medium text-ink"><Feather className="size-4 text-accent" aria-hidden="true" />Perfil do autor</div><AccountPanel {...account} /></aside>
+      <section className="auth-enter-delayed grid border-b border-line sm:grid-cols-3" aria-label="Resumo da mesa de escrita">
+        <div className="flex items-center gap-4 border-b border-line py-5 sm:border-b-0 sm:border-r sm:px-5 sm:pl-0"><BookOpen className="size-5 text-accent" /><div><p className="text-2xl font-semibold text-ink">0</p><p className="text-xs text-muted">obras na biblioteca</p></div></div>
+        <div className="flex items-center gap-4 border-b border-line py-5 sm:border-b-0 sm:border-r sm:px-5"><Feather className="size-5 text-accent" /><div><p className="text-2xl font-semibold text-ink">0</p><p className="text-xs text-muted">palavras registradas</p></div></div>
+        <div className="flex items-center gap-4 py-5 sm:px-5 sm:pr-0"><Check className="size-5 text-success" /><div><p className="text-sm font-semibold text-ink">Perfil preparado</p><p className="text-xs text-muted">Tudo pronto para começar</p></div></div>
+      </section>
+
+      <div className="mt-8 grid items-start gap-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(18rem,0.8fr)] lg:gap-12">
+        <section aria-labelledby="library-title">
+          <div className="flex items-end justify-between gap-4 border-b border-line pb-4">
+            <div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">Sua biblioteca</p><h2 id="library-title" className="mt-1 font-serif text-2xl font-semibold text-ink">Obras recentes</h2></div>
+            <span className="inline-flex items-center gap-1.5 text-xs text-muted"><LockKeyhole className="size-3" />Em breve</span>
+          </div>
+
+          <div className="relative mt-5 overflow-hidden rounded-card border border-line bg-editor px-6 py-8 sm:px-8 sm:py-10">
+            <div className="absolute inset-y-0 left-0 w-1 bg-accent/60" />
+            <div className="flex max-w-xl items-start gap-4">
+              <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-accent-subtle text-accent"><BookOpen className="size-5" /></span>
+              <div><h3 className="font-serif text-xl font-semibold text-ink">Sua estante ainda espera a primeira lombada</h3><p className="mt-2 text-sm leading-relaxed text-muted">Quando a criação de obras for liberada, seus projetos recentes, capítulos e progresso aparecerão aqui.</p><button type="button" disabled className="mt-5 inline-flex min-h-10 cursor-not-allowed items-center gap-2 text-sm font-medium text-muted"><Plus className="size-4" />Adicionar obra<LockKeyhole className="size-3" /></button></div>
+            </div>
+          </div>
+
+          <section className="mt-8" aria-labelledby="journey-title">
+            <div className="flex items-center gap-3"><Target className="size-5 text-accent" /><h2 id="journey-title" className="font-serif text-xl font-semibold text-ink">Sua jornada de autor</h2></div>
+            <ol className="mt-5 grid gap-0 sm:grid-cols-3">
+              <li className="relative border-l-2 border-success pb-6 pl-5 sm:border-l-0 sm:border-t-2 sm:pb-0 sm:pl-0 sm:pt-5"><span className="absolute -left-[7px] top-0 size-3 rounded-full bg-success ring-4 ring-canvas sm:-top-[7px] sm:left-0" /><p className="text-sm font-medium text-ink">Conta criada</p><p className="mt-1 text-xs text-muted">Seu espaço está protegido.</p></li>
+              <li className="relative border-l-2 border-success pb-6 pl-5 sm:border-l-0 sm:border-t-2 sm:pb-0 sm:pl-4 sm:pt-5"><span className="absolute -left-[7px] top-0 size-3 rounded-full bg-success ring-4 ring-canvas sm:-top-[7px] sm:left-4" /><p className="text-sm font-medium text-ink">Perfil preparado</p><p className="mt-1 text-xs text-muted">Preferências registradas.</p></li>
+              <li className="relative border-l-2 border-line pl-5 sm:border-l-0 sm:border-t-2 sm:pl-4 sm:pt-5"><span className="absolute -left-[7px] top-0 size-3 rounded-full bg-line-strong ring-4 ring-canvas sm:-top-[7px] sm:left-4" /><p className="text-sm font-medium text-ink">Primeira obra</p><p className="mt-1 text-xs text-muted">Seu próximo capítulo.</p></li>
+            </ol>
+          </section>
+        </section>
+
+        <aside className="space-y-8">
+          <section aria-labelledby="shortcuts-title">
+            <div className="border-b border-line pb-4"><p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">Acesso rápido</p><h2 id="shortcuts-title" className="mt-1 font-serif text-2xl font-semibold text-ink">Atalhos</h2></div>
+            <div>{quickActions.map((action) => <QuickAction key={action.label} {...action} />)}</div>
+          </section>
+
+          <section className="relative overflow-hidden border-l-2 border-accent px-5 py-2" aria-labelledby="note-title">
+            <Sparkles className="size-5 text-accent" aria-hidden="true" />
+            <h2 id="note-title" className="mt-4 font-serif text-lg font-semibold text-ink">Nota para hoje</h2>
+            <blockquote className="mt-2 font-serif text-base italic leading-relaxed text-muted">“O primeiro rascunho pede coragem. O segundo encontra a forma.”</blockquote>
+            <div className="mt-4 flex items-center gap-2 text-xs text-muted"><Lightbulb className="size-3.5" />Volte para uma ideia que você ainda não terminou.</div>
+          </section>
+        </aside>
       </div>
-    </main>
+    </div>
   );
 }

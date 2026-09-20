@@ -22,7 +22,11 @@ export async function GET(request: Request) {
 
   const errorPath = destination === '/update-password'
     ? '/forgot-password?error=link-expired'
-    : '/register?error=confirmation';
+    : destination === '/account/login'
+      ? '/account/login?email=error'
+    : destination === '/admin'
+      ? '/admin/login?error=invite-expired'
+      : '/register?error=confirmation';
 
   return NextResponse.redirect(new URL(errorPath, siteUrl));
 }
