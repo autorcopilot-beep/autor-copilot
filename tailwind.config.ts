@@ -42,12 +42,15 @@ const config: Config = {
       fontSize: {
         interface: ['0.9375rem', { lineHeight: '1.5' }],
         meta: ['0.8125rem', { lineHeight: '1.45' }],
-        editor: ['1.1875rem', { lineHeight: '1.65' }],
+        editor: [
+          'var(--editor-font-size)',
+          { lineHeight: 'var(--editor-line-height)' },
+        ],
         'document-title': ['1.875rem', { lineHeight: '1.25', fontWeight: '600' }],
         'section-title': ['1.375rem', { lineHeight: '1.3', fontWeight: '600' }],
       },
       maxWidth: {
-        manuscript: '68ch',
+        manuscript: 'var(--manuscript-width)',
       },
       borderRadius: {
         control: '0.5rem',

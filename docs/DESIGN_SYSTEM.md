@@ -23,8 +23,8 @@ Os componentes usam papéis, não valores hexadecimais diretamente:
 
 Os tokens ficam em `src/app/globals.css`. O tema claro é o padrão explícito e o
 tema do sistema é respeitado quando não há uma preferência salva. Os atributos
-`data-theme="light"` e `data-theme="dark"` já estão preparados para o controle
-que será implementado na fase de acessibilidade.
+`data-theme="light"` e `data-theme="dark"` são controlados pelo menu de
+acessibilidade e persistidos apenas no navegador.
 
 ### Tipografia
 
@@ -45,6 +45,7 @@ que será implementado na fase de acessibilidade.
 - Transições de cor usam 150 ms.
 - Sombras são discretas: `shadow-soft` e `shadow-floating`.
 - A preferência `prefers-reduced-motion` reduz animações e transições globais.
+- A preferência manual de movimento reduzido usa `data-reduce-motion="true"`.
 
 ## Componentes-base
 
@@ -91,3 +92,10 @@ representar uma região identificável e associe-o ao título interno.
 4. Preferir texto a tooltips para explicar indisponibilidade importante.
 5. Validar novos pares de cor em tema claro e escuro.
 6. Testar zoom de 200%, teclado e larguras de 320, 600 e 960 px.
+
+## Preferências de acessibilidade
+
+O botão global abre um diálogo modal com gerenciamento de foco e fechamento por
+`Escape`. As preferências controlam tema, tamanho do texto literário, entrelinha,
+largura do manuscrito e redução de movimento. Consulte
+[`ACCESSIBILITY.md`](ACCESSIBILITY.md) para o contrato de persistência.

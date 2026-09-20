@@ -52,3 +52,5 @@ npm run check
 Consulte [docs/ARQUITETURA_INICIAL.md](docs/ARQUITETURA_INICIAL.md) para os
 limites entre rotas, funcionalidades e infraestrutura. Os tokens, componentes
 e regras visuais estão em [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md).
+As preferências de leitura e acessibilidade estão descritas em
+[docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md).
