@@ -39,6 +39,23 @@ npm run db:stop
 
 Não adicione secret keys, `service_role` ou `.env.local` ao repositório.
 
+### Projeto remoto e confirmação de e-mail
+
+Defina `NEXT_PUBLIC_SITE_URL` com a origem da aplicação (por exemplo,
+`http://localhost:3000`). No painel do Supabase, adicione também
+`http://localhost:3000/auth/callback` às URLs de redirecionamento permitidas
+durante o desenvolvimento.
+
+Depois de vincular o CLI ao projeto correto, aplique as migrations versionadas:
+
+```bash
+npx supabase link --project-ref SEU_PROJECT_REF
+npx supabase db push
+```
+
+O cadastro usa confirmação de e-mail. Para produção, configure SMTP próprio no
+Supabase; o serviço padrão é destinado a testes e possui limites baixos.
+
 ## Qualidade
 
 ```bash

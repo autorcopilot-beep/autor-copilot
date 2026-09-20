@@ -36,3 +36,23 @@ export function getSupabaseEnv(): SupabaseEnv {
   cachedEnv = result.data;
   return cachedEnv;
 }
+
+const siteUrlSchema = z.url('NEXT_PUBLIC_SITE_URL deve ser uma URL válida.');
+
+export function getSiteUrl(): string {
+  const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL;
+
+  if (!configuredUrl && process.env.NODE_ENV !== 'production') {
+    return 'http://localhost:3000';
+  }
+
+  const result = siteUrlSchema.safeParse(configuredUrl);
+
+  if (!result.success) {
+    throw new Error(
+      'NEXT_PUBLIC_SITE_URL ausente ou inválida. Informe a URL pública da aplicação.',
+    );
+  }
+
+  return result.data.replace(/\/$/, '');
+}
