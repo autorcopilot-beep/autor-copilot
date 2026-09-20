@@ -52,7 +52,7 @@ export default async function RegisterPage({
 
             <p className="mt-6 text-center text-sm text-muted">
               Já tem uma conta?{' '}
-              <span className="font-medium text-ink">O acesso entra na próxima fase.</span>
+              <Link href="/login" className="font-medium text-accent hover:underline">Entre no seu espaço.</Link>
             </p>
           </div>
         </section>

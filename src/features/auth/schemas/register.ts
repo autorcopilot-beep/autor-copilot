@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { passwordSchema } from './password';
+
 export const registerSchema = z
   .object({
     displayName: z
@@ -13,12 +15,7 @@ export const registerSchema = z
       .toLowerCase()
       .email('Informe um e-mail válido.')
       .max(254, 'O e-mail é muito longo.'),
-    password: z
-      .string()
-      .min(8, 'Use pelo menos 8 caracteres.')
-      .max(72, 'Use no máximo 72 caracteres.')
-      .regex(/[A-Za-zÀ-ÿ]/, 'Inclua pelo menos uma letra.')
-      .regex(/[0-9]/, 'Inclua pelo menos um número.'),
+    password: passwordSchema,
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {

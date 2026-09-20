@@ -53,8 +53,21 @@ npx supabase link --project-ref SEU_PROJECT_REF
 npx supabase db push
 ```
 
-O cadastro usa confirmação de e-mail. Para produção, configure SMTP próprio no
-Supabase; o serviço padrão é destinado a testes e possui limites baixos.
+O cadastro e a recuperação de senha usam e-mail. Para produção, configure SMTP
+próprio no Supabase; o serviço padrão é destinado a testes e possui limites
+baixos.
+
+## Fluxos de conta
+
+- `/register`: cria a conta e solicita confirmação de e-mail.
+- `/login`: inicia uma sessão com e-mail e senha.
+- `/forgot-password`: envia um link de recuperação sem revelar se a conta existe.
+- `/update-password`: valida a sessão de recuperação e troca a senha.
+- `/onboarding`: completa o perfil de escrita antes do workspace.
+- `/dashboard`: rota privada inicial do autor.
+
+Consulte [docs/AUTH.md](docs/AUTH.md) para os redirecionamentos, limites de
+segurança e roteiro de teste manual.
 
 ## Qualidade
 

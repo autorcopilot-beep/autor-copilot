@@ -30,10 +30,9 @@ supabase/
 └── seed.sql                # Dados repetíveis apenas para desenvolvimento
 ```
 
-Os grupos entre parênteses organizam o código sem alterar a URL. As pastas de
-rota reservadas ainda não possuem `page.tsx`; portanto, `/login`, `/register`,
-`/forgot-password`, `/onboarding` e `/dashboard` serão ativadas somente nas
-fases correspondentes.
+Os grupos entre parênteses organizam o código sem alterar a URL. As rotas
+`/login`, `/register`, `/forgot-password`, `/update-password`, `/onboarding` e
+`/dashboard` seguem essa organização sem expor os nomes dos grupos na URL.
 
 ## Regras de dependência
 
@@ -54,13 +53,14 @@ fases correspondentes.
 - `server.ts`: cliente para Server Components, Server Actions e Route Handlers.
 - `database.generated.ts`: contrato temporário; será regenerado pelas migrations
   com `npm run db:types`.
-- O proxy responsável por renovar cookies será criado junto do login funcional,
-  quando as regras de proteção das rotas estiverem definidas.
+- O Proxy do Next.js 16 renova cookies somente nas rotas que dependem de sessão.
+- Páginas protegidas validam a identidade com `auth.getClaims()` no servidor.
+- Redirecionamentos pós-autenticação aceitam apenas destinos internos permitidos.
 
 ## Próximas fases
 
 1. **Concluída nesta entrega:** fundação, pastas e Supabase.
 2. **Concluída:** design system, tokens e componentes-base.
 3. **Concluída:** preferências e controles de acessibilidade.
-4. Cadastro funcional e onboarding.
-5. Login, recuperação de senha e proteção do workspace.
+4. **Concluída:** cadastro funcional, perfil protegido e confirmação de e-mail.
+5. **Concluída:** login, onboarding, recuperação de senha e proteção do workspace.

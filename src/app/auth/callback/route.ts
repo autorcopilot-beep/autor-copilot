@@ -1,25 +1,28 @@
 import { NextResponse } from 'next/server';
 
+import { getSiteUrl } from '@/config/env';
+import { getSafeAuthDestination } from '@/features/auth/redirects';
 import { createClient } from '@/lib/supabase/server';
-
-const allowedDestinations = new Set(['/onboarding']);
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get('code');
   const requestedDestination = requestUrl.searchParams.get('next');
-  const destination = requestedDestination && allowedDestinations.has(requestedDestination)
-    ? requestedDestination
-    : '/onboarding';
+  const destination = getSafeAuthDestination(requestedDestination, '/onboarding');
+  const siteUrl = getSiteUrl();
 
   if (code) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
-      return NextResponse.redirect(new URL(destination, requestUrl.origin));
+      return NextResponse.redirect(new URL(destination, siteUrl));
     }
   }
 
-  return NextResponse.redirect(new URL('/register?error=confirmation', requestUrl.origin));
+  const errorPath = destination === '/update-password'
+    ? '/forgot-password?error=link-expired'
+    : '/register?error=confirmation';
+
+  return NextResponse.redirect(new URL(errorPath, siteUrl));
 }
