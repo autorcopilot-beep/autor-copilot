@@ -1,0 +1,1 @@
+-- Dados locais repetíveis serão adicionados junto com as primeiras migrations.

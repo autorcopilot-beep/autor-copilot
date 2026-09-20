@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Autor Copilot
 
-## Getting Started
+Aplicação web para escrever, planejar e organizar histórias. O projeto usa
+Next.js 16, React 19, TypeScript, Tailwind CSS e Supabase.
 
-First, run the development server:
+## Requisitos
+
+- Node.js 20.9 ou superior
+- npm
+- Docker Desktop, apenas para executar o Supabase local completo
+
+## Primeira execução
 
 ```bash
+npm install
+cp .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra `http://localhost:3000`. A página pública funciona sem Supabase; as futuras
+rotas de conta exigirão as variáveis de `.env.local`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Supabase local
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Com o Docker Desktop em execução:
 
-## Learn More
+```bash
+npm run db:start
+```
 
-To learn more about Next.js, take a look at the following resources:
+O comando apresenta as credenciais locais e inicia o Studio. Copie a URL e a
+publishable key para `.env.local`. Comandos úteis:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run db:reset
+npm run db:types
+npm run db:stop
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Não adicione secret keys, `service_role` ou `.env.local` ao repositório.
 
-## Deploy on Vercel
+## Qualidade
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run lint
+npm run typecheck
+npm run build
+# ou execute todos:
+npm run check
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Consulte [docs/ARQUITETURA_INICIAL.md](docs/ARQUITETURA_INICIAL.md) para os
+limites entre rotas, funcionalidades e infraestrutura.
