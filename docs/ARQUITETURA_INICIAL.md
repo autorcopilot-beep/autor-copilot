@@ -60,7 +60,7 @@ fases correspondentes.
 ## Próximas fases
 
 1. **Concluída nesta entrega:** fundação, pastas e Supabase.
-2. Design system, tokens e componentes-base.
+2. **Concluída:** design system, tokens e componentes-base.
 3. Preferências e controles de acessibilidade.
 4. Cadastro funcional e onboarding.
 5. Login, recuperação de senha e proteção do workspace.

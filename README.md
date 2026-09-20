@@ -50,4 +50,5 @@ npm run check
 ```
 
 Consulte [docs/ARQUITETURA_INICIAL.md](docs/ARQUITETURA_INICIAL.md) para os
-limites entre rotas, funcionalidades e infraestrutura.
+limites entre rotas, funcionalidades e infraestrutura. Os tokens, componentes
+e regras visuais estão em [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md).
