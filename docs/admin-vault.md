@@ -16,8 +16,16 @@ Os Steps 1 e 2 estão concluídos. O Admin Center já possui:
   carregamento incremental;
 - telas de administradores e trilha de auditoria.
 
-Os módulos de usuários, feature flags, manutenção, observabilidade e hardening
-avançado continuam planejados para os Steps 3 a 7.
+O Step 3 também está implementado com:
+
+- gestão de usuários, status, grupos e tags;
+- catálogo oficial de extensões com preço, publicação e elegibilidade;
+- feature flags com rollout percentual e segmentos;
+- documentos legais versionados, editáveis e publicáveis;
+- marketplace do Autor Copilot Lab ligado aos controles administrativos.
+
+Manutenção, observabilidade e hardening avançado continuam planejados para os
+Steps 4 a 7.
 
 ## Configuração do servidor
 

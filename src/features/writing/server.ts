@@ -2,7 +2,9 @@ import 'server-only';
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import type { WritingProject } from '@/features/writing/types';
+import type { EncyclopediaEntry, WritingProject } from '@/features/writing/types';
+import { defaultExtensionRuntime, extensionCatalog, type ExtensionId, type ExtensionRuntimeState } from '@/features/extensions/catalog';
+import { activeEntitlementIds } from '@/features/extensions/entitlements';
 import type { Database } from '@/types/database.generated';
 
 function mapDocument(row: Database['public']['Tables']['writing_documents']['Row']) {
@@ -11,11 +13,56 @@ function mapDocument(row: Database['public']['Tables']['writing_documents']['Row
     parentId: row.parent_id,
     kind: row.kind,
     title: row.title,
-    contentHtml: row.content_html,
+    contentHtml: row.content_html === '<p>Comece a escrever sua história aqui.</p>' ? '' : row.content_html,
     synopsis: row.synopsis,
     status: row.status,
     goal: row.word_goal,
     position: row.position,
+    updatedAt: row.updated_at,
+  };
+}
+
+function rolloutBucket(userId: string, flag: string) {
+  return Array.from(`${userId}:${flag}`).reduce((total, character) => (total * 31 + character.charCodeAt(0)) % 100, 0);
+}
+
+export async function loadExtensionRuntimeAccess(supabase: SupabaseClient<Database>, userId: string): Promise<ExtensionRuntimeState> {
+  const [catalogResult, accessResult, flagsResult, installationsResult, entitlementsResult] = await Promise.all([
+    supabase.from('extension_catalog').select('id, allowed_groups, feature_flag, price_model').eq('is_published', true),
+    supabase.from('user_access_profiles').select('groups, status').eq('user_id', userId).maybeSingle(),
+    supabase.from('feature_flags').select('key, enabled, rollout_percentage, allowed_groups'),
+    supabase.from('user_extension_installations').select('extension_id, is_active').eq('user_id', userId),
+    supabase.from('user_extension_entitlements').select('extension_id, status, starts_at, ends_at').eq('user_id', userId),
+  ]);
+  if (catalogResult.error || flagsResult.error || installationsResult.error || entitlementsResult.error || accessResult.data?.status === 'suspended') return defaultExtensionRuntime;
+  const groups = accessResult.data?.groups?.length ? accessResult.data.groups : ['free'];
+  const flags = new Map((flagsResult.data ?? []).map((flag) => [flag.key, flag]));
+  const installs = new Map((installationsResult.data ?? []).map((installation) => [installation.extension_id, installation.is_active]));
+  const entitlements = activeEntitlementIds(entitlementsResult.data ?? []);
+  const available = new Set((catalogResult.data ?? []).filter((extension) => {
+    if (!extension.allowed_groups.some((group) => groups.includes(group))) return false;
+    const acquired = extension.price_model === 'free'
+      || (extension.price_model === 'pro_included' && groups.includes('pro'))
+      || entitlements.has(extension.id);
+    if (!acquired) return false;
+    if (extension.feature_flag) {
+      const flag = flags.get(extension.feature_flag);
+      if (!flag?.enabled || !flag.allowed_groups.some((group) => groups.includes(group)) || rolloutBucket(userId, flag.key) >= flag.rollout_percentage) return false;
+    }
+    return true;
+  }).map((extension) => extension.id));
+  return Object.fromEntries(extensionCatalog.map((extension) => [extension.id, available.has(extension.id) && installs.get(extension.id) === true])) as Record<ExtensionId, boolean>;
+}
+
+function mapEncyclopediaEntry(row: Database['public']['Tables']['encyclopedia_entries']['Row']): EncyclopediaEntry {
+  return {
+    id: row.id,
+    type: row.entry_type,
+    name: row.name,
+    aliases: row.aliases,
+    summary: row.summary,
+    details: row.details,
+    color: row.color,
     updatedAt: row.updated_at,
   };
 }
@@ -82,14 +129,27 @@ export async function loadWritingProject(
     });
   }
 
-  const { data: existingDocuments, error: documentsReadError } = await supabase
-    .from('writing_documents')
-    .select('*')
-    .eq('owner_id', userId)
-    .eq('work_id', work.id)
-    .order('position', { ascending: true });
+  const [documentsResult, encyclopediaResult] = await Promise.all([
+    supabase
+      .from('writing_documents')
+      .select('*')
+      .eq('owner_id', userId)
+      .eq('work_id', work.id)
+      .order('position', { ascending: true }),
+    supabase
+      .from('encyclopedia_entries')
+      .select('*')
+      .eq('owner_id', userId)
+      .eq('work_id', work.id)
+      .order('name', { ascending: true }),
+  ]);
+
+  const { data: existingDocuments, error: documentsReadError } = documentsResult;
+  const { data: encyclopediaRows, error: encyclopediaReadError } = encyclopediaResult;
 
   if (documentsReadError) throw documentsReadError;
+  const encyclopediaTableUnavailable = encyclopediaReadError?.code === 'PGRST205';
+  if (encyclopediaReadError && !encyclopediaTableUnavailable) throw encyclopediaReadError;
 
   const documents = existingDocuments ?? [];
   if (!documents.length) throw new Error('A obra foi criada sem documentos iniciais.');
@@ -103,6 +163,8 @@ export async function loadWritingProject(
     id: work.id,
     title: work.title,
     documents: mappedDocuments,
+    encyclopediaEntries: (encyclopediaRows ?? []).map(mapEncyclopediaEntry),
+    encyclopediaPersistence: encyclopediaTableUnavailable ? 'local' : 'cloud',
     activeDocumentId,
     updatedAt: work.updated_at,
   };

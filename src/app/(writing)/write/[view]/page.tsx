@@ -2,13 +2,13 @@ import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
 import { WritingStudio } from '@/features/writing/components/writing-studio';
-import { loadWritingProject } from '@/features/writing/server';
+import { loadExtensionRuntimeAccess, loadWritingProject } from '@/features/writing/server';
 import { isWritingView } from '@/features/writing/types';
 import { createClient } from '@/lib/supabase/server';
 
 export const metadata: Metadata = {
   title: 'Ambiente de escrita',
-  description: 'Editor, capítulos, cenas e notas do manuscrito.',
+  description: 'Editor, capítulos, cenas, notas e Enciclopédia da obra.',
 };
 
 export default async function WritingViewPage({
@@ -32,7 +32,10 @@ export default async function WritingViewPage({
     redirect(`/login?next=${encodeURIComponent(next)}`);
   }
 
-  const project = await loadWritingProject(supabase, userId, query.document, query.work);
+  const [project, extensionAccess] = await Promise.all([
+    loadWritingProject(supabase, userId, query.document, query.work),
+    loadExtensionRuntimeAccess(supabase, userId),
+  ]);
 
-  return <WritingStudio userId={userId} initialProject={project} initialView={view} />;
+  return <WritingStudio userId={userId} initialProject={project} initialView={view} extensionAccess={extensionAccess} />;
 }

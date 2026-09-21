@@ -20,6 +20,8 @@ export const adminPermissions = [
   'users.sessions.revoke',
   'users.impersonate',
   'billing.read',
+  'legal.read',
+  'legal.manage',
   'features.read',
   'features.manage',
   'maintenance.manage',
@@ -34,7 +36,7 @@ export const rolePermissions: Record<AdminRole, ReadonlySet<AdminPermission>> = 
   master: allPermissions,
   engineering: new Set([
     'admins.read', 'audit.read', 'users.read', 'users.sessions.revoke',
-    'features.read', 'features.manage', 'maintenance.manage', 'observability.read',
+    'features.read', 'features.manage', 'legal.read', 'legal.manage', 'maintenance.manage', 'observability.read',
   ]),
   customer_experience: new Set([
     'users.read', 'users.suspend', 'users.credentials.reset',
@@ -42,10 +44,10 @@ export const rolePermissions: Record<AdminRole, ReadonlySet<AdminPermission>> = 
   ]),
   director: new Set([
     'admins.read', 'audit.read', 'users.read', 'billing.read',
-    'features.read', 'observability.read',
+    'features.read', 'legal.read', 'observability.read',
   ]),
   finance: new Set(['users.read', 'billing.read']),
-  product: new Set(['users.read', 'features.read', 'features.manage', 'observability.read']),
+  product: new Set(['users.read', 'features.read', 'features.manage', 'legal.read', 'legal.manage', 'observability.read']),
 };
 
 export const adminRoleLabels: Record<AdminRole, string> = {

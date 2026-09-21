@@ -6,6 +6,7 @@ import { Check, ChevronLeft, ChevronRight, LoaderCircle } from 'lucide-react';
 
 import { Button, Input, Label, StepFlow } from '@/components/ui';
 import { register } from '@/features/auth/actions/register';
+import { LegalConsentDrawer } from '@/features/auth/components/legal-consent-drawer';
 import type { RegisterField, RegisterState } from '@/features/auth/schemas/register';
 
 const initialState: RegisterState = { status: 'idle' };
@@ -157,11 +158,11 @@ export function RegisterForm({ confirmationError = false }: { confirmationError?
 
         {step === 4 && (
           <div className="space-y-2.5">
-            <Consent checked={values.acceptTerms} onChange={(checked) => update('acceptTerms', checked)} required>Li e aceito os Termos de Uso.</Consent>
+            <Consent id="acceptTerms" checked={values.acceptTerms} onChange={(checked) => update('acceptTerms', checked)} required>Li e aceito os <LegalConsentDrawer document="terms" />.</Consent>
             <FieldMessage id="terms-error" message={errorFor('acceptTerms')} />
-            <Consent checked={values.acceptPrivacy} onChange={(checked) => update('acceptPrivacy', checked)} required>Li e aceito a Política de Dados e Privacidade.</Consent>
+            <Consent id="acceptPrivacy" checked={values.acceptPrivacy} onChange={(checked) => update('acceptPrivacy', checked)} required>Li e aceito a <LegalConsentDrawer document="privacy" />.</Consent>
             <FieldMessage id="privacy-error" message={errorFor('acceptPrivacy')} />
-            <Consent checked={values.acceptCommunications} onChange={(checked) => update('acceptCommunications', checked)}>Quero receber novidades, dicas de escrita e comunicações do Autor Copilot.</Consent>
+            <Consent id="acceptCommunications" checked={values.acceptCommunications} onChange={(checked) => update('acceptCommunications', checked)}>Quero receber novidades, dicas de escrita e comunicações do Autor Copilot.</Consent>
             <p className="text-xs leading-relaxed text-muted">O aceite de comunicações é opcional e pode ser alterado depois.</p>
           </div>
         )}
@@ -200,12 +201,12 @@ function PasswordRule({ met, children }: { met: boolean; children: string }) {
   return <li className={met ? 'text-success' : undefined}><Check className="mr-1 inline size-3.5" aria-hidden="true" />{children}</li>;
 }
 
-function Consent({ checked, onChange, children, required = false }: { checked: boolean; onChange: (checked: boolean) => void; children: string; required?: boolean }) {
+function Consent({ id, checked, onChange, children, required = false }: { id: string; checked: boolean; onChange: (checked: boolean) => void; children: React.ReactNode; required?: boolean }) {
   return (
-    <label className="flex cursor-pointer items-start gap-3 rounded-control border border-line bg-surface px-3 py-2.5 text-sm leading-relaxed text-ink">
-      <input type="checkbox" checked={checked} onChange={(event) => onChange(event.target.checked)} className="mt-0.5 size-4 shrink-0 accent-accent" />
-      <span>{children}{required && <span className="text-danger" aria-label="obrigatório"> *</span>}</span>
-    </label>
+    <div className="flex items-start gap-3 rounded-control border border-line bg-surface px-3 py-2.5 text-sm leading-relaxed text-ink">
+      <input id={id} type="checkbox" checked={checked} onChange={(event) => onChange(event.target.checked)} className="mt-0.5 size-4 shrink-0 accent-accent" aria-labelledby={`${id}-label`} />
+      <div id={`${id}-label`} className="min-w-0 flex-1">{children}{required && <span className="text-danger" aria-label="obrigatório"> *</span>}</div>
+    </div>
   );
 }
 

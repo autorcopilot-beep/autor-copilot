@@ -11,7 +11,7 @@ import { cn } from '@/lib/cn';
 const groups = [
   { label: 'Conta', slugs: ['overview', 'profile', 'login', 'security', 'sessions'] },
   { label: 'Preferências', slugs: ['writing', 'appearance', 'notifications', 'communications'] },
-  { label: 'Dados e serviços', slugs: ['privacy', 'ai', 'usage', 'storage', 'integrations', 'collaboration', 'team', 'danger'] },
+  { label: 'Dados e serviços', slugs: ['privacy', 'ai', 'usage', 'storage', 'extensions', 'collaboration', 'team', 'danger'] },
 ];
 
 export function AccountNavigation() {

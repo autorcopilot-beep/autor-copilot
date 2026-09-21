@@ -15,6 +15,9 @@ export default async function AdminSecureLayout({ children }: { children: React.
     { href: '/admin', label: 'Visão geral', keywords: 'dashboard início métricas', icon: 'dashboard' },
     ...(hasAdminPermission(admin.role, 'admins.read') ? [{ href: '/admin/admins', label: 'Administradores', keywords: 'identidade acesso rbac equipe', icon: 'admins' as const }] : []),
     ...(hasAdminPermission(admin.role, 'admins.manage') ? [{ href: '/admin/admins/new', label: 'Criar administrador', keywords: 'novo convite conta papel', icon: 'new-admin' as const }] : []),
+    ...(hasAdminPermission(admin.role, 'users.read') ? [{ href: '/admin/users', label: 'Usuários', keywords: 'clientes grupos tags suspensão', icon: 'users' as const }] : []),
+    ...(hasAdminPermission(admin.role, 'features.read') ? [{ href: '/admin/extensions', label: 'Extensões', keywords: 'marketplace preço grupos catálogo', icon: 'extensions' as const }, { href: '/admin/flags', label: 'Flags e tags', keywords: 'rollout feature liberação segmentos', icon: 'flags' as const }] : []),
+    ...(hasAdminPermission(admin.role, 'legal.read') ? [{ href: '/admin/legal', label: 'Termos legais', keywords: 'jurídico documentos versões publicação', icon: 'legal' as const }] : []),
     ...(hasAdminPermission(admin.role, 'audit.read') ? [{ href: '/admin/audit', label: 'Trilha de auditoria', keywords: 'logs eventos segurança', icon: 'audit' as const }] : []),
   ];
 
@@ -31,6 +34,10 @@ export default async function AdminSecureLayout({ children }: { children: React.
           <nav className="hidden shrink-0 items-center gap-5 text-sm text-white/65 xl:flex" aria-label="Administração">
             <Link href="/admin" className="hover:text-white">Visão geral</Link>
             {hasAdminPermission(admin.role, 'admins.read') && <Link href="/admin/admins" className="hover:text-white">Administradores</Link>}
+            {hasAdminPermission(admin.role, 'users.read') && <Link href="/admin/users" className="hover:text-white">Usuários</Link>}
+            {hasAdminPermission(admin.role, 'features.read') && <Link href="/admin/extensions" className="hover:text-white">Extensões</Link>}
+            {hasAdminPermission(admin.role, 'features.read') && <Link href="/admin/flags" className="hover:text-white">Flags</Link>}
+            {hasAdminPermission(admin.role, 'legal.read') && <Link href="/admin/legal" className="hover:text-white">Legal</Link>}
             {hasAdminPermission(admin.role, 'audit.read') && <Link href="/admin/audit" className="hover:text-white">Auditoria</Link>}
           </nav>
           <div className="flex shrink-0 items-center gap-3">

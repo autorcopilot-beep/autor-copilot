@@ -1,6 +1,6 @@
 'use client';
 
-import { FileClock, Gauge, Search, ShieldCheck, UserPlus, Users } from 'lucide-react';
+import { FileClock, FileText, Flag, Gauge, Package, Search, ShieldCheck, UserPlus, Users } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -10,7 +10,7 @@ export type AdminCommand = {
   href: string;
   label: string;
   keywords: string;
-  icon: 'dashboard' | 'admins' | 'new-admin' | 'audit';
+  icon: 'dashboard' | 'admins' | 'new-admin' | 'audit' | 'users' | 'extensions' | 'flags' | 'legal';
 };
 
 const icons = {
@@ -18,6 +18,10 @@ const icons = {
   admins: Users,
   'new-admin': UserPlus,
   audit: FileClock,
+  users: Users,
+  extensions: Package,
+  flags: Flag,
+  legal: FileText,
 };
 
 export function AdminCommandPalette({ commands }: { commands: AdminCommand[] }) {

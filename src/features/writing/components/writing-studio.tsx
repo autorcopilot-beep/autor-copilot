@@ -1,9 +1,15 @@
 'use client';
 
 import {
+  defaultExtensionRuntime,
+  extensionRuntimeStorageKey,
+} from '@/features/extensions/catalog';
+import {
   AlignLeft,
+  AlertTriangle,
   ArrowDown,
   ArrowUp,
+  AtSign,
   Bold,
   BookOpenText,
   Camera,
@@ -18,7 +24,6 @@ import {
   Italic,
   LayoutList,
   ListTree,
-  MessageSquarePlus,
   MoreHorizontal,
   PanelLeftClose,
   PanelLeftOpen,
@@ -30,6 +35,7 @@ import {
   Save,
   SeparatorHorizontal,
   Settings2,
+  ShieldCheck,
   StickyNote,
   Tags,
   Trash2,
@@ -42,32 +48,30 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
-  Menubar,
-  MenubarCheckboxItem,
-  MenubarContent,
-  MenubarGroup,
-  MenubarItem,
-  MenubarLabel,
-  MenubarMenu,
-  MenubarSeparator,
-  MenubarShortcut,
-  MenubarSub,
-  MenubarSubContent,
-  MenubarSubTrigger,
-  MenubarTrigger,
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui';
+import { EncyclopediaView, type EncyclopediaEntryDraft } from '@/features/writing/components/encyclopedia-view';
 import {
+  defaultMentionExtensionSettings,
+  mentionExtensionStorageKey,
+  parseMentionExtensionSettings,
+} from '@/features/extensions/mention-settings';
+import {
+  encyclopediaTypeLabels,
   kindLabels,
   statusLabels,
+  type EncyclopediaEntry,
   type WritingDocument,
   type WritingDocumentKind,
   type WritingDocumentStatus,
@@ -92,24 +96,77 @@ function countWords(html: string) {
   return text ? text.split(/\s+/u).length : 0;
 }
 
+function entityIdsFromHtml(html: string) {
+  return Array.from(html.matchAll(/data-entity-id=["']([^"']+)["']/giu), (match) => match[1]);
+}
+
+type PagePreset = 'continuous' | 'a5' | 'royal' | 'trade' | 'a4';
+type ParagraphSpacing = 'compact' | 'book' | 'airy';
+
+const pagePresets: Record<PagePreset, { label: string; width: string; minHeight: string; pageHeight: number | null }> = {
+  continuous: { label: 'Canvas contínuo', width: '54rem', minHeight: 'calc(100dvh - 9rem)', pageHeight: null },
+  a5: { label: 'A5 · 148 × 210 mm', width: '559px', minHeight: '794px', pageHeight: 794 },
+  royal: { label: 'Royal · 156 × 234 mm', width: '590px', minHeight: '884px', pageHeight: 884 },
+  trade: { label: 'Livro · 152 × 229 mm', width: '575px', minHeight: '866px', pageHeight: 866 },
+  a4: { label: 'A4 · 210 × 297 mm', width: '794px', minHeight: '1123px', pageHeight: 1123 },
+};
+
 function sanitizeEditorHtml(html: string) {
   const template = document.createElement('template');
   template.innerHTML = html;
-  const allowed = new Set(['P', 'H2', 'BLOCKQUOTE', 'STRONG', 'B', 'EM', 'I', 'U', 'BR']);
+  const allowed = new Set(['P', 'H2', 'BLOCKQUOTE', 'STRONG', 'B', 'EM', 'I', 'U', 'BR', 'SPAN']);
   template.content.querySelectorAll('*').forEach((element) => {
     if (!allowed.has(element.tagName)) {
       element.replaceWith(...Array.from(element.childNodes));
       return;
     }
     const keepSceneBreak = element.tagName === 'P' && element.classList.contains('scene-break');
+    const entityId = element.tagName === 'SPAN' && isUuid(element.getAttribute('data-entity-id'))
+      ? element.getAttribute('data-entity-id')
+      : null;
+    const entityType = element.tagName === 'SPAN' ? element.getAttribute('data-entity-type') : null;
+    const entityLabel = element.tagName === 'SPAN'
+      ? element.getAttribute('data-entity-label') ?? element.textContent?.replace(/^@/u, '') ?? ''
+      : '';
     Array.from(element.attributes).forEach((attribute) => element.removeAttribute(attribute.name));
     if (keepSceneBreak) element.className = 'scene-break';
+    if (entityId && entityType) {
+      element.className = 'writing-entity-mention';
+      element.setAttribute('data-entity-id', entityId);
+      element.setAttribute('data-entity-type', entityType);
+      element.setAttribute('data-entity-label', entityLabel.slice(0, 120));
+      element.setAttribute('contenteditable', 'false');
+    }
   });
   return template.innerHTML;
 }
 
 function isUuid(value: unknown): value is string {
   return typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
+function safeEncyclopediaEntries(value: string | null): EncyclopediaEntry[] {
+  if (!value) return [];
+  try {
+    const parsed = JSON.parse(value) as Array<Partial<EncyclopediaEntry>>;
+    if (!Array.isArray(parsed)) return [];
+    const allowedTypes = new Set(['character', 'location', 'organization', 'object', 'concept', 'event']);
+    return parsed.flatMap((entry) => {
+      if (!isUuid(entry.id) || !allowedTypes.has(String(entry.type)) || typeof entry.name !== 'string' || !entry.name.trim()) return [];
+      return [{
+        id: entry.id,
+        type: entry.type as EncyclopediaEntry['type'],
+        name: entry.name.slice(0, 120),
+        aliases: Array.isArray(entry.aliases) ? entry.aliases.filter((alias): alias is string => typeof alias === 'string').slice(0, 20) : [],
+        summary: typeof entry.summary === 'string' ? entry.summary.slice(0, 1000) : '',
+        details: typeof entry.details === 'string' ? entry.details.slice(0, 30000) : '',
+        color: typeof entry.color === 'string' ? entry.color : 'violet',
+        updatedAt: typeof entry.updatedAt === 'string' ? entry.updatedAt : new Date().toISOString(),
+      }];
+    });
+  } catch {
+    return [];
+  }
 }
 
 function safeProject(value: string | null, remoteProject: WritingProject): WritingProject | null {
@@ -152,6 +209,8 @@ function safeProject(value: string | null, remoteProject: WritingProject): Writi
       id: remoteProject.id,
       title: parsed.title,
       documents,
+      encyclopediaEntries: remoteProject.encyclopediaEntries,
+      encyclopediaPersistence: remoteProject.encyclopediaPersistence,
       activeDocumentId: typeof parsed.activeDocumentId === 'string'
         ? idMap.get(parsed.activeDocumentId) ?? documents[0].id
         : documents[0].id,
@@ -181,12 +240,14 @@ function ToolbarButton({
   label,
   shortcut,
   active = false,
+  comfortable = false,
   onClick,
   children,
 }: {
   label: string;
   shortcut?: string;
   active?: boolean;
+  comfortable?: boolean;
   onClick: () => void;
   children: React.ReactNode;
 }) {
@@ -199,6 +260,7 @@ function ToolbarButton({
       title={shortcut ? `${label} (${shortcut})` : label}
       className={cn(
         'flex size-8 items-center justify-center rounded-control text-muted transition-colors hover:bg-accent-subtle hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus',
+        comfortable && 'size-10 rounded-[0.625rem] text-ink hover:bg-accent-subtle hover:text-accent [&_svg]:size-[1.125rem]',
         active && 'bg-accent-subtle text-accent',
       )}
     >
@@ -237,7 +299,7 @@ function WritingCollection({
   onCreate,
   onOpen,
 }: {
-  view: Exclude<WritingView, 'editor'>;
+  view: Exclude<WritingView, 'editor' | 'encyclopedia'>;
   documents: WritingDocument[];
   onCreate: (kind: WritingDocumentKind) => void;
   onOpen: (id: string) => void;
@@ -288,16 +350,21 @@ export function WritingStudio({
   userId,
   initialProject,
   initialView,
+  extensionAccess,
 }: {
   userId: string;
   initialProject: WritingProject;
   initialView: WritingView;
+  extensionAccess: typeof defaultExtensionRuntime;
 }) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const storageKey = `autor-copilot:writing-project:${userId}`;
   const snapshotKey = `${storageKey}:snapshots`;
+  const viewPreferencesKey = `${storageKey}:view-preferences`;
+  const encyclopediaStorageKey = `${storageKey}:encyclopedia`;
   const editorRef = useRef<HTMLDivElement>(null);
+  const mentionRangeRef = useRef<Range | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const renderedDocumentRef = useRef('');
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -309,6 +376,20 @@ export function WritingStudio({
   const [showInspector, setShowInspector] = useState(true);
   const [distractionFree, setDistractionFree] = useState(false);
   const [typewriterMode, setTypewriterMode] = useState(false);
+  const [editorActive, setEditorActive] = useState(false);
+  const [editorEmpty, setEditorEmpty] = useState(true);
+  const [pagePreset, setPagePreset] = useState<PagePreset>('continuous');
+  const [wideMargins, setWideMargins] = useState(false);
+  const [paragraphIndent, setParagraphIndent] = useState(true);
+  const [paragraphSpacing, setParagraphSpacing] = useState<ParagraphSpacing>('book');
+  const [viewPreferencesHydrated, setViewPreferencesHydrated] = useState(false);
+  const [pageCount, setPageCount] = useState(1);
+  const [mentionQuery, setMentionQuery] = useState<string | null>(null);
+  const [mentionPosition, setMentionPosition] = useState({ left: 0, top: 0 });
+  const [mentionIndex, setMentionIndex] = useState(0);
+  const [mentionSettings, setMentionSettings] = useState(defaultMentionExtensionSettings);
+  const [extensionRuntime, setExtensionRuntime] = useState(extensionAccess);
+  const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
 
   const activeDocument = useMemo(
     () => project.documents.find((item) => item.id === project.activeDocumentId) ?? project.documents[0],
@@ -316,7 +397,37 @@ export function WritingStudio({
   );
   const wordCount = countWords(activeDocument.contentHtml);
   const characterCount = plainTextFromHtml(activeDocument.contentHtml).length;
-  const progress = activeDocument.goal > 0 ? Math.min(100, Math.round((wordCount / activeDocument.goal) * 100)) : 0;
+  const progress = activeDocument.goal > 0 && wordCount > 0
+    ? Math.min(100, Math.max(1, Math.round((wordCount / activeDocument.goal) * 100)))
+    : 0;
+  const currentPagePreset = pagePresets[pagePreset];
+  const selectedEntity = project.encyclopediaEntries.find((entry) => entry.id === selectedEntityId) ?? null;
+  const mentionMatches = useMemo(() => {
+    if (mentionQuery === null) return [];
+    const normalized = mentionQuery.toLocaleLowerCase('pt-BR');
+    return project.encyclopediaEntries
+      .filter((entry) => [entry.name, ...entry.aliases].some((value) => value.toLocaleLowerCase('pt-BR').includes(normalized)))
+      .slice(0, 7);
+  }, [mentionQuery, project.encyclopediaEntries]);
+  const mentionStats = useMemo(() => {
+    const ids = entityIdsFromHtml(activeDocument.contentHtml);
+    const knownEntries = new Map(project.encyclopediaEntries.map((entry) => [entry.id, entry]));
+    const uniqueIds = new Set(ids);
+    const brokenIds = new Set(ids.filter((id) => !knownEntries.has(id)));
+    const byType = ids.reduce<Partial<Record<EncyclopediaEntry['type'], number>>>((counts, id) => {
+      const type = knownEntries.get(id)?.type;
+      if (type) counts[type] = (counts[type] ?? 0) + 1;
+      return counts;
+    }, {});
+    return { total: ids.length, unique: uniqueIds.size, broken: brokenIds.size, byType };
+  }, [activeDocument.contentHtml, project.encyclopediaEntries]);
+  const saveLabel = saveState === 'saving'
+    ? 'Salvando…'
+    : saveState === 'offline'
+      ? 'Salvo localmente; sincronização com a nuvem pendente'
+      : saveState === 'error'
+        ? 'Não foi possível salvar'
+        : 'Salvo localmente e na nuvem';
 
   const syncProject = useCallback(async (nextProject: WritingProject) => {
     const { error: workError } = await supabase
@@ -335,7 +446,7 @@ export function WritingStudio({
         parent_id: item.parentId,
         kind: item.kind,
         title: item.title,
-        content_html: item.contentHtml,
+        content_html: sanitizeEditorHtml(item.contentHtml),
         synopsis: item.synopsis,
         status: item.status,
         word_goal: item.goal,
@@ -379,6 +490,55 @@ export function WritingStudio({
   }, [initialProject, storageKey]);
 
   useEffect(() => {
+    const encyclopediaTimer = window.setTimeout(async () => {
+      const localEntries = safeEncyclopediaEntries(window.localStorage.getItem(encyclopediaStorageKey));
+      if (!localEntries.length) return;
+      if (initialProject.encyclopediaPersistence === 'local') {
+        setProject((current) => ({ ...current, encyclopediaEntries: localEntries }));
+        return;
+      }
+      if (initialProject.encyclopediaEntries.length) return;
+      const { data, error } = await supabase
+        .from('encyclopedia_entries')
+        .upsert(localEntries.map((entry) => ({
+          id: entry.id,
+          work_id: initialProject.id,
+          owner_id: userId,
+          entry_type: entry.type,
+          name: entry.name,
+          aliases: entry.aliases,
+          summary: entry.summary,
+          details: entry.details,
+          color: entry.color,
+        })), { onConflict: 'id' })
+        .select('*');
+      if (error || !data) return;
+      const migrated = data.map((entry): EncyclopediaEntry => ({
+        id: entry.id,
+        type: entry.entry_type,
+        name: entry.name,
+        aliases: entry.aliases,
+        summary: entry.summary,
+        details: entry.details,
+        color: entry.color,
+        updatedAt: entry.updated_at,
+      }));
+      window.localStorage.removeItem(encyclopediaStorageKey);
+      setProject((current) => ({ ...current, encyclopediaEntries: migrated }));
+    }, 0);
+    return () => window.clearTimeout(encyclopediaTimer);
+  }, [encyclopediaStorageKey, initialProject, supabase, userId]);
+
+  useEffect(() => {
+    const extensionsTimer = window.setTimeout(() => {
+      setMentionSettings(parseMentionExtensionSettings(window.localStorage.getItem(mentionExtensionStorageKey)));
+      setExtensionRuntime(extensionAccess);
+      window.localStorage.setItem(extensionRuntimeStorageKey, JSON.stringify(extensionAccess));
+    }, 0);
+    return () => window.clearTimeout(extensionsTimer);
+  }, [extensionAccess]);
+
+  useEffect(() => {
     const narrowScreen = window.matchMedia('(max-width: 959px)').matches;
     const mediumScreen = window.matchMedia('(min-width: 960px) and (max-width: 1279px)').matches;
     if (!narrowScreen && !mediumScreen) return;
@@ -420,9 +580,61 @@ export function WritingStudio({
     if (!hydrated || !editorRef.current) return;
     const renderKey = `${activeDocument.id}:${project.updatedAt}`;
     if (renderedDocumentRef.current === renderKey) return;
-    editorRef.current.innerHTML = activeDocument.contentHtml;
+    editorRef.current.innerHTML = sanitizeEditorHtml(activeDocument.contentHtml);
+    setEditorEmpty(plainTextFromHtml(activeDocument.contentHtml).length === 0);
     renderedDocumentRef.current = renderKey;
   }, [activeDocument.contentHtml, activeDocument.id, hydrated, project.updatedAt]);
+
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor) return;
+    const knownIds = new Set(project.encyclopediaEntries.map((entry) => entry.id));
+    editor.querySelectorAll<HTMLElement>('[data-entity-id]').forEach((mention) => {
+      const broken = extensionRuntime['lab.reference-guardian'] && mentionSettings.verifyReferences && !knownIds.has(mention.dataset.entityId ?? '');
+      mention.classList.toggle('writing-entity-mention-broken', broken);
+      if (broken) mention.title = 'Referência sem entrada correspondente na Enciclopédia';
+      else mention.removeAttribute('title');
+    });
+  }, [activeDocument.contentHtml, extensionRuntime, mentionSettings.verifyReferences, project.encyclopediaEntries]);
+
+  useEffect(() => {
+    const preferencesTimer = window.setTimeout(() => {
+      try {
+        const stored = JSON.parse(window.localStorage.getItem(viewPreferencesKey) ?? '{}') as Record<string, unknown>;
+        if (stored.pagePreset && Object.hasOwn(pagePresets, String(stored.pagePreset))) setPagePreset(stored.pagePreset as PagePreset);
+        if (typeof stored.wideMargins === 'boolean') setWideMargins(stored.wideMargins);
+        if (typeof stored.paragraphIndent === 'boolean') setParagraphIndent(stored.paragraphIndent);
+        if (stored.paragraphSpacing === 'compact' || stored.paragraphSpacing === 'book' || stored.paragraphSpacing === 'airy') setParagraphSpacing(stored.paragraphSpacing);
+      } catch {
+        // Preferências inválidas voltam aos padrões editoriais seguros.
+      }
+      setViewPreferencesHydrated(true);
+    }, 0);
+    return () => window.clearTimeout(preferencesTimer);
+  }, [viewPreferencesKey]);
+
+  useEffect(() => {
+    if (!viewPreferencesHydrated) return;
+    try {
+      window.localStorage.setItem(viewPreferencesKey, JSON.stringify({ pagePreset, wideMargins, paragraphIndent, paragraphSpacing }));
+    } catch {
+      // O editor continua utilizável quando o navegador bloqueia armazenamento local.
+    }
+  }, [pagePreset, paragraphIndent, paragraphSpacing, viewPreferencesHydrated, viewPreferencesKey, wideMargins]);
+
+  useEffect(() => {
+    const editor = editorRef.current;
+    const pageHeight = pagePresets[pagePreset].pageHeight;
+    if (!editor || !pageHeight) {
+      setPageCount(1);
+      return;
+    }
+    const measure = () => setPageCount(Math.max(1, Math.ceil((editor.scrollHeight + 190) / pageHeight)));
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(editor);
+    return () => observer.disconnect();
+  }, [activeDocument.id, pagePreset, wideMargins]);
 
   const updateActiveDocument = useCallback((changes: Partial<WritingDocument>) => {
     setProject((current) => ({
@@ -435,6 +647,7 @@ export function WritingStudio({
 
   const syncEditorState = useCallback(() => {
     if (!editorRef.current) return;
+    setEditorEmpty((editorRef.current.textContent ?? '').replace(/\u00a0/gu, ' ').trim().length === 0);
     updateActiveDocument({ contentHtml: editorRef.current.innerHTML });
     if (typewriterMode && scrollRef.current) {
       const selection = window.getSelection();
@@ -445,6 +658,93 @@ export function WritingStudio({
       }
     }
   }, [typewriterMode, updateActiveDocument]);
+
+  const detectMention = useCallback(() => {
+    if (!extensionRuntime['lab.context-mentions'] || !mentionSettings.enabled || !editorRef.current) {
+      setMentionQuery(null);
+      return;
+    }
+    const selection = window.getSelection();
+    if (!selection?.rangeCount || !selection.isCollapsed) return;
+    const range = selection.getRangeAt(0);
+    const node = range.startContainer;
+    if (node.nodeType !== Node.TEXT_NODE || !editorRef.current.contains(node)) {
+      setMentionQuery(null);
+      return;
+    }
+    const beforeCaret = (node.textContent ?? '').slice(0, range.startOffset);
+    const match = beforeCaret.match(/(?:^|\s)@([\p{L}\p{N}_-]*)$/u);
+    if (!match) {
+      setMentionQuery(null);
+      return;
+    }
+    const mentionRange = range.cloneRange();
+    mentionRange.setStart(node, range.startOffset - match[1].length - 1);
+    mentionRangeRef.current = mentionRange;
+    const rect = range.getBoundingClientRect();
+    setMentionPosition({ left: Math.max(12, Math.min(rect.left, window.innerWidth - 300)), top: rect.bottom + 8 });
+    setMentionQuery(match[1]);
+    setMentionIndex(0);
+  }, [extensionRuntime, mentionSettings.enabled]);
+
+  const handleEditorInput = useCallback(() => {
+    syncEditorState();
+    detectMention();
+  }, [detectMention, syncEditorState]);
+
+  const insertEntityMention = useCallback((entry: EncyclopediaEntry) => {
+    const range = mentionRangeRef.current;
+    if (!range || !editorRef.current) return;
+    range.deleteContents();
+    const mention = document.createElement('span');
+    mention.className = 'writing-entity-mention';
+    mention.dataset.entityId = entry.id;
+    mention.dataset.entityType = entry.type;
+    mention.dataset.entityLabel = entry.name;
+    mention.contentEditable = 'false';
+    mention.textContent = `@${entry.name}`;
+    const space = document.createTextNode('\u00a0');
+    range.insertNode(space);
+    range.insertNode(mention);
+    const selection = window.getSelection();
+    range.setStartAfter(space);
+    range.collapse(true);
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+    setMentionQuery(null);
+    setSelectedEntityId(entry.id);
+    syncEditorState();
+  }, [syncEditorState]);
+
+  const handleEditorKeyDown = useCallback((event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (mentionQuery === null) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      setMentionQuery(null);
+      return;
+    }
+    if (!mentionMatches.length) return;
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      setMentionIndex((current) => {
+        const direction = event.key === 'ArrowDown' ? 1 : -1;
+        return (current + direction + mentionMatches.length) % mentionMatches.length;
+      });
+    }
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      insertEntityMention(mentionMatches[mentionIndex] ?? mentionMatches[0]);
+    }
+  }, [insertEntityMention, mentionIndex, mentionMatches, mentionQuery]);
+
+  const handleEditorClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    if (!extensionRuntime['lab.context-mentions'] || !mentionSettings.openContextOnClick) return;
+    const target = event.target as HTMLElement;
+    const mention = target.closest<HTMLElement>('[data-entity-id]');
+    if (!mention?.dataset.entityId) return;
+    setSelectedEntityId(mention.dataset.entityId);
+    if (!showInspector) setShowInspector(true);
+  }, [extensionRuntime, mentionSettings.openContextOnClick, showInspector]);
 
   const runCommand = useCallback((command: string, value?: string) => {
     editorRef.current?.focus();
@@ -569,6 +869,84 @@ export function WritingStudio({
     router.replace(`/write/editor?work=${project.id}&document=${nextActiveId}`);
   }, [createSnapshot, project, router, supabase, userId]);
 
+  const saveEncyclopediaEntry = useCallback(async (draft: EncyclopediaEntryDraft, entryId?: string) => {
+    const id = entryId ?? crypto.randomUUID();
+    const localEntry: EncyclopediaEntry = { id, ...draft, updatedAt: new Date().toISOString() };
+    const saveLocally = () => {
+      const nextEntries = [...project.encyclopediaEntries.filter((entry) => entry.id !== id), localEntry]
+        .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+      window.localStorage.setItem(encyclopediaStorageKey, JSON.stringify(nextEntries));
+      setProject((current) => ({
+        ...current,
+        encyclopediaEntries: nextEntries,
+        encyclopediaPersistence: 'local',
+      }));
+    };
+    if (project.encyclopediaPersistence === 'local') {
+      saveLocally();
+      return;
+    }
+    const payload = {
+      id,
+      work_id: project.id,
+      owner_id: userId,
+      entry_type: draft.type,
+      name: draft.name,
+      aliases: draft.aliases,
+      summary: draft.summary,
+      details: draft.details,
+      color: draft.color,
+    };
+    const { data, error } = await supabase
+      .from('encyclopedia_entries')
+      .upsert(payload, { onConflict: 'id' })
+      .select('*')
+      .single();
+    if (error?.code === 'PGRST205') {
+      saveLocally();
+      return;
+    }
+    if (error || !data) throw error ?? new Error('A entrada não foi devolvida pelo Supabase.');
+    const nextEntry: EncyclopediaEntry = {
+      id: data.id,
+      type: data.entry_type,
+      name: data.name,
+      aliases: data.aliases,
+      summary: data.summary,
+      details: data.details,
+      color: data.color,
+      updatedAt: data.updated_at,
+    };
+    setProject((current) => ({
+      ...current,
+      encyclopediaEntries: [...current.encyclopediaEntries.filter((entry) => entry.id !== id), nextEntry]
+        .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR')),
+    }));
+  }, [encyclopediaStorageKey, project.encyclopediaEntries, project.encyclopediaPersistence, project.id, supabase, userId]);
+
+  const deleteEncyclopediaEntry = useCallback(async (entryId: string) => {
+    let persistence = project.encyclopediaPersistence;
+    if (project.encyclopediaPersistence === 'cloud') {
+      const { error } = await supabase
+        .from('encyclopedia_entries')
+        .delete()
+        .eq('id', entryId)
+        .eq('owner_id', userId);
+      if (error?.code === 'PGRST205') persistence = 'local';
+      else if (error) throw error;
+    }
+    const nextEntries = project.encyclopediaEntries.filter((entry) => entry.id !== entryId);
+    if (persistence === 'local') {
+      window.localStorage.setItem(encyclopediaStorageKey, JSON.stringify(nextEntries));
+    }
+    setProject((current) => ({
+      ...current,
+      encyclopediaEntries: nextEntries,
+      encyclopediaPersistence: persistence,
+    }));
+    setSelectedEntityId((current) => current === entryId ? null : current);
+  }, [encyclopediaStorageKey, project.encyclopediaEntries, project.encyclopediaPersistence, supabase, userId]);
+
   const exportMarkdown = useCallback(() => {
     const content = `# ${activeDocument.title}\n\n${htmlToMarkdown(activeDocument)}\n`;
     const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
@@ -591,24 +969,24 @@ export function WritingStudio({
         event.preventDefault();
         createDocument();
       }
-      if (modifier && event.shiftKey && event.key.toLowerCase() === 'f') {
+      if (extensionRuntime['lab.immersive-focus'] && modifier && event.shiftKey && event.key.toLowerCase() === 'f') {
         event.preventDefault();
         setDistractionFree((current) => !current);
       }
-      if (modifier && event.altKey && event.key.toLowerCase() === 't') {
+      if (extensionRuntime['lab.typewriter-mode'] && modifier && event.altKey && event.key.toLowerCase() === 't') {
         event.preventDefault();
         setTypewriterMode((current) => !current);
       }
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [createDocument, saveNow]);
+  }, [createDocument, extensionRuntime, saveNow]);
 
   return (
     <div className="flex h-dvh min-h-0 flex-col overflow-hidden bg-canvas text-ink">
       {!distractionFree && (
         <header className="shrink-0 border-b border-line bg-surface">
-          <div className="grid min-h-12 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 px-3">
+          <div className="grid min-h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 px-3 sm:grid-cols-[minmax(8rem,1fr)_auto_minmax(8rem,1fr)]">
             <div className="flex min-w-0 items-center">
               <Link href="/dashboard" className="flex size-9 shrink-0 items-center justify-center rounded-control text-accent transition-colors hover:bg-accent-subtle" aria-label="Voltar à dashboard" title="Voltar à dashboard">
                 <BookOpenText className="size-5" />
@@ -620,124 +998,53 @@ export function WritingStudio({
                 className="min-w-0 max-w-56 flex-1 bg-transparent px-2 font-serif text-sm font-semibold text-ink outline-none placeholder:text-muted"
               />
             </div>
-            <Menubar className="hidden h-9 border-0 bg-transparent p-0 sm:flex">
-              <MenubarMenu>
-                <MenubarTrigger>Arquivo</MenubarTrigger>
-                <MenubarContent className="w-64">
-                  <MenubarGroup>
-                    <MenubarItem onSelect={() => createDocument('chapter')}><FilePlus2 />Novo capítulo<MenubarShortcut>Ctrl N</MenubarShortcut></MenubarItem>
-                    <MenubarItem onSelect={saveNow}><Save />Salvar agora<MenubarShortcut>Ctrl S</MenubarShortcut></MenubarItem>
-                    <MenubarItem onSelect={() => void createSnapshot()}><Camera />Criar instantâneo</MenubarItem>
-                  </MenubarGroup>
-                  <MenubarSeparator />
-                  <MenubarItem onSelect={exportMarkdown}><Download />Exportar capítulo em Markdown</MenubarItem>
-                </MenubarContent>
-              </MenubarMenu>
-              <MenubarMenu>
-                <MenubarTrigger>Editar</MenubarTrigger>
-                <MenubarContent className="w-56">
-                  <MenubarItem onSelect={() => runCommand('undo')}><Undo2 />Desfazer<MenubarShortcut>Ctrl Z</MenubarShortcut></MenubarItem>
-                  <MenubarItem onSelect={() => runCommand('redo')}><Redo2 />Refazer<MenubarShortcut>Ctrl Y</MenubarShortcut></MenubarItem>
-                  <MenubarSeparator />
-                  <MenubarItem onSelect={() => runCommand('selectAll')}>Selecionar tudo<MenubarShortcut>Ctrl A</MenubarShortcut></MenubarItem>
-                </MenubarContent>
-              </MenubarMenu>
-              <MenubarMenu>
-                <MenubarTrigger>Inserir</MenubarTrigger>
-                <MenubarContent className="w-60">
-                  <MenubarItem onSelect={() => runCommand('insertHTML', '<p class="scene-break">* * *</p><p><br></p>')}><SeparatorHorizontal />Quebra de cena</MenubarItem>
-                  <MenubarItem disabled><MessageSquarePlus />Comentário<MenubarShortcut>Em breve</MenubarShortcut></MenubarItem>
-                  <MenubarSub>
-                    <MenubarSubTrigger><Plus />Referência</MenubarSubTrigger>
-                    <MenubarSubContent className="w-56">
-                      <MenubarLabel>Vínculos do projeto</MenubarLabel>
-                      <MenubarItem disabled>@personagem</MenubarItem>
-                      <MenubarItem disabled>@local</MenubarItem>
-                      <MenubarItem disabled>@capítulo</MenubarItem>
-                    </MenubarSubContent>
-                  </MenubarSub>
-                </MenubarContent>
-              </MenubarMenu>
-              <MenubarMenu>
-                <MenubarTrigger>Formatar</MenubarTrigger>
-                <MenubarContent className="w-60">
-                  <MenubarItem onSelect={() => runCommand('bold')}><Bold />Negrito<MenubarShortcut>Ctrl B</MenubarShortcut></MenubarItem>
-                  <MenubarItem onSelect={() => runCommand('italic')}><Italic />Itálico<MenubarShortcut>Ctrl I</MenubarShortcut></MenubarItem>
-                  <MenubarItem onSelect={() => runCommand('underline')}><Underline />Sublinhado<MenubarShortcut>Ctrl U</MenubarShortcut></MenubarItem>
-                  <MenubarSeparator />
-                  <MenubarSub>
-                    <MenubarSubTrigger><AlignLeft />Estilo do parágrafo</MenubarSubTrigger>
-                    <MenubarSubContent>
-                      <MenubarItem onSelect={() => runCommand('formatBlock', 'p')}>Corpo</MenubarItem>
-                      <MenubarItem onSelect={() => runCommand('formatBlock', 'h2')}>Título de cena</MenubarItem>
-                      <MenubarItem onSelect={() => runCommand('formatBlock', 'blockquote')}>Citação</MenubarItem>
-                    </MenubarSubContent>
-                  </MenubarSub>
-                </MenubarContent>
-              </MenubarMenu>
-              <MenubarMenu>
-                <MenubarTrigger>Exibir</MenubarTrigger>
-                <MenubarContent className="w-64">
-                  <MenubarCheckboxItem checked={showBinder} onCheckedChange={setShowBinder}>Estrutura da obra</MenubarCheckboxItem>
-                  <MenubarCheckboxItem checked={showInspector} onCheckedChange={setShowInspector}>Inspetor</MenubarCheckboxItem>
-                  <MenubarSeparator />
-                  <MenubarCheckboxItem checked={typewriterMode} onCheckedChange={setTypewriterMode}>Modo máquina de escrever<MenubarShortcut>Ctrl Alt T</MenubarShortcut></MenubarCheckboxItem>
-                  <MenubarCheckboxItem checked={distractionFree} onCheckedChange={setDistractionFree}>Sem distrações<MenubarShortcut>Ctrl Shift F</MenubarShortcut></MenubarCheckboxItem>
-                </MenubarContent>
-              </MenubarMenu>
-            </Menubar>
+            <nav className="workspace-scrollbar order-3 col-span-2 flex min-h-10 items-center justify-start gap-1 overflow-x-auto border-t border-line sm:order-none sm:col-span-1 sm:min-h-0 sm:justify-center sm:border-0" aria-label="Áreas de escrita">
+              {([['editor', 'Editor'], ['chapters', 'Capítulos'], ['scenes', 'Cenas'], ['notes', 'Notas'], ['encyclopedia', 'Enciclopédia']] as const).map(([view, label]) => (
+                <Link key={view} href={`/write/${view}?work=${project.id}`} className={cn('inline-flex min-h-9 items-center rounded-full px-3 text-xs font-medium transition-colors', initialView === view ? 'bg-accent-subtle text-accent' : 'text-muted hover:bg-surface-muted hover:text-ink')}>{label}</Link>
+              ))}
+            </nav>
             <div className="flex min-w-0 items-center justify-end gap-1">
-              <span className={cn('hidden items-center gap-1.5 truncate text-[11px] xl:flex', saveState === 'error' || saveState === 'offline' ? 'text-danger' : 'text-muted')} role="status">
-                {saveState === 'saving' ? <Cloud className="size-3.5 animate-pulse" /> : <Check className="size-3.5" />}
-                {saveState === 'saving' ? 'Salvando…' : saveState === 'offline' ? 'Salvo localmente · nuvem pendente' : saveState === 'error' ? 'Falha ao salvar' : 'Salvo localmente e na nuvem'}
-              </span>
+              <span className={cn('flex size-8 items-center justify-center rounded-full', saveState === 'error' || saveState === 'offline' ? 'text-danger' : 'text-muted')} role="status" title={saveLabel}>{saveState === 'saving' ? <Cloud className="size-3.5 animate-pulse" /> : <Check className="size-3.5" />}<span className="sr-only">{saveLabel}</span></span>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex size-8 items-center justify-center rounded-control text-muted hover:bg-surface-muted hover:text-ink" aria-label="Mais ações" title="Mais ações"><MoreHorizontal className="size-4" /></DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-64">
+                  <DropdownMenuLabel>Ações do editor</DropdownMenuLabel>
+                  <DropdownMenuItem onSelect={() => createDocument('chapter')}><FilePlus2 className="size-4" />Novo capítulo<span className="ml-auto text-xs text-muted">Ctrl N</span></DropdownMenuItem>
+                  <DropdownMenuItem onSelect={saveNow}><Save className="size-4" />Salvar agora<span className="ml-auto text-xs text-muted">Ctrl S</span></DropdownMenuItem>
+                  <DropdownMenuItem onSelect={() => void createSnapshot()}><Camera className="size-4" />Criar instantâneo</DropdownMenuItem>
+                  <DropdownMenuItem onSelect={exportMarkdown}><Download className="size-4" />Exportar Markdown</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuSub><DropdownMenuSubTrigger><BookOpenText className="size-4" />Visualização</DropdownMenuSubTrigger><DropdownMenuSubContent><DropdownMenuRadioGroup value={pagePreset} onValueChange={(value) => setPagePreset(value as PagePreset)}>{(Object.entries(pagePresets) as Array<[PagePreset, { label: string }]>).map(([preset, option]) => <DropdownMenuRadioItem key={preset} value={preset}>{option.label}</DropdownMenuRadioItem>)}</DropdownMenuRadioGroup></DropdownMenuSubContent></DropdownMenuSub>
+                  <DropdownMenuCheckboxItem checked={wideMargins} onCheckedChange={setWideMargins}>Margens amplas</DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem checked={paragraphIndent} onCheckedChange={setParagraphIndent}>Recuo de parágrafo</DropdownMenuCheckboxItem>
+                  <DropdownMenuSub><DropdownMenuSubTrigger><AlignLeft className="size-4" />Espaço entre parágrafos</DropdownMenuSubTrigger><DropdownMenuSubContent><DropdownMenuRadioGroup value={paragraphSpacing} onValueChange={(value) => setParagraphSpacing(value as ParagraphSpacing)}><DropdownMenuRadioItem value="compact">Compacto</DropdownMenuRadioItem><DropdownMenuRadioItem value="book">Livro</DropdownMenuRadioItem><DropdownMenuRadioItem value="airy">Arejado</DropdownMenuRadioItem></DropdownMenuRadioGroup></DropdownMenuSubContent></DropdownMenuSub>
+                  <DropdownMenuSeparator />
+                  {extensionRuntime['lab.typewriter-mode'] && <DropdownMenuCheckboxItem checked={typewriterMode} onCheckedChange={setTypewriterMode}>Modo máquina de escrever</DropdownMenuCheckboxItem>}
+                  {extensionRuntime['lab.immersive-focus'] && <DropdownMenuItem onSelect={() => setDistractionFree(true)}><Focus className="size-4" />Modo foco<span className="ml-auto text-xs text-muted">Ctrl Shift F</span></DropdownMenuItem>}
+                </DropdownMenuContent>
+              </DropdownMenu>
               <ToolbarButton label={showBinder ? 'Ocultar estrutura' : 'Mostrar estrutura'} onClick={toggleBinder}>
                 {showBinder ? <PanelLeftClose className="size-4" /> : <PanelLeftOpen className="size-4" />}
               </ToolbarButton>
               <ToolbarButton label={showInspector ? 'Ocultar inspetor' : 'Mostrar inspetor'} onClick={toggleInspector}>
                 {showInspector ? <PanelRightClose className="size-4" /> : <PanelRightOpen className="size-4" />}
               </ToolbarButton>
-              <ToolbarButton label="Modo sem distrações" shortcut="Ctrl Shift F" onClick={() => setDistractionFree(true)}>
+              {extensionRuntime['lab.immersive-focus'] && <ToolbarButton label="Modo sem distrações" shortcut="Ctrl Shift F" onClick={() => setDistractionFree(true)}>
                 <Focus className="size-4" />
-              </ToolbarButton>
+              </ToolbarButton>}
             </div>
           </div>
-
-          <nav className="flex min-h-9 items-center justify-center gap-1 overflow-x-auto border-t border-line px-3" aria-label="Áreas de escrita">
-            {([
-              ['editor', 'Editor'],
-              ['chapters', 'Capítulos'],
-              ['scenes', 'Cenas'],
-              ['notes', 'Notas'],
-            ] as const).map(([view, label]) => (
-              <Link key={view} href={`/write/${view}?work=${project.id}`} className={cn('inline-flex min-h-8 items-center rounded-control px-3 text-xs font-medium transition-colors', initialView === view ? 'bg-accent-subtle text-accent' : 'text-muted hover:bg-surface-muted hover:text-ink')}>{label}</Link>
-            ))}
-          </nav>
-
-          {initialView === 'editor' && <div className="flex min-h-10 items-center justify-center gap-1 overflow-x-auto border-t border-line px-3">
-            <ToolbarButton label="Desfazer" shortcut="Ctrl Z" onClick={() => runCommand('undo')}><Undo2 className="size-4" /></ToolbarButton>
-            <ToolbarButton label="Refazer" shortcut="Ctrl Y" onClick={() => runCommand('redo')}><Redo2 className="size-4" /></ToolbarButton>
-            <span className="mx-1 h-5 w-px bg-line" />
-            <ToolbarButton label="Negrito" shortcut="Ctrl B" onClick={() => runCommand('bold')}><Bold className="size-4" /></ToolbarButton>
-            <ToolbarButton label="Itálico" shortcut="Ctrl I" onClick={() => runCommand('italic')}><Italic className="size-4" /></ToolbarButton>
-            <ToolbarButton label="Sublinhado" shortcut="Ctrl U" onClick={() => runCommand('underline')}><Underline className="size-4" /></ToolbarButton>
-            <span className="mx-1 h-5 w-px bg-line" />
-            <ToolbarButton label="Corpo do texto" onClick={() => runCommand('formatBlock', 'p')}><AlignLeft className="size-4" /></ToolbarButton>
-            <ToolbarButton label="Título de cena" onClick={() => runCommand('formatBlock', 'h2')}><Heading2 className="size-4" /></ToolbarButton>
-            <ToolbarButton label="Citação" onClick={() => runCommand('formatBlock', 'blockquote')}><Quote className="size-4" /></ToolbarButton>
-            <ToolbarButton label="Quebra de cena" onClick={() => runCommand('insertHTML', '<p class="scene-break">* * *</p><p><br></p>')}><SeparatorHorizontal className="size-4" /></ToolbarButton>
-          </div>}
         </header>
       )}
 
       {distractionFree && (
-        <button type="button" onClick={() => setDistractionFree(false)} className="fixed right-4 top-4 z-50 flex size-10 items-center justify-center rounded-full border border-line bg-surface/90 text-muted shadow-soft backdrop-blur-sm hover:text-ink" aria-label="Sair do modo sem distrações" title="Sair do modo sem distrações">
+        <button type="button" onClick={() => setDistractionFree(false)} className="fixed right-4 top-4 z-50 flex size-10 items-center justify-center rounded-full border border-line bg-surface text-muted shadow-floating hover:text-ink" aria-label="Sair do modo sem distrações" title="Sair do modo sem distrações">
           <X className="size-4" />
         </button>
       )}
 
       <div className="relative flex min-h-0 flex-1">
-        {!distractionFree && showBinder && (
+        {!distractionFree && showBinder && initialView !== 'encyclopedia' && (
           <aside className="absolute inset-y-0 left-0 z-30 flex w-[18rem] shrink-0 flex-col border-r border-line bg-surface shadow-floating lg:static lg:shadow-none" aria-label="Estrutura da obra">
             <div className="flex min-h-12 items-center justify-between border-b border-line px-4">
               <div><p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-accent">Manuscrito</p><h2 className="font-serif text-sm font-semibold">Estrutura da obra</h2></div>
@@ -747,12 +1054,18 @@ export function WritingStudio({
               <div className="mb-1 flex min-h-9 items-center gap-2 rounded-control px-2 text-xs font-semibold text-ink"><ChevronDown className="size-3.5 text-muted" /><ListTree className="size-4 text-accent" />Manuscrito</div>
               <div className="ml-3 space-y-0.5 border-l border-line pl-2">
                 {project.documents.slice().sort((a, b) => a.position - b.position).map((item, index) => (
-                  <div key={item.id} className={cn('group flex min-h-10 items-center rounded-control transition-colors', item.id === activeDocument.id ? 'bg-accent-subtle text-accent' : 'text-muted hover:bg-surface-muted hover:text-ink')}>
-                    <button type="button" onClick={() => selectDocument(item.id)} className="flex min-h-10 min-w-0 flex-1 items-center gap-2 px-2 text-left text-sm">
+                  <div key={item.id} className={cn('group flex min-h-12 items-center rounded-control transition-colors', item.id === activeDocument.id ? 'bg-accent-subtle text-accent' : 'text-muted hover:bg-surface-muted hover:text-ink')}>
+                    <button type="button" onClick={() => selectDocument(item.id)} className="flex min-h-12 min-w-0 flex-1 items-center gap-2 px-2 text-left text-sm">
                       <FileText className="size-4 shrink-0" />
-                      <span className="min-w-0 flex-1 truncate">{item.title}</span>
-                      <span className="text-[9px] uppercase tracking-wide opacity-65">{kindLabels[item.kind]}</span>
-                      <span className="text-[10px] tabular-nums opacity-70">{countWords(item.contentHtml)}</span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm">{item.title}</span>
+                        <span className="mt-0.5 flex items-center gap-2 text-[10px]">
+                          <span className="uppercase tracking-wide opacity-65">{kindLabels[item.kind]}</span>
+                          {countWords(item.contentHtml) > 0
+                            ? <span className="tabular-nums opacity-75">{countWords(item.contentHtml).toLocaleString('pt-BR')} palavras</span>
+                            : <span className="rounded-full border border-dashed border-current px-1.5 py-px font-medium opacity-80">Vazio</span>}
+                        </span>
+                      </span>
                       <span className="sr-only">Documento {index + 1}</span>
                     </button>
                     <DropdownMenu>
@@ -787,38 +1100,100 @@ export function WritingStudio({
           {initialView === 'editor' ? <>
           <div ref={scrollRef} className={cn('workspace-scrollbar min-h-0 flex-1 overflow-y-auto', typewriterMode && 'scroll-smooth')}>
             <div className={cn('mx-auto min-h-full w-full px-4 py-8 sm:px-8 lg:py-12', distractionFree ? 'max-w-[76rem]' : 'max-w-[72rem]')}>
-              <article className={cn('mx-auto min-h-[calc(100dvh-12rem)] bg-editor px-6 py-10 shadow-soft sm:px-12 lg:px-16', distractionFree ? 'max-w-manuscript border-0 bg-transparent shadow-none' : 'max-w-[54rem] border border-line')}>
+              <article
+                className={cn(
+                  'relative mx-auto bg-editor py-16 shadow-soft transition-[width,min-height,padding]',
+                  distractionFree ? 'max-w-manuscript border-0 bg-transparent px-6 shadow-none' : 'border border-line',
+                  wideMargins ? 'px-10 sm:px-20' : 'px-6 sm:px-12 lg:px-16',
+                  pagePreset !== 'continuous' && 'writing-page-preview',
+                )}
+                style={{
+                  width: `min(100%, ${currentPagePreset.width})`,
+                  minHeight: currentPagePreset.minHeight,
+                  '--writing-page-height': currentPagePreset.pageHeight ? `${currentPagePreset.pageHeight}px` : undefined,
+                } as React.CSSProperties}
+              >
+                {editorActive && <div className="absolute inset-x-2 top-2 z-20 flex justify-center">
+                  <div className="workspace-scrollbar flex w-max max-w-[calc(100%-1rem)] items-center gap-1.5 overflow-x-auto rounded-card border border-line-strong bg-surface p-1.5 shadow-floating" aria-label="Formatação do texto">
+                    <div className="flex items-center gap-0.5" role="group" aria-label="Histórico">
+                      <ToolbarButton comfortable label="Desfazer" shortcut="Ctrl Z" onClick={() => runCommand('undo')}><Undo2 /></ToolbarButton>
+                      <ToolbarButton comfortable label="Refazer" shortcut="Ctrl Y" onClick={() => runCommand('redo')}><Redo2 /></ToolbarButton>
+                    </div>
+                    <span className="h-7 w-px shrink-0 bg-line-strong" aria-hidden="true" />
+                    <div className="flex items-center gap-0.5" role="group" aria-label="Estilo do texto">
+                      <ToolbarButton comfortable label="Negrito" shortcut="Ctrl B" onClick={() => runCommand('bold')}><Bold /></ToolbarButton>
+                      <ToolbarButton comfortable label="Itálico" shortcut="Ctrl I" onClick={() => runCommand('italic')}><Italic /></ToolbarButton>
+                      <ToolbarButton comfortable label="Sublinhado" shortcut="Ctrl U" onClick={() => runCommand('underline')}><Underline /></ToolbarButton>
+                    </div>
+                    <span className="h-7 w-px shrink-0 bg-line-strong" aria-hidden="true" />
+                    <div className="flex items-center gap-0.5" role="group" aria-label="Estrutura do texto">
+                      <ToolbarButton comfortable label="Corpo do texto" onClick={() => runCommand('formatBlock', 'p')}><AlignLeft /></ToolbarButton>
+                      <ToolbarButton comfortable label="Título de cena" onClick={() => runCommand('formatBlock', 'h2')}><Heading2 /></ToolbarButton>
+                      <ToolbarButton comfortable label="Citação em bloco" onClick={() => runCommand('formatBlock', 'blockquote')}><Quote /></ToolbarButton>
+                      <ToolbarButton comfortable label="Inserir quebra de cena" onClick={() => runCommand('insertHTML', '<p class="scene-break">* * *</p><p><br></p>')}><SeparatorHorizontal /></ToolbarButton>
+                    </div>
+                  </div>
+                </div>}
+                <label htmlFor="writing-document-title" className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">Título do capítulo</label>
                 <input
+                  id="writing-document-title"
                   value={activeDocument.title}
                   onChange={(event) => updateActiveDocument({ title: event.target.value })}
                   aria-label="Título do capítulo"
-                  className="mb-8 w-full border-0 bg-transparent font-serif text-3xl font-semibold leading-tight text-ink outline-none placeholder:text-muted sm:text-4xl"
+                  className="mb-6 w-full border-0 bg-transparent font-serif text-3xl font-semibold leading-tight text-ink outline-none placeholder:text-muted sm:text-4xl"
                   placeholder="Título do capítulo"
                 />
+                <div className="mb-8 h-px bg-gradient-to-r from-line via-line to-transparent" />
                 <div
                   ref={editorRef}
                   contentEditable
                   suppressContentEditableWarning
-                  onInput={syncEditorState}
+                  onInput={handleEditorInput}
+                  onKeyDown={handleEditorKeyDown}
+                  onClick={handleEditorClick}
+                  onFocus={() => setEditorActive(true)}
+                  onBlur={() => window.setTimeout(() => {
+                    setEditorActive(false);
+                    setMentionQuery(null);
+                  }, 160)}
                   role="textbox"
                   aria-multiline="true"
                   aria-label={`Texto de ${activeDocument.title}`}
-                  data-placeholder="Escreva a primeira linha…"
+                  data-empty={editorEmpty}
+                  data-mention-style={mentionSettings.appearance}
+                  data-placeholder="Comece a escrever sua história aqui."
                   spellCheck
-                  className="writing-editor min-h-[60vh] max-w-manuscript font-serif text-editor text-ink outline-none"
+                  className={cn('writing-editor min-h-[60vh] max-w-manuscript font-serif text-editor text-ink outline-none', paragraphIndent && 'writing-editor-indent', `writing-editor-spacing-${paragraphSpacing}`)}
                 />
+                {mentionQuery !== null && <div className="fixed z-[70] w-72 overflow-hidden rounded-card border border-line-strong bg-surface shadow-floating" style={mentionPosition} role="listbox" aria-label="Referenciar item da Enciclopédia">
+                  <div className="flex items-center gap-2 border-b border-line px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-accent"><AtSign className="size-3.5" />Contexto da Enciclopédia</div>
+                  {mentionMatches.length ? mentionMatches.map((entry, index) => <button key={entry.id} type="button" role="option" aria-selected={mentionIndex === index} onMouseDown={(event) => event.preventDefault()} onClick={() => insertEntityMention(entry)} onMouseEnter={() => setMentionIndex(index)} className={cn('flex w-full items-start gap-3 px-3 py-2.5 text-left', mentionIndex === index ? 'bg-accent-subtle' : 'hover:bg-surface-muted')}>
+                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-surface-muted text-xs font-semibold text-accent">@</span>
+                    <span className="min-w-0"><span className="block truncate text-sm font-medium text-ink">{entry.name}</span><span className="block truncate text-[11px] text-muted">{encyclopediaTypeLabels[entry.type]}{entry.summary ? ` · ${entry.summary}` : ''}</span></span>
+                  </button>) : <div className="px-4 py-5 text-center"><p className="text-sm font-medium text-ink">Nenhuma referência encontrada</p><Link href={`/write/encyclopedia?work=${project.id}`} className="mt-2 inline-flex text-xs font-medium text-accent hover:underline">Criar na Enciclopédia</Link></div>}
+                  <div className="border-t border-line px-3 py-2 text-[10px] text-muted">↑↓ navegar · Enter inserir · Esc fechar</div>
+                </div>}
               </article>
             </div>
           </div>
 
-          <footer className="flex min-h-9 shrink-0 items-center gap-3 border-t border-line bg-surface px-3 text-[11px] text-muted sm:px-4">
+          {!distractionFree && extensionRuntime['lab.manuscript-metrics'] && <footer className="flex min-h-9 shrink-0 items-center gap-3 border-t border-line bg-surface px-3 text-[11px] text-muted sm:px-4">
             <span className="font-medium text-ink">{wordCount.toLocaleString('pt-BR')} palavras</span>
             <span>{characterCount.toLocaleString('pt-BR')} caracteres</span>
+            {extensionRuntime['lab.context-mentions'] && mentionSettings.enabled && mentionSettings.showCounts && mentionStats.total > 0 && <span className="hidden md:inline">{mentionStats.total.toLocaleString('pt-BR')} {mentionStats.total === 1 ? 'referência' : 'referências'} · {mentionStats.unique.toLocaleString('pt-BR')} {mentionStats.unique === 1 ? 'entidade' : 'entidades'}</span>}
             <span className="hidden sm:inline">Meta: {activeDocument.goal.toLocaleString('pt-BR')}</span>
-            <div className="hidden h-1.5 w-24 overflow-hidden rounded-full bg-line sm:block" aria-label={`${progress}% da meta do capítulo`} role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}><span className="block h-full rounded-full bg-accent transition-[width]" style={{ width: `${progress}%` }} /></div>
-            <span className="ml-auto inline-flex items-center gap-1.5"><span className={cn('size-1.5 rounded-full', saveState === 'error' || saveState === 'offline' ? 'bg-danger' : saveState === 'saving' ? 'bg-warning' : 'bg-success')} />{saveState === 'saving' ? 'Salvando' : saveState === 'offline' ? 'Local salvo · nuvem pendente' : saveState === 'error' ? 'Não salvo' : 'Local e nuvem protegidos'}</span>
-          </footer>
-          </> : (
+            {wordCount > 0 && activeDocument.goal > 0 && <div className="hidden h-1.5 w-24 overflow-hidden rounded-full bg-line sm:block" aria-label={`${progress}% da meta do capítulo`} role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}><span className={cn('block h-full rounded-full transition-[width]', progress < 10 ? 'bg-line-strong' : 'bg-accent')} style={{ width: `${Math.max(progress, 2)}%` }} /></div>}
+            {pagePreset !== 'continuous' && <span className="hidden lg:inline">{currentPagePreset.label} · {pageCount} {pageCount === 1 ? 'página' : 'páginas'}</span>}
+            {saveState !== 'saved' && <span className={cn('ml-auto inline-flex items-center gap-1.5', saveState === 'error' || saveState === 'offline' ? 'text-danger' : undefined)} role="status" title={saveLabel} aria-label={saveLabel}>
+              {saveState === 'saving' ? <Cloud className="size-3.5 animate-pulse" /> : <Check className="size-3.5" />}
+              <span>{saveState === 'saving' ? 'Salvando' : saveState === 'offline' ? 'Nuvem pendente' : 'Não salvo'}</span>
+            </span>}
+          </footer>}
+          </> : initialView === 'encyclopedia' ? (
+            <div className="workspace-scrollbar min-h-0 flex-1 overflow-y-auto">
+              <EncyclopediaView entries={project.encyclopediaEntries} onSave={saveEncyclopediaEntry} onDelete={deleteEncyclopediaEntry} />
+            </div>
+          ) : (
             <div className="workspace-scrollbar min-h-0 flex-1 overflow-y-auto">
               <WritingCollection view={initialView} documents={project.documents} onCreate={createDocument} onOpen={selectDocument} />
             </div>
@@ -828,29 +1203,37 @@ export function WritingStudio({
         {!distractionFree && showInspector && initialView === 'editor' && (
           <aside className="absolute inset-y-0 right-0 z-30 flex w-[19rem] shrink-0 flex-col border-l border-line bg-surface shadow-floating xl:static xl:shadow-none" aria-label="Inspetor do documento">
             <div className="flex min-h-12 items-center gap-2 border-b border-line px-4"><Settings2 className="size-4 text-accent" /><div><p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-accent">Documento</p><h2 className="font-serif text-sm font-semibold">Inspetor</h2></div></div>
-            <div className="workspace-scrollbar min-h-0 flex-1 overflow-y-auto">
-              <section className="border-b border-line p-4">
-                <label htmlFor="document-synopsis" className="text-xs font-semibold text-ink">Sinopse</label>
-                <textarea id="document-synopsis" value={activeDocument.synopsis} onChange={(event) => updateActiveDocument({ synopsis: event.target.value })} rows={6} placeholder="Resuma o que acontece neste capítulo." className="mt-2 w-full resize-none rounded-control border border-line bg-editor px-3 py-2 text-sm leading-relaxed text-ink outline-none placeholder:text-muted focus:border-accent focus:ring-2 focus:ring-focus/20" />
+            <div className="workspace-scrollbar min-h-0 flex-1 overflow-y-auto px-3 pb-28 pt-3">
+              {selectedEntity && <section className="mb-3 rounded-card border border-accent/25 bg-accent-subtle p-4">
+                <div className="flex items-start justify-between gap-3"><div><p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-accent">Contexto vinculado</p><h3 className="mt-1 font-serif text-lg font-semibold text-ink">{selectedEntity.name}</h3><p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-accent">{encyclopediaTypeLabels[selectedEntity.type]}</p></div><button type="button" onClick={() => setSelectedEntityId(null)} className="flex size-7 shrink-0 items-center justify-center rounded-control text-muted hover:bg-surface hover:text-ink" aria-label="Fechar contexto"><X className="size-3.5" /></button></div>
+                <p className="mt-3 text-xs leading-relaxed text-muted">{selectedEntity.summary || 'Esta entrada ainda não tem um resumo contextual.'}</p>
+                {mentionSettings.showMetadata && <div className="mt-3 border-t border-accent/15 pt-3 text-[11px] leading-relaxed text-muted">
+                  {selectedEntity.aliases.length > 0 && <p><span className="font-medium text-ink">Aliases:</span> {selectedEntity.aliases.join(', ')}</p>}
+                  <p className={selectedEntity.aliases.length > 0 ? 'mt-1' : undefined}><span className="font-medium text-ink">Atualizada:</span> {new Intl.DateTimeFormat('pt-BR', { dateStyle: 'medium' }).format(new Date(selectedEntity.updatedAt))}</p>
+                  <p className="mt-1"><span className="font-medium text-ink">ID:</span> <span className="font-mono">{selectedEntity.id.slice(0, 8)}</span></p>
+                </div>}
+                <Link href={`/write/encyclopedia?work=${project.id}`} className="mt-3 inline-flex text-xs font-medium text-accent hover:underline">Abrir na Enciclopédia</Link>
+              </section>}
+              {extensionRuntime['lab.reference-guardian'] && mentionSettings.enabled && (mentionSettings.showCounts || mentionSettings.verifyReferences) && <section className="mb-3 rounded-card border border-line bg-surface p-4" aria-labelledby="mention-analysis-title">
+                <div className="flex items-center justify-between gap-3"><div><p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-accent">Extensão @</p><h3 id="mention-analysis-title" className="mt-0.5 text-sm font-semibold text-ink">Referências do capítulo</h3></div>{mentionSettings.verifyReferences && (mentionStats.broken > 0 ? <AlertTriangle className="size-4 text-warning" /> : <ShieldCheck className="size-4 text-success" />)}</div>
+                {mentionSettings.showCounts && <div className="mt-4 grid grid-cols-3 gap-2 text-center"><div className="rounded-control bg-surface-muted px-2 py-3"><strong className="block font-serif text-xl text-ink">{mentionStats.total}</strong><span className="text-[10px] text-muted">Citações</span></div><div className="rounded-control bg-surface-muted px-2 py-3"><strong className="block font-serif text-xl text-ink">{mentionStats.unique}</strong><span className="text-[10px] text-muted">Entidades</span></div><div className="rounded-control bg-surface-muted px-2 py-3"><strong className={cn('block font-serif text-xl', mentionStats.broken ? 'text-warning' : 'text-success')}>{mentionStats.broken}</strong><span className="text-[10px] text-muted">Quebradas</span></div></div>}
+                {mentionSettings.showCounts && Object.keys(mentionStats.byType).length > 0 && <div className="mt-3 flex flex-wrap gap-1.5">{(Object.entries(mentionStats.byType) as Array<[EncyclopediaEntry['type'], number]>).map(([type, count]) => <span key={type} className="rounded-full border border-line bg-editor px-2 py-1 text-[10px] text-muted"><span className="font-medium text-ink">{encyclopediaTypeLabels[type]}</span> · {count}</span>)}</div>}
+                {mentionSettings.verifyReferences && <div className={cn('mt-3 flex items-start gap-2 rounded-control px-3 py-2 text-[11px] leading-relaxed', mentionStats.broken ? 'bg-warning-subtle text-warning' : 'bg-success-subtle text-success')}>{mentionStats.broken ? <><AlertTriangle className="mt-0.5 size-3.5 shrink-0" /><span>{mentionStats.broken} {mentionStats.broken === 1 ? 'referência aponta' : 'referências apontam'} para uma entrada removida. Passe o cursor sobre o texto sublinhado para localizar.</span></> : <><ShieldCheck className="mt-0.5 size-3.5 shrink-0" /><span>{mentionStats.total ? 'Todos os vínculos estão íntegros.' : 'Nenhuma referência para verificar neste capítulo.'}</span></>}</div>}
+              </section>}
+              <section className="rounded-card border border-line bg-surface-muted p-4" aria-live="polite">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-accent">Progresso do capítulo</p>
+                <div className="mt-3"><strong className="block font-serif text-2xl leading-tight text-ink">{wordCount === 0 ? 'Pronto para começar' : activeDocument.goal > 0 ? `${progress}%` : `${wordCount} palavras`}</strong><span className="mt-1 block text-[11px] leading-snug text-muted">{wordCount > 0 ? activeDocument.goal > 0 ? `${wordCount.toLocaleString('pt-BR')} de ${activeDocument.goal.toLocaleString('pt-BR')} palavras` : 'Sem meta definida' : activeDocument.goal > 0 ? `${activeDocument.goal.toLocaleString('pt-BR')} palavras como referência` : 'Meta opcional'}</span></div>
+                {wordCount > 0 && activeDocument.goal > 0 && <div className="mt-3 h-2 overflow-hidden rounded-full bg-line"><span className={cn('block h-full rounded-full transition-[width]', progress < 10 ? 'bg-line-strong' : 'bg-accent')} style={{ width: `${Math.max(progress, 2)}%` }} /></div>}
+                <p className="mt-4 max-w-full [overflow-wrap:anywhere] rounded-control border border-line bg-surface px-3 py-2.5 text-xs leading-relaxed text-muted">O progresso existe para orientar. Ele não reduz a qualidade do seu dia de escrita a um número.</p>
               </section>
-              <section className="space-y-4 border-b border-line p-4">
-                <div>
-                  <label htmlFor="document-status" className="text-xs font-semibold text-ink">Status</label>
-                  <select id="document-status" value={activeDocument.status} onChange={(event) => updateActiveDocument({ status: event.target.value as WritingDocumentStatus })} className="mt-2 min-h-10 w-full rounded-control border border-line bg-editor px-3 text-sm text-ink outline-none focus:border-accent focus:ring-2 focus:ring-focus/20">
-                    <option value="draft">Rascunho</option><option value="review">Em revisão</option><option value="final">Final</option>
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="document-goal" className="text-xs font-semibold text-ink">Meta de palavras</label>
-                  <input id="document-goal" type="number" min={0} step={100} value={activeDocument.goal} onChange={(event) => updateActiveDocument({ goal: Math.max(0, Number(event.target.value)) })} className="mt-2 min-h-10 w-full rounded-control border border-line bg-editor px-3 text-sm text-ink outline-none focus:border-accent focus:ring-2 focus:ring-focus/20" />
-                </div>
-              </section>
-              <section className="p-4">
-                <p className="text-xs font-semibold text-ink">Progresso do capítulo</p>
-                <div className="mt-3 flex items-end justify-between"><strong className="font-serif text-2xl text-ink">{progress}%</strong><span className="text-[11px] text-muted">{wordCount} de {activeDocument.goal}</span></div>
-                <div className="mt-2 h-2 overflow-hidden rounded-full bg-line"><span className="block h-full rounded-full bg-accent transition-[width]" style={{ width: `${progress}%` }} /></div>
-                <p className="mt-4 text-xs leading-relaxed text-muted">O progresso existe para orientar. Ele não reduz a qualidade do seu dia de escrita a um número.</p>
-              </section>
+              <details className="group mt-3 rounded-control border border-line bg-surface p-4">
+                <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-semibold text-ink">Sinopse <ChevronDown className="size-3.5 transition-transform group-open:rotate-180" /></summary>
+                <textarea id="document-synopsis" aria-label="Sinopse" value={activeDocument.synopsis} onChange={(event) => updateActiveDocument({ synopsis: event.target.value })} rows={5} placeholder="Resuma o que acontece neste capítulo." className="mt-3 w-full resize-none rounded-control border border-line bg-editor px-3 py-2 text-sm leading-relaxed text-ink outline-none placeholder:text-muted focus:border-accent" />
+              </details>
+              <details className="group mt-2 rounded-control border border-line bg-surface p-4">
+                <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-semibold text-ink">Configurações <ChevronDown className="size-3.5 transition-transform group-open:rotate-180" /></summary>
+                <div className="mt-4 space-y-4"><div><label htmlFor="document-status" className="text-xs text-muted">Status</label><select id="document-status" value={activeDocument.status} onChange={(event) => updateActiveDocument({ status: event.target.value as WritingDocumentStatus })} className="mt-2 min-h-10 w-full rounded-control border border-line bg-editor px-3 text-sm text-ink"><option value="draft">Rascunho</option><option value="review">Em revisão</option><option value="final">Final</option></select></div><div><label htmlFor="document-goal" className="text-xs text-muted">Meta de palavras</label><input id="document-goal" type="number" min={0} step={100} value={activeDocument.goal} onChange={(event) => updateActiveDocument({ goal: Math.max(0, Number(event.target.value)) })} className="mt-2 min-h-10 w-full rounded-control border border-line bg-editor px-3 text-sm text-ink" /></div></div>
+              </details>
             </div>
           </aside>
         )}
