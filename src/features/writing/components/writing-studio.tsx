@@ -76,6 +76,7 @@ import {
   type WritingDocumentKind,
   type WritingDocumentStatus,
   type WritingProject,
+  type WorldbuildingProfile,
   type WritingView,
 } from '@/features/writing/types';
 import { cn } from '@/lib/cn';
@@ -172,6 +173,7 @@ function safeEncyclopediaEntries(value: string | null): EncyclopediaEntry[] {
         isPinned: entry.isPinned === true,
         isSpoiler: entry.isSpoiler === true,
         profileAnswers: parseProfileAnswers(entry.profileAnswers),
+        templateId: typeof entry.templateId === 'string' ? entry.templateId.slice(0, 80) : '',
         updatedAt: typeof entry.updatedAt === 'string' ? entry.updatedAt : new Date().toISOString(),
       }];
     });
@@ -222,6 +224,7 @@ function safeProject(value: string | null, remoteProject: WritingProject): Writi
       documents,
       encyclopediaEntries: remoteProject.encyclopediaEntries,
       encyclopediaPersistence: remoteProject.encyclopediaPersistence,
+      worldbuildingProfile: remoteProject.worldbuildingProfile,
       activeDocumentId: typeof parsed.activeDocumentId === 'string'
         ? idMap.get(parsed.activeDocumentId) ?? documents[0].id
         : documents[0].id,
@@ -417,9 +420,10 @@ export function WritingStudio({
     if (mentionQuery === null) return [];
     const normalized = mentionQuery.toLocaleLowerCase('pt-BR');
     return project.encyclopediaEntries
-      .filter((entry) => entry.status !== 'archived' && [entry.name, ...entry.aliases].some((value) => value.toLocaleLowerCase('pt-BR').includes(normalized)))
-      .slice(0, 7);
-  }, [mentionQuery, project.encyclopediaEntries]);
+      .filter((entry) => entry.status !== 'archived' && [entry.name, ...(mentionSettings.searchAliases ? entry.aliases : [])].some((value) => value.toLocaleLowerCase('pt-BR').includes(normalized)))
+      .sort((a, b) => (mentionSettings.prioritizePinned ? Number(b.isPinned) - Number(a.isPinned) : 0) || (mentionSettings.groupByType ? a.type.localeCompare(b.type) : 0) || a.name.localeCompare(b.name, 'pt-BR'))
+      .slice(0, mentionSettings.suggestionView === 'rich' ? 6 : 9);
+  }, [mentionQuery, mentionSettings.groupByType, mentionSettings.prioritizePinned, mentionSettings.searchAliases, mentionSettings.suggestionView, project.encyclopediaEntries]);
   const mentionStats = useMemo(() => {
     const ids = entityIdsFromHtml(activeDocument.contentHtml);
     const knownEntries = new Map(project.encyclopediaEntries.map((entry) => [entry.id, entry]));
@@ -531,6 +535,7 @@ export function WritingStudio({
           is_pinned: entry.isPinned,
           is_spoiler: entry.isSpoiler,
           profile_answers: entry.profileAnswers,
+          template_id: entry.templateId,
         })), { onConflict: 'id' })
         .select('*');
       if (error || !data) return;
@@ -600,14 +605,16 @@ export function WritingStudio({
   useEffect(() => {
     const editor = editorRef.current;
     if (!editor) return;
-    const knownIds = new Set(project.encyclopediaEntries.map((entry) => entry.id));
+    const knownEntries = new Map(project.encyclopediaEntries.map((entry) => [entry.id, entry]));
     editor.querySelectorAll<HTMLElement>('[data-entity-id]').forEach((mention) => {
-      const broken = extensionRuntime['lab.reference-guardian'] && mentionSettings.verifyReferences && !knownIds.has(mention.dataset.entityId ?? '');
+      const entry = knownEntries.get(mention.dataset.entityId ?? '');
+      const broken = extensionRuntime['lab.reference-guardian'] && mentionSettings.verifyReferences && !entry;
       mention.classList.toggle('writing-entity-mention-broken', broken);
       if (broken) mention.title = 'Referência sem entrada correspondente na Enciclopédia';
+      else if (entry && mentionSettings.hoverPreview) mention.title = `${entry.name} · ${encyclopediaTypeLabels[entry.type]}${entry.summary ? `\n${entry.summary}` : ''}`;
       else mention.removeAttribute('title');
     });
-  }, [activeDocument.contentHtml, extensionRuntime, mentionSettings.verifyReferences, project.encyclopediaEntries]);
+  }, [activeDocument.contentHtml, extensionRuntime, mentionSettings.hoverPreview, mentionSettings.verifyReferences, project.encyclopediaEntries]);
 
   useEffect(() => {
     const preferencesTimer = window.setTimeout(() => {
@@ -943,6 +950,7 @@ export function WritingStudio({
       is_pinned: draft.isPinned,
       is_spoiler: draft.isSpoiler,
       profile_answers: draft.profileAnswers,
+      template_id: draft.templateId,
     };
     const { data, error } = await supabase
       .from('encyclopedia_entries')
@@ -962,6 +970,26 @@ export function WritingStudio({
         .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR')),
     }));
   }, [encyclopediaStorageKey, project.encyclopediaEntries, project.encyclopediaPersistence, project.id, supabase, userId]);
+
+  const saveWorldbuildingProfile = useCallback(async (profile: WorldbuildingProfile) => {
+    const { error } = await supabase.from('worldbuilding_profiles').upsert({
+      work_id: project.id,
+      owner_id: userId,
+      methodology: profile.methodology,
+      mice_focus: profile.miceFocus,
+      genres: profile.genres,
+      pov_mode: profile.povMode,
+      psychic_distance: profile.psychicDistance,
+      incluing_enabled: profile.incluingEnabled,
+      genre_answers: profile.genreAnswers,
+      lore_answers: profile.loreAnswers,
+    }, { onConflict: 'work_id,owner_id' });
+    if (error?.code === 'PGRST205' || error?.code === 'PGRST204' || error?.code === '42703') {
+      throw new Error('Aplique a migration mais recente da Enciclopédia para salvar os fundamentos da obra.');
+    }
+    if (error) throw error;
+    setProject((current) => ({ ...current, worldbuildingProfile: profile }));
+  }, [project.id, supabase, userId]);
 
   const deleteEncyclopediaEntry = useCallback(async (entryId: string) => {
     let persistence = project.encyclopediaPersistence;
@@ -1149,11 +1177,11 @@ export function WritingStudio({
                   spellCheck
                   className={cn('writing-editor max-w-manuscript font-serif text-editor text-ink outline-none', paragraphIndent && 'writing-editor-indent', `writing-editor-spacing-${paragraphSpacing}`)}
                 />
-                {mentionQuery !== null && <div className="fixed z-[70] w-72 overflow-hidden rounded-card border border-line-strong bg-surface shadow-floating" style={mentionPosition} role="listbox" aria-label="Referenciar item da Enciclopédia">
-                  <div className="flex items-center gap-2 border-b border-line px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-accent"><AtSign className="size-3.5" />Contexto da Enciclopédia</div>
+                {mentionQuery !== null && <div className={cn('fixed z-[70] overflow-hidden rounded-card border border-line-strong bg-surface shadow-floating', mentionSettings.suggestionView === 'rich' ? 'w-[min(25rem,calc(100vw-1.5rem))]' : 'w-72')} style={mentionPosition} role="listbox" aria-label="Referenciar item da Enciclopédia">
+                  <div className="flex items-center justify-between gap-2 border-b border-line px-3 py-2"><span className="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-accent"><AtSign className="size-3.5" />Contexto da Enciclopédia</span><span className="text-[10px] text-muted">{mentionSettings.groupByType ? 'Por relevância e tipo' : 'Por relevância'}</span></div>
                   {mentionMatches.length ? mentionMatches.map((entry, index) => <button key={entry.id} type="button" role="option" aria-selected={mentionIndex === index} onMouseDown={(event) => event.preventDefault()} onClick={() => insertEntityMention(entry)} onMouseEnter={() => setMentionIndex(index)} className={cn('flex w-full items-start gap-3 px-3 py-2.5 text-left', mentionIndex === index ? 'bg-accent-subtle' : 'hover:bg-surface-muted')}>
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-surface-muted text-xs font-semibold text-accent">@</span>
-                    <span className="min-w-0"><span className="block truncate text-sm font-medium text-ink">{entry.name}</span><span className="block truncate text-[11px] text-muted">{encyclopediaTypeLabels[entry.type]}{entry.summary ? ` · ${entry.summary}` : ''}</span></span>
+                    <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-surface-muted text-xs font-semibold text-accent">@</span>
+                    <span className="min-w-0 flex-1"><span className="flex items-center gap-2"><span className="block truncate text-sm font-semibold text-ink">{entry.name}</span>{mentionSettings.showCanonStatus && <span className={cn('shrink-0 rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase', entry.status === 'canon' ? 'bg-success-subtle text-success' : 'bg-surface-muted text-muted')}>{entry.status === 'canon' ? 'Cânone' : 'Rascunho'}</span>}{mentionSettings.warnSpoilers && entry.isSpoiler && <span className="shrink-0 rounded-full bg-warning-subtle px-1.5 py-0.5 text-[9px] font-semibold text-warning">Spoiler</span>}</span><span className="mt-0.5 block truncate text-[11px] text-muted">{encyclopediaTypeLabels[entry.type]}{mentionSettings.searchAliases && entry.aliases.length ? ` · ${entry.aliases.slice(0, 2).join(', ')}` : ''}</span>{mentionSettings.suggestionView === 'rich' && entry.summary && <span className="mt-1.5 block line-clamp-2 text-xs leading-relaxed text-muted">{entry.summary}</span>}</span>
                   </button>) : <div className="px-4 py-5 text-center"><p className="text-sm font-medium text-ink">Nenhuma referência encontrada</p><Link href={`/write/encyclopedia?work=${project.id}`} className="mt-2 inline-flex text-xs font-medium text-accent hover:underline">Criar na Enciclopédia</Link></div>}
                   <div className="border-t border-line px-3 py-2 text-[10px] text-muted">↑↓ navegar · Enter inserir · Esc fechar</div>
                 </div>}
@@ -1163,7 +1191,7 @@ export function WritingStudio({
 
           </> : initialView === 'encyclopedia' ? (
             <div className="workspace-scrollbar min-h-0 flex-1 overflow-y-auto">
-              <EncyclopediaView entries={project.encyclopediaEntries} workTitle={project.title} persistence={project.encyclopediaPersistence} onSave={saveEncyclopediaEntry} onDelete={deleteEncyclopediaEntry} />
+              <EncyclopediaView entries={project.encyclopediaEntries} workTitle={project.title} persistence={project.encyclopediaPersistence} worldbuildingProfile={project.worldbuildingProfile} onSave={saveEncyclopediaEntry} onDelete={deleteEncyclopediaEntry} onSaveWorldbuilding={saveWorldbuildingProfile} />
             </div>
           ) : (
             <div className="workspace-scrollbar min-h-0 flex-1 overflow-y-auto">

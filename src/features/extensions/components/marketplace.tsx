@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from '@/components/ui';
 import { defaultExtensionRuntime, extensionCatalog, extensionCategoryLabels, extensionRuntimeStorageKey, type ExtensionCategory, type ExtensionId, type ExtensionProductKind, type ExtensionRuntimeState } from '@/features/extensions/catalog';
-import { defaultMentionExtensionSettings, mentionExtensionStorageKey, parseMentionExtensionSettings } from '@/features/extensions/mention-settings';
+import { defaultMentionExtensionSettings, mentionExtensionStorageKey, parseMentionExtensionSettings, type MentionExtensionSettings } from '@/features/extensions/mention-settings';
 import { cn } from '@/lib/cn';
 import { createClient } from '@/lib/supabase/client';
 
@@ -46,7 +46,7 @@ function MotionPreview({ mediaType, mediaUrl, title }: { mediaType: string; medi
   return <section className="mt-6"><p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.14em] text-accent">Demonstração em movimento</p><div className="relative aspect-video overflow-hidden rounded-card border border-line bg-surface-muted">{mediaType === 'mp4' ? <video src={mediaUrl} controls muted loop playsInline preload="metadata" className="size-full object-cover" aria-label={`Demonstração de ${title}`} /> : <Image src={mediaUrl} alt={`Demonstração de ${title}`} fill unoptimized className="object-cover" sizes="(max-width: 768px) 100vw, 46rem" />}</div></section>;
 }
 
-export function Marketplace({ controls, installationState, catalogBacked = false }: { controls?: MarketplaceControl[]; installationState?: Partial<ExtensionRuntimeState>; catalogBacked?: boolean }) {
+export function Marketplace({ controls, installationState, initialMentionSettings, catalogBacked = false }: { controls?: MarketplaceControl[]; installationState?: Partial<ExtensionRuntimeState>; initialMentionSettings?: MentionExtensionSettings; catalogBacked?: boolean }) {
   const searchRef = useRef<HTMLInputElement>(null);
   const supabase = useMemo(() => createClient(), []);
   const [runtime, setRuntime] = useState<ExtensionRuntimeState>(defaultExtensionRuntime);
@@ -77,7 +77,9 @@ export function Marketplace({ controls, installationState, catalogBacked = false
         return [id, Boolean(authorized)];
       })) as ExtensionRuntimeState;
       setRuntime(next);
-      setMentionSettings(parseMentionExtensionSettings(window.localStorage.getItem(mentionExtensionStorageKey)));
+      const nextMentionSettings = initialMentionSettings ?? parseMentionExtensionSettings(window.localStorage.getItem(mentionExtensionStorageKey));
+      setMentionSettings(nextMentionSettings);
+      window.localStorage.setItem(mentionExtensionStorageKey, JSON.stringify(nextMentionSettings));
       window.localStorage.setItem(extensionRuntimeStorageKey, JSON.stringify(next));
       setHydrated(true);
     }, 0);
@@ -89,7 +91,7 @@ export function Marketplace({ controls, installationState, catalogBacked = false
     };
     window.addEventListener('keydown', onKeyDown);
     return () => { window.clearTimeout(timer); window.removeEventListener('keydown', onKeyDown); };
-  }, [catalogBacked, controlMap, installationState]);
+  }, [catalogBacked, controlMap, initialMentionSettings, installationState]);
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase('pt-BR');
@@ -161,6 +163,7 @@ export function Marketplace({ controls, installationState, catalogBacked = false
     const next = { ...mentionSettings, ...changes };
     setMentionSettings(next);
     window.localStorage.setItem(mentionExtensionStorageKey, JSON.stringify(next));
+    void supabase.auth.getUser().then(({ data }) => data.user && supabase.from('user_extension_installations').update({ settings: next }).eq('user_id', data.user.id).eq('extension_id', 'lab.context-mentions'));
   }
 
   function actionLabel(id: ExtensionId) {
@@ -216,7 +219,9 @@ export function Marketplace({ controls, installationState, catalogBacked = false
           <MotionPreview mediaType={selected.mediaType} mediaUrl={selected.mediaUrl} title={selected.name} />
           <div className="mt-7 grid gap-6 md:grid-cols-[1fr_15rem]"><section><p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-accent">O que esta extensão faz</p><ul className="mt-3 space-y-3">{selected.features.map((feature) => <li key={feature} className="flex gap-3 text-sm leading-relaxed text-ink"><span className="mt-1 flex size-5 shrink-0 items-center justify-center rounded-full bg-success-subtle text-success"><Check className="size-3" /></span>{feature}</li>)}</ul></section><aside className="rounded-card border border-line bg-surface-muted p-4"><p className="text-xs font-semibold text-ink">Resumo técnico</p><dl className="mt-4 space-y-3 text-xs"><div className="flex items-center justify-between gap-3"><dt className="text-muted">Desempenho</dt><dd className="font-medium text-ink">&lt; {selected.performanceBudgetMs} ms</dd></div><div className="flex items-center justify-between gap-3"><dt className="text-muted">Processamento</dt><dd className="font-medium text-ink">Local</dd></div><div className="flex items-center justify-between gap-3"><dt className="text-muted">Dependência</dt><dd className="font-medium text-success">Compatível</dd></div></dl></aside></div>
           <section className="mt-7 border-t border-line pt-6"><div className="flex items-center gap-2"><ShieldCheck className="size-4 text-success" /><h3 className="text-sm font-semibold text-ink">Privacidade e permissões</h3></div><p className="mt-2 text-xs leading-relaxed text-muted">O código desta extensão faz parte do Autor Copilot e executa dentro do editor. Nenhum manuscrito é enviado a terceiros por este módulo.</p><div className="mt-3 flex flex-wrap gap-2">{selected.permissions.map((permission) => <span key={permission} className="inline-flex items-center gap-1.5 rounded-full border border-line px-2.5 py-1 text-[11px] text-ink"><LockKeyhole className="size-3 text-muted" />{permission}</span>)}</div></section>
-          {selected.id === 'lab.context-mentions' && runtime[selected.id] && <section className="mt-7 border-t border-line pt-6"><div className="flex items-center gap-2"><Settings2 className="size-4 text-accent" /><h3 className="text-sm font-semibold text-ink">Configuração rápida</h3></div><div className="mt-4 grid grid-cols-2 gap-2"><button type="button" onClick={() => updateMentionSettings({ appearance: 'highlighted' })} className={cn('rounded-control border px-3 py-2 text-xs', mentionSettings.appearance === 'highlighted' ? 'border-accent bg-accent-subtle text-accent' : 'border-line text-muted')}>Destacado</button><button type="button" onClick={() => updateMentionSettings({ appearance: 'plain' })} className={cn('rounded-control border px-3 py-2 text-xs', mentionSettings.appearance === 'plain' ? 'border-accent bg-accent-subtle text-accent' : 'border-line text-muted')}>Texto comum</button></div><label className="mt-4 flex items-center justify-between gap-3 rounded-control bg-surface-muted px-3 py-2.5 text-xs text-muted"><span>Verificar vínculos quebrados</span><input type="checkbox" checked={mentionSettings.verifyReferences} onChange={(event) => updateMentionSettings({ verifyReferences: event.target.checked })} /></label><label className="mt-2 flex items-center justify-between gap-3 rounded-control bg-surface-muted px-3 py-2.5 text-xs text-muted"><span>Mostrar contagens e metadados</span><input type="checkbox" checked={mentionSettings.showCounts && mentionSettings.showMetadata} onChange={(event) => updateMentionSettings({ showCounts: event.target.checked, showMetadata: event.target.checked })} /></label></section>}
+          {selected.id === 'lab.context-mentions' && runtime[selected.id] && <section className="mt-7 border-t border-line pt-6"><div className="flex items-center gap-2"><Settings2 className="size-4 text-accent" /><h3 className="text-sm font-semibold text-ink">Configuração do @</h3></div><p className="mt-2 text-xs leading-relaxed text-muted">Ajuste a presença no texto e a quantidade de contexto exibida antes de inserir uma ficha.</p><div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">{([['highlighted', 'Destacado'], ['plain', 'Comum'], ['underline', 'Sublinhado'], ['pill', 'Cápsula']] as const).map(([value, label]) => <button key={value} type="button" onClick={() => updateMentionSettings({ appearance: value })} className={cn('rounded-control border px-3 py-2 text-xs', mentionSettings.appearance === value ? 'border-accent bg-accent-subtle text-accent' : 'border-line text-muted')}>{label}</button>)}</div><div className="mt-3 grid grid-cols-2 gap-2">{([['rich', 'Sugestão detalhada'], ['compact', 'Sugestão compacta']] as const).map(([value, label]) => <button key={value} type="button" onClick={() => updateMentionSettings({ suggestionView: value })} className={cn('rounded-control border px-3 py-2 text-xs', mentionSettings.suggestionView === value ? 'border-accent bg-accent-subtle text-accent' : 'border-line text-muted')}>{label}</button>)}</div><div className="mt-4 grid gap-2 sm:grid-cols-2">{([
+            ['verifyReferences', 'Verificar vínculos quebrados'], ['searchAliases', 'Buscar aliases'], ['prioritizePinned', 'Priorizar destacadas'], ['groupByType', 'Agrupar por tipo'], ['showCanonStatus', 'Mostrar cânone'], ['warnSpoilers', 'Avisar spoilers'], ['hoverPreview', 'Prévia ao passar o mouse'], ['showCounts', 'Contagens no capítulo'],
+          ] as const).map(([key, label]) => <label key={key} className="flex items-center justify-between gap-3 rounded-control bg-surface-muted px-3 py-2.5 text-xs text-muted"><span>{label}</span><input type="checkbox" checked={mentionSettings[key]} onChange={(event) => updateMentionSettings({ [key]: event.target.checked })} /></label>)}</div></section>}
           <section className="mt-7 rounded-card border border-line bg-surface-muted p-4"><div className="flex items-center gap-3"><Gauge className="size-5 text-accent" /><div className="min-w-0 flex-1"><p className="text-sm font-semibold text-ink">{selectedControl?.acquired ? 'Licença disponível' : 'Aquisição necessária'}</p><p className="mt-0.5 text-xs text-muted">{selectedControl?.acquired ? 'Esta extensão pode ser instalada e usada nesta conta.' : 'A ativação permanece bloqueada até que uma licença seja vinculada à sua conta.'}</p></div><strong className="text-sm text-ink">{priceLabel(selected.priceModel, selected.priceCents, selected.currency)}</strong></div></section>
           {errorMessage && <p role="alert" className="mt-4 rounded-control border border-warning/30 bg-warning/10 px-3 py-2 text-xs text-ink">{errorMessage}</p>}
         </div>

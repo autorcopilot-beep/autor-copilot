@@ -12,31 +12,6 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          extensions?: Json
-          operationName?: string
-          query?: string
-          variables?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       admin_accounts: {
@@ -446,6 +421,7 @@ export type Database = {
           story_role: string
           summary: string
           tags: string[]
+          template_id: string
           updated_at: string
           work_id: string
         }
@@ -469,6 +445,7 @@ export type Database = {
           story_role?: string
           summary?: string
           tags?: string[]
+          template_id?: string
           updated_at?: string
           work_id: string
         }
@@ -492,6 +469,7 @@ export type Database = {
           story_role?: string
           summary?: string
           tags?: string[]
+          template_id?: string
           updated_at?: string
           work_id?: string
         }
@@ -950,6 +928,59 @@ export type Database = {
         }
         Relationships: []
       }
+      worldbuilding_profiles: {
+        Row: {
+          created_at: string
+          genre_answers: Json
+          genres: string[]
+          incluing_enabled: boolean
+          lore_answers: Json
+          methodology: string
+          mice_focus: string
+          owner_id: string
+          pov_mode: string
+          psychic_distance: number
+          updated_at: string
+          work_id: string
+        }
+        Insert: {
+          created_at?: string
+          genre_answers?: Json
+          genres?: string[]
+          incluing_enabled?: boolean
+          lore_answers?: Json
+          methodology?: string
+          mice_focus?: string
+          owner_id: string
+          pov_mode?: string
+          psychic_distance?: number
+          updated_at?: string
+          work_id: string
+        }
+        Update: {
+          created_at?: string
+          genre_answers?: Json
+          genres?: string[]
+          incluing_enabled?: boolean
+          lore_answers?: Json
+          methodology?: string
+          mice_focus?: string
+          owner_id?: string
+          pov_mode?: string
+          psychic_distance?: number
+          updated_at?: string
+          work_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "worldbuilding_profiles_work_owner_fk"
+            columns: ["work_id", "owner_id"]
+            isOneToOne: true
+            referencedRelation: "works"
+            referencedColumns: ["id", "owner_id"]
+          },
+        ]
+      }
       writing_documents: {
         Row: {
           content_html: string
@@ -1263,9 +1294,6 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {
       admin_role: [

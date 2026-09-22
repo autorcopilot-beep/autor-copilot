@@ -531,6 +531,24 @@
   font-size: 1rem;
 }
 
+.writing-editor[data-mention-style='underline'] .writing-entity-mention {
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-accent);
+  padding-inline: 0.08em;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--color-accent) 55%, transparent);
+  text-decoration-thickness: 0.09em;
+  text-underline-offset: 0.2em;
+}
+
+.writing-editor[data-mention-style='pill'] .writing-entity-mention {
+  border: 1px solid color-mix(in srgb, var(--color-accent) 24%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent-subtle) 72%, transparent);
+  padding: 0.08em 0.48em;
+}
+
 .writing-editor .writing-entity-mention-broken,
 .writing-editor[data-mention-style='plain'] .writing-entity-mention-broken {
   background: var(--color-warning-subtle);

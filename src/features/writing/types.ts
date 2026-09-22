@@ -24,7 +24,24 @@ export type EncyclopediaEntry = {
   isPinned: boolean;
   isSpoiler: boolean;
   profileAnswers: Record<string, string | string[] | boolean>;
+  templateId: string;
   updatedAt: string;
+};
+
+export type WorldbuildingProfile = {
+  methodology: 'top_down' | 'bottom_up' | 'inside_out';
+  miceFocus: 'milieu' | 'idea' | 'character' | 'event';
+  genres: string[];
+  povMode: 'first' | 'third_limited' | 'third_omniscient' | 'multiple';
+  psychicDistance: number;
+  incluingEnabled: boolean;
+  genreAnswers: Record<string, string | string[] | boolean>;
+  loreAnswers: Record<string, string | string[] | boolean>;
+};
+
+export const defaultWorldbuildingProfile: WorldbuildingProfile = {
+  methodology: 'inside_out', miceFocus: 'character', genres: [], povMode: 'third_limited',
+  psychicDistance: 3, incluingEnabled: true, genreAnswers: {}, loreAnswers: {},
 };
 
 export function parseProfileAnswers(value: Json | undefined): EncyclopediaEntry['profileAnswers'] {
@@ -56,6 +73,7 @@ export function mapEncyclopediaEntry(row: Database['public']['Tables']['encyclop
     isPinned: row.is_pinned ?? false,
     isSpoiler: row.is_spoiler ?? false,
     profileAnswers: parseProfileAnswers(row.profile_answers),
+    templateId: row.template_id ?? '',
     updatedAt: row.updated_at,
   };
 }
@@ -78,6 +96,7 @@ export type WritingProject = {
   title: string;
   documents: WritingDocument[];
   encyclopediaEntries: EncyclopediaEntry[];
+  worldbuildingProfile: WorldbuildingProfile;
   encyclopediaPersistence: 'cloud' | 'local';
   activeDocumentId: string;
   updatedAt: string;

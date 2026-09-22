@@ -2,7 +2,7 @@
 
 import {
   ArrowDownAZ, BookOpenText, Building2, CalendarRange, Check, Compass, Gem,
-  Lightbulb, List, LayoutGrid, Menu, Plus, Search, ShieldCheck, Sparkles, Star, X,
+  Lightbulb, List, LayoutGrid, Layers3, Menu, Plus, Search, ShieldCheck, Sparkles, Star, X,
   Trash2, UserRound,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
@@ -14,7 +14,12 @@ import {
   type EncyclopediaEntry,
   type EncyclopediaEntryType,
   type EncyclopediaStatus,
+  type WorldbuildingProfile,
 } from '@/features/writing/types';
+import {
+  genreModules, loreArchitecture, methodologyOptions, miceOptions, povDistances,
+  templateById, templatesForType, type WorldbuildingQuestion, type WorldbuildingSection,
+} from '@/features/writing/worldbuilding-schema';
 import { cn } from '@/lib/cn';
 
 const entryTypes: EncyclopediaEntryType[] = ['character', 'location', 'organization', 'object', 'concept', 'event'];
@@ -47,56 +52,16 @@ const fieldHints: Record<EncyclopediaEntryType, { role: string; appearance: stri
   concept: { role: 'Impacto no mundo', appearance: 'Como se manifesta', history: 'Origem da ideia', connections: 'Quem é afetado', rules: 'Princípios e exceções' },
   event: { role: 'Consequência narrativa', appearance: 'Cenário e sinais', history: 'Causas e desdobramentos', connections: 'Envolvidos', rules: 'Cronologia e condições' },
 };
-type Question = { id: string; label: string; kind: 'text' | 'list' | 'check' | 'select'; options?: string[]; hint?: string };
-const questions: Record<EncyclopediaEntryType, Question[]> = {
-  character: [
-    { id: 'arc', label: 'Qual arco atravessa?', kind: 'select', options: ['A descobrir', 'Transformação', 'Queda', 'Redenção', 'Estabilidade'] },
-    { id: 'desires', label: 'O que deseja?', kind: 'list', hint: 'Adicione desejos e necessidades, um por vez.' },
-    { id: 'fears', label: 'O que teme?', kind: 'list' },
-    { id: 'secret', label: 'Guarda um segredo importante?', kind: 'check' },
-    { id: 'voice', label: 'Como fala ou pensa?', kind: 'text' },
-  ],
-  location: [
-    { id: 'climate', label: 'Qual é o clima predominante?', kind: 'select', options: ['A definir', 'Árido', 'Temperado', 'Úmido', 'Frio', 'Variável'] },
-    { id: 'sensations', label: 'O que se percebe ao chegar?', kind: 'list', hint: 'Sons, cheiros, texturas e outros sentidos.' },
-    { id: 'access', label: 'Como se entra ou sai?', kind: 'text' },
-    { id: 'restricted', label: 'Existe uma área proibida?', kind: 'check' },
-  ],
-  organization: [
-    { id: 'scope', label: 'Qual o alcance?', kind: 'select', options: ['A definir', 'Local', 'Regional', 'Global', 'Secreto'] },
-    { id: 'members', label: 'Quem participa?', kind: 'list' },
-    { id: 'methods', label: 'Como atua?', kind: 'list' },
-    { id: 'public', label: 'É conhecida publicamente?', kind: 'check' },
-  ],
-  object: [
-    { id: 'owners', label: 'Quem já teve este objeto?', kind: 'list' },
-    { id: 'abilities', label: 'O que pode fazer?', kind: 'list' },
-    { id: 'cost', label: 'Qual é o custo ou risco do uso?', kind: 'text' },
-    { id: 'unique', label: 'É único neste mundo?', kind: 'check' },
-  ],
-  concept: [
-    { id: 'domains', label: 'Onde se aplica?', kind: 'list' },
-    { id: 'exceptions', label: 'Quais são as exceções?', kind: 'list' },
-    { id: 'belief', label: 'É aceito por todos?', kind: 'check' },
-    { id: 'origin', label: 'Quem o formulou ou descobriu?', kind: 'text' },
-  ],
-  event: [
-    { id: 'period', label: 'Quando acontece?', kind: 'text' },
-    { id: 'participants', label: 'Quem estava presente?', kind: 'list' },
-    { id: 'consequences', label: 'O que mudou depois?', kind: 'list' },
-    { id: 'witnessed', label: 'Foi testemunhado diretamente?', kind: 'check' },
-  ],
-};
-
 export type EncyclopediaEntryDraft = Pick<EncyclopediaEntry,
   'type' | 'name' | 'aliases' | 'summary' | 'details' | 'color' | 'status' | 'tags' |
-  'storyRole' | 'appearance' | 'history' | 'connections' | 'rules' | 'isPinned' | 'isSpoiler' | 'profileAnswers'>;
+  'storyRole' | 'appearance' | 'history' | 'connections' | 'rules' | 'isPinned' | 'isSpoiler' | 'profileAnswers' | 'templateId'>;
 
 function emptyDraft(type: EncyclopediaEntryType = 'character'): EncyclopediaEntryDraft {
   return {
     type, name: '', aliases: [], summary: '', details: '', color: 'violet',
     status: 'draft', tags: [], storyRole: '', appearance: '', history: '',
     connections: '', rules: '', isPinned: false, isSpoiler: false, profileAnswers: {},
+    templateId: templatesForType(type)[0]?.id ?? '',
   };
 }
 
@@ -129,7 +94,7 @@ function TextField({ label, value, onChange, maxLength, placeholder, rows = 0 }:
   </label>;
 }
 
-function ListQuestion({ question, values, onChange }: { question: Question; values: string[]; onChange: (values: string[]) => void }) {
+function ListQuestion({ question, values, onChange }: { question: WorldbuildingQuestion; values: string[]; onChange: (values: string[]) => void }) {
   const [item, setItem] = useState('');
   function addItem() {
     const next = item.trim();
@@ -142,16 +107,46 @@ function ListQuestion({ question, values, onChange }: { question: Question; valu
   </div>;
 }
 
+function QuestionField({ namespace, question, answers, onChange }: {
+  namespace: string;
+  question: WorldbuildingQuestion;
+  answers: Record<string, string | string[] | boolean>;
+  onChange: (answers: Record<string, string | string[] | boolean>) => void;
+}) {
+  const key = `${namespace}.${question.id}`;
+  const answer = answers[key];
+  const update = (value: string | string[] | boolean) => onChange({ ...answers, [key]: value });
+  if (question.kind === 'list') return <ListQuestion question={question} values={Array.isArray(answer) ? answer : []} onChange={update} />;
+  if (question.kind === 'check') return <label className="flex items-start gap-3 rounded-xl border border-line bg-surface p-3 text-xs font-medium leading-relaxed text-ink"><input type="checkbox" checked={answer === true} onChange={(event) => update(event.target.checked)} className="mt-0.5 size-4 accent-accent" /><span>{question.label}{question.hint && <span className="mt-1 block font-normal text-muted">{question.hint}</span>}</span></label>;
+  if (question.kind === 'select') return <label className="block text-xs font-semibold text-ink">{question.label}<select value={typeof answer === 'string' ? answer : ''} onChange={(event) => update(event.target.value)} className="mt-1.5 w-full rounded-xl border border-line bg-surface p-2.5 text-sm text-ink"><option value="">Selecione</option>{question.options?.map((option) => <option key={option}>{option}</option>)}</select></label>;
+  if (question.kind === 'multiselect') return <fieldset><legend className="text-xs font-semibold text-ink">{question.label}</legend><div className="mt-2 flex flex-wrap gap-2">{question.options?.map((option) => { const selected = Array.isArray(answer) && answer.includes(option); return <button key={option} type="button" onClick={() => update(selected ? (answer as string[]).filter((item) => item !== option) : [...(Array.isArray(answer) ? answer : []), option])} className={cn('rounded-full border px-3 py-1.5 text-xs', selected ? 'border-accent bg-accent-subtle text-accent' : 'border-line text-muted')}>{option}</button>; })}</div></fieldset>;
+  return <TextField label={question.label} value={typeof answer === 'string' ? answer : ''} onChange={update} maxLength={question.kind === 'textarea' ? 4000 : 500} rows={question.kind === 'textarea' ? 3 : 0} placeholder={question.hint ?? 'Sua resposta'} />;
+}
+
+function SchemaSections({ namespace, sections, answers, onChange }: {
+  namespace: string;
+  sections: WorldbuildingSection[];
+  answers: Record<string, string | string[] | boolean>;
+  onChange: (answers: Record<string, string | string[] | boolean>) => void;
+}) {
+  return <div className="space-y-3">{sections.map((section, index) => <details key={section.id} className="group rounded-2xl border border-line bg-editor" open={index === 0}>
+    <summary className="cursor-pointer list-none px-4 py-4"><span className="flex items-start justify-between gap-3"><span><span className="block text-sm font-semibold text-ink">{section.title}</span><span className="mt-1 block text-xs font-normal leading-relaxed text-muted">{section.description}</span></span><span className="mt-1 text-accent transition-transform group-open:rotate-45">+</span></span></summary>
+    <div className="space-y-5 border-t border-line bg-surface/60 p-4">{section.questions.map((question) => <QuestionField key={question.id} namespace={`${namespace}.${section.id}`} question={question} answers={answers} onChange={onChange} />)}</div>
+  </details>)}</div>;
+}
+
 export function EncyclopediaView({
-  entries, workTitle, persistence, onSave, onDelete,
+  entries, workTitle, persistence, worldbuildingProfile, onSave, onDelete, onSaveWorldbuilding,
 }: {
   entries: EncyclopediaEntry[];
   workTitle: string;
   persistence: 'cloud' | 'local';
+  worldbuildingProfile: WorldbuildingProfile;
   onSave: (draft: EncyclopediaEntryDraft, entryId?: string) => Promise<void>;
   onDelete: (entryId: string) => Promise<void>;
+  onSaveWorldbuilding: (profile: WorldbuildingProfile) => Promise<void>;
 }) {
-  const [section, setSection] = useState<'library' | 'guide'>('library');
+  const [section, setSection] = useState<'library' | 'foundation' | 'guide'>('library');
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<EncyclopediaEntryType | 'all'>('all');
   const [statusFilter, setStatusFilter] = useState<EncyclopediaStatus | 'all'>('all');
@@ -166,6 +161,8 @@ export function EncyclopediaView({
   const [notice, setNotice] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [worldDraft, setWorldDraft] = useState(worldbuildingProfile);
+  const [worldSaving, setWorldSaving] = useState(false);
 
   const counts = useMemo(() => ({
     canon: entries.filter((entry) => entry.status === 'canon').length,
@@ -197,6 +194,7 @@ export function EncyclopediaView({
       history: entry.history ?? '', connections: entry.connections ?? '', rules: entry.rules ?? '',
       isPinned: entry.isPinned ?? false, isSpoiler: entry.isSpoiler ?? false,
       profileAnswers: entry.profileAnswers ?? {},
+      templateId: entry.templateId || templatesForType(entry.type)[0]?.id || '',
     });
     setAliasesText(entry.aliases.join(', ')); setTagsText((entry.tags ?? []).join(', '));
     setError(''); setNotice(''); setSection('library');
@@ -214,7 +212,7 @@ export function EncyclopediaView({
     try {
       await onSave({
         ...draft, name: draft.name.trim(),
-        profileAnswers: Object.fromEntries(Object.entries(draft.profileAnswers).filter(([key]) => key.startsWith(`${draft.type}.`))),
+        profileAnswers: draft.profileAnswers,
         aliases: aliasesText.split(',').map((value) => value.trim()).filter(Boolean).slice(0, 20),
         tags: [...new Set(tagsText.split(',').map((value) => value.trim().slice(0, 40)).filter(Boolean))].slice(0, 12),
       }, editingId ?? undefined);
@@ -233,7 +231,14 @@ export function EncyclopediaView({
     catch { setError('Não foi possível apagar a ficha agora.'); }
     finally { setSaving(false); }
   }
+  async function saveWorldbuilding() {
+    setWorldSaving(true); setError(''); setNotice('');
+    try { await onSaveWorldbuilding(worldDraft); setNotice('Fundamentos da obra salvos.'); }
+    catch (cause) { setError(cause instanceof Error ? cause.message : 'Não foi possível salvar os fundamentos.'); }
+    finally { setWorldSaving(false); }
+  }
   const hints = fieldHints[draft.type];
+  const activeTemplate = templateById(draft.templateId, draft.type);
 
   return <div className="mx-auto w-full max-w-[94rem] px-4 pb-16 pt-24 sm:px-8 lg:px-12">
     <header className="creative-page-hero px-6 py-7 sm:px-9 sm:py-9">
@@ -255,11 +260,35 @@ export function EncyclopediaView({
 
     <nav className="creative-page-tabs mt-6" aria-label="Seções da Enciclopédia">
       <button type="button" onClick={() => setSection('library')} aria-current={section === 'library' ? 'page' : undefined} className={cn('creative-page-tab', section === 'library' && 'creative-page-tab-active')}>Acervo</button>
+      <button type="button" onClick={() => setSection('foundation')} aria-current={section === 'foundation' ? 'page' : undefined} className={cn('creative-page-tab', section === 'foundation' && 'creative-page-tab-active')}>Fundamentos da obra</button>
       <button type="button" onClick={() => setSection('guide')} aria-current={section === 'guide' ? 'page' : undefined} className={cn('creative-page-tab', section === 'guide' && 'creative-page-tab-active')}>Guia e exemplos</button>
     </nav>
     {notice && !drawerOpen && <p className="mt-4 rounded-xl border border-success/20 bg-success-subtle px-4 py-3 text-xs text-success" role="status">{notice}</p>}
 
-    {section === 'guide' ? <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_21rem]">
+    {section === 'foundation' ? <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_22rem]">
+      <section className="space-y-5">
+        <article className="rounded-2xl border border-line bg-surface p-6 sm:p-8">
+          <div className="flex items-start gap-3"><span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-subtle text-accent"><Layers3 className="size-5" /></span><div><p className="text-[10px] font-bold uppercase tracking-[.18em] text-accent">Direção estrutural</p><h2 className="mt-1 font-serif text-2xl font-semibold text-ink">Como este mundo é construído</h2><p className="mt-2 text-sm leading-relaxed text-muted">Estas escolhas orientam o que aparece primeiro nas fichas e quais perguntas merecem mais atenção.</p></div></div>
+          <fieldset className="mt-7"><legend className="text-xs font-bold uppercase tracking-[.14em] text-muted">Abordagem</legend><div className="mt-3 grid gap-3 md:grid-cols-3">{methodologyOptions.map((option) => <label key={option.id} className={cn('cursor-pointer rounded-2xl border p-4', worldDraft.methodology === option.id ? 'border-accent bg-accent-subtle' : 'border-line bg-editor')}><input type="radio" name="methodology" className="sr-only" checked={worldDraft.methodology === option.id} onChange={() => setWorldDraft({ ...worldDraft, methodology: option.id })} /><span className="text-sm font-semibold text-ink">{option.label}</span><span className="mt-2 block text-xs leading-relaxed text-muted">{option.description}</span></label>)}</div></fieldset>
+          <fieldset className="mt-7"><legend className="text-xs font-bold uppercase tracking-[.14em] text-muted">Quociente MICE</legend><div className="mt-3 grid gap-3 sm:grid-cols-2">{miceOptions.map((option) => <label key={option.id} className={cn('cursor-pointer rounded-2xl border p-4', worldDraft.miceFocus === option.id ? 'border-accent bg-accent-subtle' : 'border-line bg-editor')}><input type="radio" name="mice" className="sr-only" checked={worldDraft.miceFocus === option.id} onChange={() => setWorldDraft({ ...worldDraft, miceFocus: option.id })} /><span className="text-sm font-semibold text-ink">{option.label}</span><span className="mt-1 block text-xs leading-relaxed text-muted">{option.description}</span></label>)}</div></fieldset>
+        </article>
+
+        <article className="rounded-2xl border border-line bg-surface p-6 sm:p-8">
+          <p className="text-[10px] font-bold uppercase tracking-[.18em] text-accent">Gênero como sistema</p><h2 className="mt-1 font-serif text-2xl font-semibold text-ink">Checklists de gênero</h2><p className="mt-2 text-sm text-muted">Escolha quantos módulos forem necessários. Obras híbridas mantêm todos os checklists lado a lado.</p>
+          <div className="mt-5 grid gap-2 sm:grid-cols-2">{genreModules.map((module) => { const selected = worldDraft.genres.includes(module.id); return <button key={module.id} type="button" onClick={() => setWorldDraft({ ...worldDraft, genres: selected ? worldDraft.genres.filter((id) => id !== module.id) : [...worldDraft.genres, module.id] })} className={cn('flex items-center justify-between gap-3 rounded-xl border px-4 py-3 text-left text-sm font-semibold', selected ? 'border-accent bg-accent-subtle text-accent' : 'border-line bg-editor text-ink')}><span>{module.title}</span>{selected && <Check className="size-4" />}</button>; })}</div>
+          <div className="mt-5">{worldDraft.genres.length ? <SchemaSections namespace="genre" sections={genreModules.filter((module) => worldDraft.genres.includes(module.id))} answers={worldDraft.genreAnswers} onChange={(genreAnswers) => setWorldDraft({ ...worldDraft, genreAnswers })} /> : <p className="rounded-xl border border-dashed border-line px-4 py-6 text-center text-xs text-muted">Selecione um gênero para abrir suas perguntas específicas.</p>}</div>
+        </article>
+
+        <article className="rounded-2xl border border-line bg-surface p-6 sm:p-8">
+          <p className="text-[10px] font-bold uppercase tracking-[.18em] text-accent">Bíblia de lore</p><h2 className="mt-1 font-serif text-2xl font-semibold text-ink">Arquitetura do universo</h2><p className="mt-2 text-sm text-muted">Da visão editorial às linhas do tempo, estas camadas sustentam o acervo.</p><div className="mt-5"><SchemaSections namespace="lore" sections={loreArchitecture} answers={worldDraft.loreAnswers} onChange={(loreAnswers) => setWorldDraft({ ...worldDraft, loreAnswers })} /></div>
+        </article>
+      </section>
+      <aside className="space-y-4 xl:sticky xl:top-24">
+        <article className="rounded-2xl border border-line bg-surface p-5"><p className="text-[10px] font-bold uppercase tracking-[.16em] text-accent">Ponto de vista</p><label className="mt-4 block text-xs font-semibold text-ink">Modo narrativo<select value={worldDraft.povMode} onChange={(event) => setWorldDraft({ ...worldDraft, povMode: event.target.value as WorldbuildingProfile['povMode'] })} className="mt-1.5 w-full rounded-xl border border-line bg-editor p-2.5 text-sm"><option value="first">Primeira pessoa</option><option value="third_limited">Terceira limitada</option><option value="third_omniscient">Terceira onisciente</option><option value="multiple">Múltiplos pontos de vista</option></select></label><label className="mt-5 block text-xs font-semibold text-ink">Distância psíquica · {worldDraft.psychicDistance}<input type="range" min={1} max={5} value={worldDraft.psychicDistance} onChange={(event) => setWorldDraft({ ...worldDraft, psychicDistance: Number(event.target.value) })} className="mt-3 w-full accent-accent" /></label><div className="mt-3 rounded-xl bg-editor p-3"><p className="text-xs font-semibold text-ink">{povDistances[worldDraft.psychicDistance - 1]?.label}</p><p className="mt-1 text-xs leading-relaxed text-muted">{povDistances[worldDraft.psychicDistance - 1]?.example}</p></div><label className="mt-4 flex items-start gap-3 rounded-xl border border-line p-3 text-xs leading-relaxed text-ink"><input type="checkbox" checked={worldDraft.incluingEnabled} onChange={(event) => setWorldDraft({ ...worldDraft, incluingEnabled: event.target.checked })} className="mt-0.5 size-4 accent-accent" /><span><strong className="block">Priorizar incluing</strong><span className="text-muted">Revelar o mundo por ação, contexto e vocabulário antes de recorrer a blocos explicativos.</span></span></label></article>
+        <button type="button" onClick={() => void saveWorldbuilding()} disabled={worldSaving} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-accent px-5 text-sm font-semibold text-on-accent disabled:opacity-60"><Check className="size-4" />{worldSaving ? 'Salvando…' : 'Salvar fundamentos'}</button>
+        {error && <p className="rounded-xl border border-danger/20 bg-danger-subtle p-3 text-xs text-danger">{error}</p>}
+      </aside>
+    </div> : section === 'guide' ? <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_21rem]">
       <section className="rounded-2xl border border-line bg-surface p-6 sm:p-8">
         <p className="text-[11px] font-bold uppercase tracking-[.18em] text-accent">Guia oficial</p>
         <h2 className="mt-2 font-serif text-3xl font-semibold text-ink">Um universo que se mantém coerente</h2>
@@ -306,7 +335,7 @@ export function EncyclopediaView({
           return <button key={entry.id} type="button" onClick={() => startEditing(entry)} aria-pressed={editingId === entry.id} style={{ borderLeftColor: colorHex[entry.color] ?? colorHex.violet }} className={cn('rounded-xl border border-line border-l-4 bg-editor p-4 text-left transition-colors hover:border-accent', editingId === entry.id && 'border-accent bg-accent-subtle')}>
             <span className="flex items-start justify-between gap-2"><span className="flex size-9 items-center justify-center rounded-lg bg-surface text-accent"><Icon className="size-4" /></span><span className="flex gap-1">{entry.isPinned && <Star className="size-4 fill-accent text-accent" aria-label="Em destaque" />}{entry.isSpoiler && <span className="rounded-full bg-surface-muted px-2 py-1 text-[10px] text-muted">Spoiler</span>}</span></span>
             <span className="mt-3 block truncate font-serif text-lg font-semibold text-ink">{entry.name}</span>
-            <span className="mt-1 block text-[10px] font-bold uppercase tracking-wider text-accent">{encyclopediaTypeLabels[entry.type]} · {statusLabels[entry.status ?? 'draft']}</span>
+            <span className="mt-1 block text-[10px] font-bold uppercase tracking-wider text-accent">{templateById(entry.templateId, entry.type).label} · {statusLabels[entry.status ?? 'draft']}</span>
             <span className="mt-3 block line-clamp-2 min-h-9 text-xs leading-relaxed text-muted">{entry.summary || entry.storyRole || 'Ficha em construção. Abra para acrescentar contexto.'}</span>
             <span className="mt-3 block border-t border-line pt-2 text-[10px] text-muted">{Object.keys(entry.profileAnswers ?? {}).length} respostas · Atualizada {updatedLabel(entry.updatedAt)}</span>
             {!!entry.tags?.length && <span className="mt-3 flex flex-wrap gap-1">{entry.tags.slice(0, 3).map((tag) => <span key={tag} className="rounded-full border border-line px-2 py-0.5 text-[10px] text-muted">{tag}</span>)}</span>}
@@ -316,32 +345,25 @@ export function EncyclopediaView({
 
     </div>}
     <Drawer open={drawerOpen} onOpenChange={setDrawerOpen} swipeDirection="right">
-      <DrawerContent className="bg-surface" style={{ '--drawer-content-width': 'min(100vw, 44rem)' } as React.CSSProperties}>
+      <DrawerContent className="bg-surface" style={{ '--drawer-content-width': 'min(100vw, 60rem)' } as React.CSSProperties}>
         <DrawerDescription className="sr-only">Crie ou edite uma ficha editorial da Enciclopédia.</DrawerDescription>
         <div className="flex items-center justify-between border-b border-line px-5 py-4 sm:px-7"><DrawerTitle className="font-serif text-xl font-semibold text-ink">{editingId ? 'Editar ficha' : 'Criar ficha'}</DrawerTitle><DrawerClose aria-label="Fechar formulário" className="rounded-full p-2 text-muted hover:bg-editor hover:text-ink"><X className="size-5" /></DrawerClose></div>
       <div className="flex min-h-0 flex-1 flex-col p-5 sm:p-7">
         <div className="flex items-start justify-between gap-3"><div><p className="text-[10px] font-bold uppercase tracking-[.16em] text-accent">{editingId ? 'Editar ficha' : 'Nova ficha'}</p><h2 className="mt-1 font-serif text-2xl font-semibold text-ink">{editingId ? draft.name || 'Sem nome' : 'Registrar no universo'}</h2></div><span className="rounded-full bg-accent-subtle px-2 py-1 text-[10px] font-semibold text-accent">{persistence === 'cloud' ? 'Na nuvem' : 'Neste navegador'}</span></div>
         {notice && <p className="mt-3 rounded-xl bg-success-subtle p-3 text-xs text-success" role="status">{notice}</p>}
         <div className="mt-5 min-h-0 flex-1 space-y-5 overflow-y-auto pr-2 pb-6 workspace-scrollbar">
-          <div className="grid grid-cols-2 gap-3"><label className="text-xs font-semibold text-ink">Tipo<select value={draft.type} onChange={(event) => setDraft({ ...draft, type: event.target.value as EncyclopediaEntryType })} className="mt-1.5 w-full rounded-xl border border-line bg-editor p-2.5 text-sm text-ink">{entryTypes.map((type) => <option key={type} value={type}>{encyclopediaTypeLabels[type]}</option>)}</select></label><label className="text-xs font-semibold text-ink">Situação<select value={draft.status} onChange={(event) => setDraft({ ...draft, status: event.target.value as EncyclopediaStatus })} className="mt-1.5 w-full rounded-xl border border-line bg-editor p-2.5 text-sm text-ink">{Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label></div>
+          <div className="grid grid-cols-2 gap-3"><label className="text-xs font-semibold text-ink">Categoria<select value={draft.type} onChange={(event) => { const type = event.target.value as EncyclopediaEntryType; setDraft({ ...draft, type, templateId: templatesForType(type)[0]?.id ?? '', profileAnswers: {} }); }} className="mt-1.5 w-full rounded-xl border border-line bg-editor p-2.5 text-sm text-ink">{entryTypes.map((type) => <option key={type} value={type}>{encyclopediaTypeLabels[type]}</option>)}</select></label><label className="text-xs font-semibold text-ink">Situação<select value={draft.status} onChange={(event) => setDraft({ ...draft, status: event.target.value as EncyclopediaStatus })} className="mt-1.5 w-full rounded-xl border border-line bg-editor p-2.5 text-sm text-ink">{Object.entries(statusLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label></div>
+          <fieldset><legend className="text-xs font-semibold text-ink">Modelo de ficha</legend><div className="mt-2 grid gap-2 sm:grid-cols-2">{templatesForType(draft.type).map((template) => <button key={template.id} type="button" onClick={() => setDraft({ ...draft, templateId: template.id })} className={cn('rounded-xl border p-3 text-left', draft.templateId === template.id ? 'border-accent bg-accent-subtle' : 'border-line bg-editor')}><span className="block text-sm font-semibold text-ink">{template.label}</span><span className="mt-1 block text-xs leading-relaxed text-muted">{template.description}</span></button>)}</div></fieldset>
           <TextField label="Nome *" value={draft.name} onChange={(name) => setDraft({ ...draft, name })} maxLength={120} placeholder="Nome pelo qual será citado com @" />
           <TextField label="Outros nomes" value={aliasesText} onChange={setAliasesText} maxLength={500} placeholder="Apelidos separados por vírgula" />
           <TextField label="Resumo rápido" value={draft.summary} onChange={(summary) => setDraft({ ...draft, summary })} maxLength={1000} rows={3} placeholder="O essencial para lembrar durante a escrita." />
           <TextField label="Etiquetas" value={tagsText} onChange={setTagsText} maxLength={500} placeholder="Ex.: núcleo central, mistério" />
           <fieldset><legend className="text-xs font-semibold text-ink">Cor da ficha</legend><div className="mt-2 flex flex-wrap gap-2">{colorOptions.map((option) => <button key={option.value} type="button" onClick={() => setDraft({ ...draft, color: option.value })} title={option.label} aria-label={option.label} aria-pressed={draft.color === option.value} className={cn('flex size-8 items-center justify-center rounded-full border-2 border-surface ring-1', option.style, draft.color === option.value ? 'ring-accent' : 'ring-line')}>{draft.color === option.value && <Check className="size-4 text-white" />}</button>)}</div></fieldset>
           <div className="grid grid-cols-2 gap-3"><label className="flex items-center gap-2 rounded-xl border border-line p-3 text-xs text-ink"><input type="checkbox" checked={draft.isPinned} onChange={(event) => setDraft({ ...draft, isPinned: event.target.checked })} className="accent-accent" />Destacar</label><label className="flex items-center gap-2 rounded-xl border border-line p-3 text-xs text-ink"><input type="checkbox" checked={draft.isSpoiler} onChange={(event) => setDraft({ ...draft, isSpoiler: event.target.checked })} className="accent-accent" />Spoiler</label></div>
-          <section className="rounded-xl border border-accent/20 bg-accent-subtle/30 p-4" aria-label={`Perguntas para ${encyclopediaTypeLabels[draft.type]}`}>
-            <p className="text-[10px] font-bold uppercase tracking-[.16em] text-accent">Perguntas de {encyclopediaTypeLabels[draft.type]}</p>
-            <p className="mt-1 text-xs text-muted">Responda ao que ajuda a escrever; todos os campos são opcionais.</p>
-            <div className="mt-4 space-y-5">{questions[draft.type].map((question) => {
-              const key = `${draft.type}.${question.id}`;
-              const answer = draft.profileAnswers[key];
-              const update = (value: string | string[] | boolean) => setDraft((current) => ({ ...current, profileAnswers: { ...current.profileAnswers, [key]: value } }));
-              if (question.kind === 'list') return <ListQuestion key={key} question={question} values={Array.isArray(answer) ? answer : []} onChange={update} />;
-              if (question.kind === 'check') return <label key={key} className="flex items-center gap-3 rounded-xl border border-line bg-surface p-3 text-xs font-medium text-ink"><input type="checkbox" checked={answer === true} onChange={(event) => update(event.target.checked)} className="size-4 accent-accent" />{question.label}</label>;
-              if (question.kind === 'select') return <label key={key} className="block text-xs font-semibold text-ink">{question.label}<select value={typeof answer === 'string' ? answer : ''} onChange={(event) => update(event.target.value)} className="mt-1.5 w-full rounded-xl border border-line bg-surface p-2.5 text-sm text-ink"><option value="">Selecione</option>{question.options?.map((option) => <option key={option}>{option}</option>)}</select></label>;
-              return <TextField key={key} label={question.label} value={typeof answer === 'string' ? answer : ''} onChange={update} maxLength={500} placeholder="Sua resposta" />;
-            })}</div>
+          <section className="rounded-2xl border border-accent/20 bg-accent-subtle/20 p-4 sm:p-5" aria-label={`Perguntas de ${activeTemplate.label}`}>
+            <p className="text-[10px] font-bold uppercase tracking-[.16em] text-accent">Roteiro editorial · {activeTemplate.label}</p>
+            <p className="mt-1 text-xs leading-relaxed text-muted">{activeTemplate.description} Responda somente ao que fortalece a obra agora.</p>
+            <div className="mt-4"><SchemaSections namespace={activeTemplate.id} sections={activeTemplate.sections} answers={draft.profileAnswers} onChange={(profileAnswers) => setDraft({ ...draft, profileAnswers })} /></div>
           </section>
           <details className="group rounded-xl border border-line" open><summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-ink">Construção narrativa</summary><div className="space-y-4 border-t border-line p-4">
             <TextField label={hints.role} value={draft.storyRole} onChange={(storyRole) => setDraft({ ...draft, storyRole })} maxLength={500} rows={2} placeholder="Por que isso importa para a história?" />

@@ -2,7 +2,7 @@ import 'server-only';
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import { mapEncyclopediaEntry, type WritingProject } from '@/features/writing/types';
+import { defaultWorldbuildingProfile, mapEncyclopediaEntry, parseProfileAnswers, type WritingProject, type WorldbuildingProfile } from '@/features/writing/types';
 import { defaultExtensionRuntime, extensionCatalog, type ExtensionId, type ExtensionRuntimeState } from '@/features/extensions/catalog';
 import { activeEntitlementIds } from '@/features/extensions/entitlements';
 import type { Database } from '@/types/database.generated';
@@ -116,7 +116,7 @@ export async function loadWritingProject(
     });
   }
 
-  const [documentsResult, encyclopediaResult] = await Promise.all([
+  const [documentsResult, encyclopediaResult, worldbuildingResult] = await Promise.all([
     supabase
       .from('writing_documents')
       .select('*')
@@ -129,14 +129,37 @@ export async function loadWritingProject(
       .eq('owner_id', userId)
       .eq('work_id', work.id)
       .order('name', { ascending: true }),
+    supabase
+      .from('worldbuilding_profiles')
+      .select('*')
+      .eq('owner_id', userId)
+      .eq('work_id', work.id)
+      .maybeSingle(),
   ]);
 
   const { data: existingDocuments, error: documentsReadError } = documentsResult;
   const { data: encyclopediaRows, error: encyclopediaReadError } = encyclopediaResult;
+  const { data: worldbuildingRow, error: worldbuildingReadError } = worldbuildingResult;
 
   if (documentsReadError) throw documentsReadError;
   const encyclopediaTableUnavailable = encyclopediaReadError?.code === 'PGRST205';
   if (encyclopediaReadError && !encyclopediaTableUnavailable) throw encyclopediaReadError;
+  const worldbuildingTableUnavailable = worldbuildingReadError?.code === 'PGRST205';
+  if (worldbuildingReadError && !worldbuildingTableUnavailable) throw worldbuildingReadError;
+
+  const worldbuildingProfile: WorldbuildingProfile = worldbuildingRow ? {
+    methodology: ['top_down', 'bottom_up', 'inside_out'].includes(worldbuildingRow.methodology)
+      ? worldbuildingRow.methodology as WorldbuildingProfile['methodology'] : defaultWorldbuildingProfile.methodology,
+    miceFocus: ['milieu', 'idea', 'character', 'event'].includes(worldbuildingRow.mice_focus)
+      ? worldbuildingRow.mice_focus as WorldbuildingProfile['miceFocus'] : defaultWorldbuildingProfile.miceFocus,
+    genres: worldbuildingRow.genres ?? [],
+    povMode: ['first', 'third_limited', 'third_omniscient', 'multiple'].includes(worldbuildingRow.pov_mode)
+      ? worldbuildingRow.pov_mode as WorldbuildingProfile['povMode'] : defaultWorldbuildingProfile.povMode,
+    psychicDistance: worldbuildingRow.psychic_distance,
+    incluingEnabled: worldbuildingRow.incluing_enabled,
+    genreAnswers: parseProfileAnswers(worldbuildingRow.genre_answers),
+    loreAnswers: parseProfileAnswers(worldbuildingRow.lore_answers),
+  } : defaultWorldbuildingProfile;
 
   const documents = existingDocuments ?? [];
   if (!documents.length) throw new Error('A obra foi criada sem documentos iniciais.');
@@ -151,6 +174,7 @@ export async function loadWritingProject(
     title: work.title,
     documents: mappedDocuments,
     encyclopediaEntries: (encyclopediaRows ?? []).map(mapEncyclopediaEntry),
+    worldbuildingProfile,
     encyclopediaPersistence: encyclopediaTableUnavailable ? 'local' : 'cloud',
     activeDocumentId,
     updatedAt: work.updated_at,

@@ -38,6 +38,12 @@ export function ExtensionsSettings() {
     { key: 'showCounts' as const, icon: BarChart3, title: 'Contagens do capítulo', description: 'Mostra total de referências, entidades únicas e distribuição por tipo.' },
     { key: 'showMetadata' as const, icon: Tags, title: 'Metadados no Inspetor', description: 'Exibe tipo, aliases e última atualização da entidade selecionada.' },
     { key: 'openContextOnClick' as const, icon: Eye, title: 'Abrir contexto ao clicar', description: 'Selecionar uma menção abre imediatamente sua ficha contextual.' },
+    { key: 'hoverPreview' as const, icon: Eye, title: 'Prévia ao passar o mouse', description: 'Mostra tipo e resumo da ficha sem tirar o foco do manuscrito.' },
+    { key: 'searchAliases' as const, icon: Tags, title: 'Buscar também por aliases', description: 'Encontra apelidos, títulos e nomes alternativos ao digitar @.' },
+    { key: 'groupByType' as const, icon: Puzzle, title: 'Agrupar sugestões por tipo', description: 'Mantém personagens, lugares, eventos e outros tipos próximos na lista.' },
+    { key: 'prioritizePinned' as const, icon: BadgeCheck, title: 'Priorizar fichas destacadas', description: 'Coloca elementos centrais do universo antes dos demais resultados.' },
+    { key: 'showCanonStatus' as const, icon: BadgeCheck, title: 'Mostrar situação editorial', description: 'Identifica cânone e rascunho diretamente nas sugestões.' },
+    { key: 'warnSpoilers' as const, icon: EyeOff, title: 'Sinalizar spoilers', description: 'Exibe um aviso discreto antes de inserir fichas com revelações.' },
   ];
 
   return (
@@ -60,21 +66,15 @@ export function ExtensionsSettings() {
           <div className={cn('p-5 transition-opacity', !settings.enabled && 'pointer-events-none opacity-45')}>
             <fieldset disabled={!settings.enabled || !hydrated}>
               <legend className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Visualização no manuscrito</legend>
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <label className={cn('cursor-pointer rounded-control border p-4 transition-colors', settings.appearance === 'highlighted' ? 'border-accent bg-accent-subtle' : 'border-line bg-surface hover:border-line-strong')}>
-                  <input type="radio" name="mention-appearance" value="highlighted" checked={settings.appearance === 'highlighted'} onChange={() => updateSettings({ appearance: 'highlighted' })} className="sr-only" />
-                  <span className="flex items-center gap-2 text-sm font-medium text-ink"><Eye className="size-4 text-accent" />Destacado</span>
-                  <span className="mt-3 block font-serif text-sm text-ink">Ela encontrou <mark className="rounded bg-accent-subtle px-1.5 py-0.5 font-sans text-xs font-semibold text-accent">@Amélia</mark> na estação.</span>
-                  <span className="mt-2 block text-xs leading-relaxed text-muted">Mostra claramente quais trechos estão vinculados.</span>
-                </label>
-                <label className={cn('cursor-pointer rounded-control border p-4 transition-colors', settings.appearance === 'plain' ? 'border-accent bg-accent-subtle' : 'border-line bg-surface hover:border-line-strong')}>
-                  <input type="radio" name="mention-appearance" value="plain" checked={settings.appearance === 'plain'} onChange={() => updateSettings({ appearance: 'plain' })} className="sr-only" />
-                  <span className="flex items-center gap-2 text-sm font-medium text-ink"><EyeOff className="size-4 text-accent" />Texto comum</span>
-                  <span className="mt-3 block font-serif text-sm text-ink">Ela encontrou <span className="underline decoration-dotted decoration-muted underline-offset-4">Amélia</span> na estação.</span>
-                  <span className="mt-2 block text-xs leading-relaxed text-muted">Oculta o @ e integra a referência à leitura.</span>
-                </label>
-              </div>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{([
+                ['highlighted', 'Destacado', <mark key="highlighted" className="rounded bg-accent-subtle px-1.5 py-0.5 font-sans text-xs font-semibold text-accent">@Amélia</mark>, 'Mais visível durante a revisão.'],
+                ['plain', 'Texto comum', <span key="plain" className="underline decoration-dotted underline-offset-4">Amélia</span>, 'Oculta o @ durante a leitura.'],
+                ['underline', 'Sublinhado', <span key="underline" className="font-sans text-xs font-semibold text-accent underline underline-offset-4">@Amélia</span>, 'Vínculo editorial mais leve.'],
+                ['pill', 'Cápsula', <span key="pill" className="rounded-full border border-accent/20 bg-accent-subtle px-2 py-0.5 font-sans text-xs font-semibold text-accent">@Amélia</span>, 'Ideal para universos densos.'],
+              ] as const).map(([value, label, preview, description]) => <label key={value} className={cn('cursor-pointer rounded-control border p-4 transition-colors', settings.appearance === value ? 'border-accent bg-accent-subtle' : 'border-line bg-surface hover:border-line-strong')}><input type="radio" name="mention-appearance" value={value} checked={settings.appearance === value} onChange={() => updateSettings({ appearance: value })} className="sr-only" /><span className="text-sm font-medium text-ink">{label}</span><span className="mt-3 block font-serif text-sm text-ink">Ela encontrou {preview}.</span><span className="mt-2 block text-xs leading-relaxed text-muted">{description}</span></label>)}</div>
             </fieldset>
+
+            <fieldset disabled={!settings.enabled || !hydrated} className="mt-6 border-t border-line pt-5"><legend className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Painel de sugestões</legend><div className="mt-3 grid gap-3 sm:grid-cols-2">{([['rich', 'Detalhado', 'Resumo, aliases, cânone e alertas aparecem antes da inserção.'], ['compact', 'Compacto', 'Mais resultados em uma lista curta para escrita rápida.']] as const).map(([value, title, description]) => <label key={value} className={cn('cursor-pointer rounded-control border p-4', settings.suggestionView === value ? 'border-accent bg-accent-subtle' : 'border-line bg-surface')}><input type="radio" name="suggestion-view" className="sr-only" checked={settings.suggestionView === value} onChange={() => updateSettings({ suggestionView: value })} /><span className="text-sm font-medium text-ink">{title}</span><span className="mt-1 block text-xs leading-relaxed text-muted">{description}</span></label>)}</div></fieldset>
 
             <div className="mt-6 border-t border-line pt-2">
               {options.map(({ key, icon: Icon, title, description }) => <div key={key} className="flex items-start gap-3 border-b border-line py-4 last:border-b-0"><span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-surface-muted text-accent"><Icon className="size-4" /></span><div className="min-w-0 flex-1"><p className="text-sm font-medium text-ink">{title}</p><p className="mt-1 text-xs leading-relaxed text-muted">{description}</p></div><Toggle checked={settings[key]} disabled={!settings.enabled || !hydrated} onChange={(checked) => updateSettings({ [key]: checked })} /></div>)}
