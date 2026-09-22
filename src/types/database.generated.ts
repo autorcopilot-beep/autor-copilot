@@ -53,6 +53,16 @@ export type Database = {
       encyclopedia_entries: {
         Row: {
           aliases: string[]
+          appearance: string
+          connections: string
+          history: string
+          is_pinned: boolean
+          is_spoiler: boolean
+          rules: string
+          status: "draft" | "canon" | "archived"
+          story_role: string
+          tags: string[]
+          profile_answers: Json
           color: string
           created_at: string
           details: string
@@ -66,6 +76,16 @@ export type Database = {
         }
         Insert: {
           aliases?: string[]
+          appearance?: string
+          connections?: string
+          history?: string
+          is_pinned?: boolean
+          is_spoiler?: boolean
+          rules?: string
+          status?: "draft" | "canon" | "archived"
+          story_role?: string
+          tags?: string[]
+          profile_answers?: Json
           color?: string
           created_at?: string
           details?: string
@@ -79,6 +99,16 @@ export type Database = {
         }
         Update: {
           aliases?: string[]
+          appearance?: string
+          connections?: string
+          history?: string
+          is_pinned?: boolean
+          is_spoiler?: boolean
+          rules?: string
+          status?: "draft" | "canon" | "archived"
+          story_role?: string
+          tags?: string[]
+          profile_answers?: Json
           color?: string
           created_at?: string
           details?: string

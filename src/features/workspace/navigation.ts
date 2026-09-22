@@ -1,24 +1,11 @@
 import {
   BarChart3,
-  BookOpen,
-  Bot,
-  BrainCircuit,
-  CircleHelp,
-  Coins,
-  Download,
-  FileSearch,
-  FlaskConical,
-  FolderKanban,
   GitBranch,
   Library,
   LifeBuoy,
   Map,
-  MessagesSquare,
-  Network,
   PenLine,
-  ScrollText,
-  Sparkles,
-  Timer,
+  Wrench,
   UserRound,
 } from 'lucide-react';
 
@@ -35,28 +22,11 @@ export type WorkspaceNavItem = {
 export const workNavigation: WorkspaceNavItem[] = [
   { label: 'Biblioteca', icon: Library, tag: null, href: '/library/all', children: [{ label: 'Todas as obras', tag: null, href: '/library/all' }, { label: 'Recentes', tag: null, href: '/library/recent' }, { label: 'Favoritas', tag: null, href: '/library/favorites' }, { label: 'Arquivadas', tag: null, href: '/library/archived' }, { label: 'Catálogos', tag: null, href: '/library/catalogs' }] },
   { label: 'Visão Geral', icon: BarChart3, tag: null, href: '/overview/dashboard', children: [{ label: 'Painel da obra', tag: null, href: '/overview/dashboard' }, { label: 'Atividade', tag: null, href: '/overview/activity' }, { label: 'Metas de escrita', tag: null, href: '/overview/goals' }] },
-  { label: 'Escrever', icon: PenLine, tag: null, href: '/write/editor', children: [{ label: 'Editor', tag: null, href: '/write/editor' }, { label: 'Capítulos', tag: null, href: '/write/chapters' }, { label: 'Cenas', tag: null, href: '/write/scenes' }, { label: 'Notas', tag: null, href: '/write/notes' }] },
-  { label: 'Planejar', icon: FolderKanban, tag: 'Em breve', children: [{ label: 'Estrutura', tag: 'Em breve' }, { label: 'Enredo', tag: 'Em breve' }, { label: 'Personagens', tag: 'Em breve' }, { label: 'Cenários', tag: 'Em breve' }] },
-  { label: 'Enciclopédia', icon: BookOpen, tag: null, href: '/write/encyclopedia', children: [{ label: 'Mundo da obra', tag: null, href: '/write/encyclopedia' }] },
-  { label: 'Cronologia', icon: Timer, tag: 'Em breve', children: [{ label: 'Linha do tempo', tag: 'Em breve' }, { label: 'Eventos', tag: 'Em breve' }, { label: 'Calendários', tag: 'Em breve' }] },
-  { label: 'Relações', icon: Network, tag: 'Em breve', children: [{ label: 'Mapa de relações', tag: 'Em breve' }, { label: 'Núcleos', tag: 'Em breve' }, { label: 'Conflitos', tag: 'Em breve' }] },
-  { label: 'Pesquisa', icon: FileSearch, tag: 'Em breve', children: [{ label: 'Referências', tag: 'Em breve' }, { label: 'Fontes', tag: 'Em breve' }, { label: 'Arquivos', tag: 'Em breve' }] },
-  { label: 'Analisar', icon: Sparkles, tag: 'Em breve', children: [{ label: 'Métricas', tag: 'Em breve' }, { label: 'Ritmo', tag: 'Em breve' }, { label: 'Continuidade', tag: 'Em breve' }, { label: 'Consistência', tag: 'Em breve' }] },
-  { label: 'Revisar', icon: ScrollText, tag: 'Em breve', children: [{ label: 'Ortografia', tag: 'Em breve' }, { label: 'Estilo', tag: 'Em breve' }, { label: 'Comentários', tag: 'Em breve' }, { label: 'Versões', tag: 'Em breve' }] },
-  { label: 'Exportar', icon: Download, tag: 'Em breve', children: [{ label: 'PDF', tag: 'Em breve' }, { label: 'DOCX', tag: 'Em breve' }, { label: 'EPUB', tag: 'Em breve' }, { label: 'Impressão', tag: 'Em breve' }] },
-];
-
-export const platformNavigation = [
-  { label: 'Playground', icon: FlaskConical, tag: 'Em breve' as const },
-  { label: 'Documentação', icon: ScrollText, tag: 'Em breve' as const },
-  { label: 'Comunidade', icon: MessagesSquare, tag: 'Em breve' as const },
-  { label: 'Ajuda', icon: CircleHelp, tag: 'Em breve' as const },
+  { label: 'Ambiente de escrita', icon: PenLine, tag: null, href: '/write/editor', children: [{ label: 'Editor', tag: null, href: '/write/editor' }, { label: 'Capítulos', tag: null, href: '/write/chapters' }, { label: 'Cenas', tag: null, href: '/write/scenes' }, { label: 'Notas', tag: null, href: '/write/notes' }, { label: 'Enciclopédia', tag: null, href: '/write/encyclopedia' }] },
+  { label: 'Outras ferramentas', icon: Wrench, tag: 'Em breve', children: [{ label: 'Planejar', tag: 'Em breve' }, { label: 'Cronologia', tag: 'Em breve' }, { label: 'Relações', tag: 'Em breve' }, { label: 'Pesquisa', tag: 'Em breve' }, { label: 'Analisar', tag: 'Em breve' }, { label: 'Revisar', tag: 'Em breve' }, { label: 'Exportar', tag: 'Em breve' }] },
 ];
 
 export const footerNavigation = [
-  { label: 'Autor Copilot IA', icon: Bot, tag: 'Em breve' as const },
-  { label: 'Créditos e uso', icon: Coins, tag: 'Em breve' as const },
-  { label: 'Memória e armazenamento', icon: BrainCircuit, tag: 'Em breve' as const },
   { label: 'Configurações da conta', icon: UserRound, tag: null, href: '/account' },
 ];
 

@@ -2,7 +2,7 @@ import 'server-only';
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 
-import type { EncyclopediaEntry, WritingProject } from '@/features/writing/types';
+import { mapEncyclopediaEntry, type WritingProject } from '@/features/writing/types';
 import { defaultExtensionRuntime, extensionCatalog, type ExtensionId, type ExtensionRuntimeState } from '@/features/extensions/catalog';
 import { activeEntitlementIds } from '@/features/extensions/entitlements';
 import type { Database } from '@/types/database.generated';
@@ -52,19 +52,6 @@ export async function loadExtensionRuntimeAccess(supabase: SupabaseClient<Databa
     return true;
   }).map((extension) => extension.id));
   return Object.fromEntries(extensionCatalog.map((extension) => [extension.id, available.has(extension.id) && installs.get(extension.id) === true])) as Record<ExtensionId, boolean>;
-}
-
-function mapEncyclopediaEntry(row: Database['public']['Tables']['encyclopedia_entries']['Row']): EncyclopediaEntry {
-  return {
-    id: row.id,
-    type: row.entry_type,
-    name: row.name,
-    aliases: row.aliases,
-    summary: row.summary,
-    details: row.details,
-    color: row.color,
-    updatedAt: row.updated_at,
-  };
 }
 
 export async function loadWritingProject(

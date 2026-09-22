@@ -23,7 +23,6 @@ import {
   Heading2,
   Italic,
   LayoutList,
-  ListTree,
   MoreHorizontal,
   PanelLeftClose,
   PanelLeftOpen,
@@ -34,7 +33,6 @@ import {
   Redo2,
   Save,
   SeparatorHorizontal,
-  Settings2,
   ShieldCheck,
   StickyNote,
   Tags,
@@ -70,6 +68,8 @@ import {
 import {
   encyclopediaTypeLabels,
   kindLabels,
+  mapEncyclopediaEntry,
+  parseProfileAnswers,
   statusLabels,
   type EncyclopediaEntry,
   type WritingDocument,
@@ -104,11 +104,11 @@ type PagePreset = 'continuous' | 'a5' | 'royal' | 'trade' | 'a4';
 type ParagraphSpacing = 'compact' | 'book' | 'airy';
 
 const pagePresets: Record<PagePreset, { label: string; width: string; minHeight: string; pageHeight: number | null }> = {
-  continuous: { label: 'Canvas contínuo', width: '54rem', minHeight: 'calc(100dvh - 9rem)', pageHeight: null },
-  a5: { label: 'A5 · 148 × 210 mm', width: '559px', minHeight: '794px', pageHeight: 794 },
-  royal: { label: 'Royal · 156 × 234 mm', width: '590px', minHeight: '884px', pageHeight: 884 },
-  trade: { label: 'Livro · 152 × 229 mm', width: '575px', minHeight: '866px', pageHeight: 866 },
-  a4: { label: 'A4 · 210 × 297 mm', width: '794px', minHeight: '1123px', pageHeight: 1123 },
+  continuous: { label: 'Canvas contínuo', width: '54rem', minHeight: 'auto', pageHeight: null },
+  a5: { label: 'A5 · 148 × 210 mm', width: '559px', minHeight: 'auto', pageHeight: 794 },
+  royal: { label: 'Royal · 156 × 234 mm', width: '590px', minHeight: 'auto', pageHeight: 884 },
+  trade: { label: 'Livro · 152 × 229 mm', width: '575px', minHeight: 'auto', pageHeight: 866 },
+  a4: { label: 'A4 · 210 × 297 mm', width: '794px', minHeight: 'auto', pageHeight: 1123 },
 };
 
 function sanitizeEditorHtml(html: string) {
@@ -161,6 +161,16 @@ function safeEncyclopediaEntries(value: string | null): EncyclopediaEntry[] {
         summary: typeof entry.summary === 'string' ? entry.summary.slice(0, 1000) : '',
         details: typeof entry.details === 'string' ? entry.details.slice(0, 30000) : '',
         color: typeof entry.color === 'string' ? entry.color : 'violet',
+        status: entry.status === 'canon' || entry.status === 'archived' ? entry.status : 'draft',
+        tags: Array.isArray(entry.tags) ? entry.tags.filter((tag): tag is string => typeof tag === 'string').slice(0, 12) : [],
+        storyRole: typeof entry.storyRole === 'string' ? entry.storyRole.slice(0, 500) : '',
+        appearance: typeof entry.appearance === 'string' ? entry.appearance.slice(0, 4000) : '',
+        history: typeof entry.history === 'string' ? entry.history.slice(0, 8000) : '',
+        connections: typeof entry.connections === 'string' ? entry.connections.slice(0, 4000) : '',
+        rules: typeof entry.rules === 'string' ? entry.rules.slice(0, 4000) : '',
+        isPinned: entry.isPinned === true,
+        isSpoiler: entry.isSpoiler === true,
+        profileAnswers: parseProfileAnswers(entry.profileAnswers),
         updatedAt: typeof entry.updatedAt === 'string' ? entry.updatedAt : new Date().toISOString(),
       }];
     });
@@ -311,19 +321,19 @@ function WritingCollection({
   const Icon = view === 'notes' ? StickyNote : LayoutList;
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-5 py-8 sm:px-8 lg:py-12">
-      <div className="flex flex-col gap-5 border-b border-line pb-6 sm:flex-row sm:items-end sm:justify-between">
+    <div className="mx-auto w-full max-w-6xl px-5 py-8 sm:px-8 lg:py-12">
+      <div className="flex flex-col gap-5 rounded-3xl border border-line bg-editor p-6 shadow-soft sm:flex-row sm:items-end sm:justify-between sm:p-8">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">Meu livro</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-accent">Organização da obra</p>
           <h1 className="mt-2 font-serif text-3xl font-semibold text-ink sm:text-4xl">{config.title}</h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">{config.description}</p>
         </div>
         <button type="button" onClick={() => onCreate(config.createKind)} className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-control bg-accent px-4 text-sm font-medium text-on-accent hover:bg-accent-hover"><Plus className="size-4" />{config.action}</button>
       </div>
       {visibleDocuments.length ? (
-        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {visibleDocuments.map((item) => (
-            <button key={item.id} type="button" onClick={() => onOpen(item.id)} className="group rounded-card border border-line bg-editor p-5 text-left shadow-soft transition-colors hover:border-accent">
+            <button key={item.id} type="button" onClick={() => onOpen(item.id)} className="group rounded-2xl border border-line bg-editor p-6 text-left shadow-soft transition-[border-color,transform,box-shadow] hover:-translate-y-0.5 hover:border-accent hover:shadow-floating">
               <div className="flex items-start gap-3">
                 <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-accent-subtle text-accent"><Icon className="size-4" /></span>
                 <span className="min-w-0 flex-1">
@@ -336,7 +346,7 @@ function WritingCollection({
           ))}
         </div>
       ) : (
-        <div className="mt-8 rounded-card border border-dashed border-line-strong bg-editor px-6 py-12 text-center">
+        <div className="mt-8 rounded-2xl border border-dashed border-line-strong bg-editor px-6 py-16 text-center shadow-soft">
           <Icon className="mx-auto size-7 text-accent" />
           <p className="mt-4 font-serif text-xl font-semibold text-ink">Esta seção ainda está em branco</p>
           <p className="mx-auto mt-2 max-w-md text-sm text-muted">Crie o primeiro item para começar a organizar esta parte da obra.</p>
@@ -376,7 +386,7 @@ export function WritingStudio({
   const [showInspector, setShowInspector] = useState(true);
   const [distractionFree, setDistractionFree] = useState(false);
   const [typewriterMode, setTypewriterMode] = useState(false);
-  const [editorActive, setEditorActive] = useState(false);
+  const [formatSelection, setFormatSelection] = useState<{ left: number; top: number } | null>(null);
   const [editorEmpty, setEditorEmpty] = useState(true);
   const [pagePreset, setPagePreset] = useState<PagePreset>('continuous');
   const [wideMargins, setWideMargins] = useState(false);
@@ -406,7 +416,7 @@ export function WritingStudio({
     if (mentionQuery === null) return [];
     const normalized = mentionQuery.toLocaleLowerCase('pt-BR');
     return project.encyclopediaEntries
-      .filter((entry) => [entry.name, ...entry.aliases].some((value) => value.toLocaleLowerCase('pt-BR').includes(normalized)))
+      .filter((entry) => entry.status !== 'archived' && [entry.name, ...entry.aliases].some((value) => value.toLocaleLowerCase('pt-BR').includes(normalized)))
       .slice(0, 7);
   }, [mentionQuery, project.encyclopediaEntries]);
   const mentionStats = useMemo(() => {
@@ -510,19 +520,20 @@ export function WritingStudio({
           summary: entry.summary,
           details: entry.details,
           color: entry.color,
+          status: entry.status,
+          tags: entry.tags,
+          story_role: entry.storyRole,
+          appearance: entry.appearance,
+          history: entry.history,
+          connections: entry.connections,
+          rules: entry.rules,
+          is_pinned: entry.isPinned,
+          is_spoiler: entry.isSpoiler,
+          profile_answers: entry.profileAnswers,
         })), { onConflict: 'id' })
         .select('*');
       if (error || !data) return;
-      const migrated = data.map((entry): EncyclopediaEntry => ({
-        id: entry.id,
-        type: entry.entry_type,
-        name: entry.name,
-        aliases: entry.aliases,
-        summary: entry.summary,
-        details: entry.details,
-        color: entry.color,
-        updatedAt: entry.updated_at,
-      }));
+      const migrated = data.map(mapEncyclopediaEntry);
       window.localStorage.removeItem(encyclopediaStorageKey);
       setProject((current) => ({ ...current, encyclopediaEntries: migrated }));
     }, 0);
@@ -659,6 +670,29 @@ export function WritingStudio({
     }
   }, [typewriterMode, updateActiveDocument]);
 
+  const updateFormatSelection = useCallback(() => {
+    const selection = window.getSelection();
+    const editor = editorRef.current;
+    if (!editor || !selection?.rangeCount || selection.isCollapsed || !selection.toString().trim() || !editor.contains(selection.anchorNode) || !editor.contains(selection.focusNode)) {
+      setFormatSelection(null);
+      return;
+    }
+    const rect = selection.getRangeAt(0).getClientRects()[0] ?? selection.getRangeAt(0).getBoundingClientRect();
+    const toolbarWidth = Math.min(410, window.innerWidth - 24);
+    const left = Math.max(toolbarWidth / 2 + 12, Math.min(rect.left + rect.width / 2, window.innerWidth - toolbarWidth / 2 - 12));
+    const top = rect.top > 72 ? rect.top - 58 : rect.bottom + 10;
+    setFormatSelection({ left, top });
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('selectionchange', updateFormatSelection);
+    window.addEventListener('resize', updateFormatSelection);
+    return () => {
+      document.removeEventListener('selectionchange', updateFormatSelection);
+      window.removeEventListener('resize', updateFormatSelection);
+    };
+  }, [updateFormatSelection]);
+
   const detectMention = useCallback(() => {
     if (!extensionRuntime['lab.context-mentions'] || !mentionSettings.enabled || !editorRef.current) {
       setMentionQuery(null);
@@ -792,6 +826,7 @@ export function WritingStudio({
       updatedAt: new Date().toISOString(),
     };
     renderedDocumentRef.current = '';
+    setFormatSelection(null);
     setProject((current) => ({
       ...current,
       activeDocumentId: id,
@@ -802,6 +837,7 @@ export function WritingStudio({
 
   const selectDocument = useCallback((id: string) => {
     renderedDocumentRef.current = '';
+    setFormatSelection(null);
     setProject((current) => ({ ...current, activeDocumentId: id }));
     router.replace(`/write/editor?work=${project.id}&document=${id}`, { scroll: false });
   }, [project.id, router]);
@@ -896,6 +932,16 @@ export function WritingStudio({
       summary: draft.summary,
       details: draft.details,
       color: draft.color,
+      status: draft.status,
+      tags: draft.tags,
+      story_role: draft.storyRole,
+      appearance: draft.appearance,
+      history: draft.history,
+      connections: draft.connections,
+      rules: draft.rules,
+      is_pinned: draft.isPinned,
+      is_spoiler: draft.isSpoiler,
+      profile_answers: draft.profileAnswers,
     };
     const { data, error } = await supabase
       .from('encyclopedia_entries')
@@ -906,17 +952,9 @@ export function WritingStudio({
       saveLocally();
       return;
     }
+    if (error?.code === 'PGRST204' || error?.code === '42703') throw new Error('Atualize o banco com a migration da Enciclopédia antes de salvar fichas novas.');
     if (error || !data) throw error ?? new Error('A entrada não foi devolvida pelo Supabase.');
-    const nextEntry: EncyclopediaEntry = {
-      id: data.id,
-      type: data.entry_type,
-      name: data.name,
-      aliases: data.aliases,
-      summary: data.summary,
-      details: data.details,
-      color: data.color,
-      updatedAt: data.updated_at,
-    };
+    const nextEntry = mapEncyclopediaEntry(data);
     setProject((current) => ({
       ...current,
       encyclopediaEntries: [...current.encyclopediaEntries.filter((entry) => entry.id !== id), nextEntry]
@@ -983,59 +1021,7 @@ export function WritingStudio({
   }, [createDocument, extensionRuntime, saveNow]);
 
   return (
-    <div className="flex h-dvh min-h-0 flex-col overflow-hidden bg-canvas text-ink">
-      {!distractionFree && (
-        <header className="shrink-0 border-b border-line bg-surface">
-          <div className="grid min-h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 px-3 sm:grid-cols-[minmax(8rem,1fr)_auto_minmax(8rem,1fr)]">
-            <div className="flex min-w-0 items-center">
-              <Link href="/dashboard" className="flex size-9 shrink-0 items-center justify-center rounded-control text-accent transition-colors hover:bg-accent-subtle" aria-label="Voltar à dashboard" title="Voltar à dashboard">
-                <BookOpenText className="size-5" />
-              </Link>
-              <input
-                value={project.title}
-                onChange={(event) => setProject((current) => ({ ...current, title: event.target.value }))}
-                aria-label="Título da obra"
-                className="min-w-0 max-w-56 flex-1 bg-transparent px-2 font-serif text-sm font-semibold text-ink outline-none placeholder:text-muted"
-              />
-            </div>
-            <nav className="workspace-scrollbar order-3 col-span-2 flex min-h-10 items-center justify-start gap-1 overflow-x-auto border-t border-line sm:order-none sm:col-span-1 sm:min-h-0 sm:justify-center sm:border-0" aria-label="Áreas de escrita">
-              {([['editor', 'Editor'], ['chapters', 'Capítulos'], ['scenes', 'Cenas'], ['notes', 'Notas'], ['encyclopedia', 'Enciclopédia']] as const).map(([view, label]) => (
-                <Link key={view} href={`/write/${view}?work=${project.id}`} className={cn('inline-flex min-h-9 items-center rounded-full px-3 text-xs font-medium transition-colors', initialView === view ? 'bg-accent-subtle text-accent' : 'text-muted hover:bg-surface-muted hover:text-ink')}>{label}</Link>
-              ))}
-            </nav>
-            <div className="flex min-w-0 items-center justify-end gap-1">
-              <span className={cn('flex size-8 items-center justify-center rounded-full', saveState === 'error' || saveState === 'offline' ? 'text-danger' : 'text-muted')} role="status" title={saveLabel}>{saveState === 'saving' ? <Cloud className="size-3.5 animate-pulse" /> : <Check className="size-3.5" />}<span className="sr-only">{saveLabel}</span></span>
-              <DropdownMenu>
-                <DropdownMenuTrigger className="flex size-8 items-center justify-center rounded-control text-muted hover:bg-surface-muted hover:text-ink" aria-label="Mais ações" title="Mais ações"><MoreHorizontal className="size-4" /></DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-64">
-                  <DropdownMenuLabel>Ações do editor</DropdownMenuLabel>
-                  <DropdownMenuItem onSelect={() => createDocument('chapter')}><FilePlus2 className="size-4" />Novo capítulo<span className="ml-auto text-xs text-muted">Ctrl N</span></DropdownMenuItem>
-                  <DropdownMenuItem onSelect={saveNow}><Save className="size-4" />Salvar agora<span className="ml-auto text-xs text-muted">Ctrl S</span></DropdownMenuItem>
-                  <DropdownMenuItem onSelect={() => void createSnapshot()}><Camera className="size-4" />Criar instantâneo</DropdownMenuItem>
-                  <DropdownMenuItem onSelect={exportMarkdown}><Download className="size-4" />Exportar Markdown</DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuSub><DropdownMenuSubTrigger><BookOpenText className="size-4" />Visualização</DropdownMenuSubTrigger><DropdownMenuSubContent><DropdownMenuRadioGroup value={pagePreset} onValueChange={(value) => setPagePreset(value as PagePreset)}>{(Object.entries(pagePresets) as Array<[PagePreset, { label: string }]>).map(([preset, option]) => <DropdownMenuRadioItem key={preset} value={preset}>{option.label}</DropdownMenuRadioItem>)}</DropdownMenuRadioGroup></DropdownMenuSubContent></DropdownMenuSub>
-                  <DropdownMenuCheckboxItem checked={wideMargins} onCheckedChange={setWideMargins}>Margens amplas</DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem checked={paragraphIndent} onCheckedChange={setParagraphIndent}>Recuo de parágrafo</DropdownMenuCheckboxItem>
-                  <DropdownMenuSub><DropdownMenuSubTrigger><AlignLeft className="size-4" />Espaço entre parágrafos</DropdownMenuSubTrigger><DropdownMenuSubContent><DropdownMenuRadioGroup value={paragraphSpacing} onValueChange={(value) => setParagraphSpacing(value as ParagraphSpacing)}><DropdownMenuRadioItem value="compact">Compacto</DropdownMenuRadioItem><DropdownMenuRadioItem value="book">Livro</DropdownMenuRadioItem><DropdownMenuRadioItem value="airy">Arejado</DropdownMenuRadioItem></DropdownMenuRadioGroup></DropdownMenuSubContent></DropdownMenuSub>
-                  <DropdownMenuSeparator />
-                  {extensionRuntime['lab.typewriter-mode'] && <DropdownMenuCheckboxItem checked={typewriterMode} onCheckedChange={setTypewriterMode}>Modo máquina de escrever</DropdownMenuCheckboxItem>}
-                  {extensionRuntime['lab.immersive-focus'] && <DropdownMenuItem onSelect={() => setDistractionFree(true)}><Focus className="size-4" />Modo foco<span className="ml-auto text-xs text-muted">Ctrl Shift F</span></DropdownMenuItem>}
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <ToolbarButton label={showBinder ? 'Ocultar estrutura' : 'Mostrar estrutura'} onClick={toggleBinder}>
-                {showBinder ? <PanelLeftClose className="size-4" /> : <PanelLeftOpen className="size-4" />}
-              </ToolbarButton>
-              <ToolbarButton label={showInspector ? 'Ocultar inspetor' : 'Mostrar inspetor'} onClick={toggleInspector}>
-                {showInspector ? <PanelRightClose className="size-4" /> : <PanelRightOpen className="size-4" />}
-              </ToolbarButton>
-              {extensionRuntime['lab.immersive-focus'] && <ToolbarButton label="Modo sem distrações" shortcut="Ctrl Shift F" onClick={() => setDistractionFree(true)}>
-                <Focus className="size-4" />
-              </ToolbarButton>}
-            </div>
-          </div>
-        </header>
-      )}
+    <div className={cn('writing-studio-shell flex h-full min-h-0 flex-col overflow-hidden text-ink', distractionFree && 'fixed inset-0 z-[70] h-dvh')}>
 
       {distractionFree && (
         <button type="button" onClick={() => setDistractionFree(false)} className="fixed right-4 top-4 z-50 flex size-10 items-center justify-center rounded-full border border-line bg-surface text-muted shadow-floating hover:text-ink" aria-label="Sair do modo sem distrações" title="Sair do modo sem distrações">
@@ -1045,25 +1031,24 @@ export function WritingStudio({
 
       <div className="relative flex min-h-0 flex-1">
         {!distractionFree && showBinder && initialView !== 'encyclopedia' && (
-          <aside className="absolute inset-y-0 left-0 z-30 flex w-[18rem] shrink-0 flex-col border-r border-line bg-surface shadow-floating lg:static lg:shadow-none" aria-label="Estrutura da obra">
-            <div className="flex min-h-12 items-center justify-between border-b border-line px-4">
-              <div><p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-accent">Manuscrito</p><h2 className="font-serif text-sm font-semibold">Estrutura da obra</h2></div>
-              <button type="button" onClick={() => createDocument('chapter')} className="flex size-8 items-center justify-center rounded-control text-muted hover:bg-accent-subtle hover:text-accent" aria-label="Novo capítulo" title="Novo capítulo"><Plus className="size-4" /></button>
+          <aside className="writing-binder absolute inset-y-0 left-0 z-30 flex w-[14rem] shrink-0 flex-col border-r shadow-floating lg:static lg:shadow-none" aria-label="Estrutura da obra">
+            <div className="border-b border-line px-3 pb-4 pt-20 xl:pt-6">
+              <div className="flex items-center justify-between gap-2"><p className="text-[10px] font-bold uppercase tracking-[0.2em] text-accent">Obra em curso</p><button type="button" onClick={toggleBinder} className="flex size-7 items-center justify-center rounded-control text-muted hover:bg-surface-muted lg:hidden" aria-label="Fechar estrutura"><X className="size-4" /></button></div>
+              <input value={project.title} onChange={(event) => setProject((current) => ({ ...current, title: event.target.value }))} aria-label="Título da obra" className="mt-2 w-full bg-transparent font-serif text-base font-semibold leading-tight text-ink outline-none placeholder:text-muted" placeholder="Título da obra" />
             </div>
-            <div className="workspace-scrollbar min-h-0 flex-1 overflow-y-auto p-2">
-              <div className="mb-1 flex min-h-9 items-center gap-2 rounded-control px-2 text-xs font-semibold text-ink"><ChevronDown className="size-3.5 text-muted" /><ListTree className="size-4 text-accent" />Manuscrito</div>
-              <div className="ml-3 space-y-0.5 border-l border-line pl-2">
+            <div className="workspace-scrollbar min-h-0 flex-1 overflow-y-auto px-2 py-4">
+              <div className="mb-3 flex items-center justify-between gap-2 px-2"><div><h2 className="text-xs font-semibold text-ink">Manuscrito</h2><p className="mt-0.5 text-[10px] text-muted">{project.documents.length} {project.documents.length === 1 ? 'documento' : 'documentos'}</p></div><button type="button" onClick={() => createDocument('chapter')} className="flex size-8 items-center justify-center rounded-full border border-line bg-surface text-accent hover:bg-accent-subtle" aria-label="Novo capítulo" title="Novo capítulo"><Plus className="size-4" /></button></div>
+              <div className="space-y-1">
                 {project.documents.slice().sort((a, b) => a.position - b.position).map((item, index) => (
-                  <div key={item.id} className={cn('group flex min-h-12 items-center rounded-control transition-colors', item.id === activeDocument.id ? 'bg-accent-subtle text-accent' : 'text-muted hover:bg-surface-muted hover:text-ink')}>
-                    <button type="button" onClick={() => selectDocument(item.id)} className="flex min-h-12 min-w-0 flex-1 items-center gap-2 px-2 text-left text-sm">
-                      <FileText className="size-4 shrink-0" />
+                  <div key={item.id} className={cn('group flex min-h-12 items-center rounded-lg border border-transparent transition-colors', item.id === activeDocument.id ? 'border-accent/20 bg-accent-subtle text-accent' : 'text-muted hover:border-line hover:bg-surface hover:text-ink')}>
+                    <button type="button" onClick={() => selectDocument(item.id)} className="flex min-h-11 min-w-0 flex-1 items-center gap-2 px-2 text-left text-sm">
+                      <FileText className="size-3.5 shrink-0" />
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm">{item.title}</span>
+                        <span className="block truncate text-xs font-medium">{item.title}</span>
                         <span className="mt-0.5 flex items-center gap-2 text-[10px]">
-                          <span className="uppercase tracking-wide opacity-65">{kindLabels[item.kind]}</span>
                           {countWords(item.contentHtml) > 0
                             ? <span className="tabular-nums opacity-75">{countWords(item.contentHtml).toLocaleString('pt-BR')} palavras</span>
-                            : <span className="rounded-full border border-dashed border-current px-1.5 py-px font-medium opacity-80">Vazio</span>}
+                            : <span className="font-medium opacity-75">Ainda vazio</span>}
                         </span>
                       </span>
                       <span className="sr-only">Documento {index + 1}</span>
@@ -1090,21 +1075,18 @@ export function WritingStudio({
                 ))}
               </div>
             </div>
-            <div className="border-t border-line px-4 py-3 text-[11px] leading-relaxed text-muted">
-              Use o menu de cada item para mover, categorizar ou apagar.
-            </div>
           </aside>
         )}
 
-        <main className="flex min-w-0 flex-1 flex-col bg-canvas">
+        <main className="writing-stage flex min-w-0 flex-1 flex-col">
           {initialView === 'editor' ? <>
-          <div ref={scrollRef} className={cn('workspace-scrollbar min-h-0 flex-1 overflow-y-auto', typewriterMode && 'scroll-smooth')}>
-            <div className={cn('mx-auto min-h-full w-full px-4 py-8 sm:px-8 lg:py-12', distractionFree ? 'max-w-[76rem]' : 'max-w-[72rem]')}>
+          <div ref={scrollRef} onScroll={() => setFormatSelection(null)} className={cn('writing-stage-scroll min-h-0 flex-1 overflow-y-auto', typewriterMode && 'scroll-smooth')}>
+            <div className={cn('mx-auto w-full px-3 pt-24 sm:px-8', distractionFree ? 'max-w-[76rem] pt-10' : 'max-w-[80rem]')}>
               <article
                 className={cn(
-                  'relative mx-auto bg-editor py-16 shadow-soft transition-[width,min-height,padding]',
-                  distractionFree ? 'max-w-manuscript border-0 bg-transparent px-6 shadow-none' : 'border border-line',
-                  wideMargins ? 'px-10 sm:px-20' : 'px-6 sm:px-12 lg:px-16',
+                  'writing-paper relative mx-auto pb-4 pt-10 transition-[width,min-height,padding]',
+                  distractionFree && 'writing-paper-focus max-w-manuscript',
+                  wideMargins ? 'px-8 sm:px-20' : 'px-6 sm:px-12 lg:px-16',
                   pagePreset !== 'continuous' && 'writing-page-preview',
                 )}
                 style={{
@@ -1113,8 +1095,8 @@ export function WritingStudio({
                   '--writing-page-height': currentPagePreset.pageHeight ? `${currentPagePreset.pageHeight}px` : undefined,
                 } as React.CSSProperties}
               >
-                {editorActive && <div className="absolute inset-x-2 top-2 z-20 flex justify-center">
-                  <div className="workspace-scrollbar flex w-max max-w-[calc(100%-1rem)] items-center gap-1.5 overflow-x-auto rounded-card border border-line-strong bg-surface p-1.5 shadow-floating" aria-label="Formatação do texto">
+                {formatSelection && !distractionFree && <div className="fixed z-[80] -translate-x-1/2" style={{ left: formatSelection.left, top: formatSelection.top }}>
+                  <div className="workspace-scrollbar flex w-max max-w-[calc(100vw-1.5rem)] items-center gap-1.5 overflow-x-auto rounded-2xl border border-line-strong bg-surface p-1.5 shadow-floating" aria-label="Formatação do texto">
                     <div className="flex items-center gap-0.5" role="group" aria-label="Histórico">
                       <ToolbarButton comfortable label="Desfazer" shortcut="Ctrl Z" onClick={() => runCommand('undo')}><Undo2 /></ToolbarButton>
                       <ToolbarButton comfortable label="Refazer" shortcut="Ctrl Y" onClick={() => runCommand('redo')}><Redo2 /></ToolbarButton>
@@ -1134,6 +1116,7 @@ export function WritingStudio({
                     </div>
                   </div>
                 </div>}
+                <div className="mb-10 flex items-center justify-between gap-3 text-[10px] font-bold uppercase tracking-[0.2em] text-accent"><span>{kindLabels[activeDocument.kind]} · {String(activeDocument.position + 1).padStart(2, '0')}</span><span className="text-muted">{statusLabels[activeDocument.status]}</span></div>
                 <label htmlFor="writing-document-title" className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">Título do capítulo</label>
                 <input
                   id="writing-document-title"
@@ -1151,9 +1134,8 @@ export function WritingStudio({
                   onInput={handleEditorInput}
                   onKeyDown={handleEditorKeyDown}
                   onClick={handleEditorClick}
-                  onFocus={() => setEditorActive(true)}
                   onBlur={() => window.setTimeout(() => {
-                    setEditorActive(false);
+                    setFormatSelection(null);
                     setMentionQuery(null);
                   }, 160)}
                   role="textbox"
@@ -1163,7 +1145,7 @@ export function WritingStudio({
                   data-mention-style={mentionSettings.appearance}
                   data-placeholder="Comece a escrever sua história aqui."
                   spellCheck
-                  className={cn('writing-editor min-h-[60vh] max-w-manuscript font-serif text-editor text-ink outline-none', paragraphIndent && 'writing-editor-indent', `writing-editor-spacing-${paragraphSpacing}`)}
+                  className={cn('writing-editor max-w-manuscript font-serif text-editor text-ink outline-none', paragraphIndent && 'writing-editor-indent', `writing-editor-spacing-${paragraphSpacing}`)}
                 />
                 {mentionQuery !== null && <div className="fixed z-[70] w-72 overflow-hidden rounded-card border border-line-strong bg-surface shadow-floating" style={mentionPosition} role="listbox" aria-label="Referenciar item da Enciclopédia">
                   <div className="flex items-center gap-2 border-b border-line px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-accent"><AtSign className="size-3.5" />Contexto da Enciclopédia</div>
@@ -1177,33 +1159,68 @@ export function WritingStudio({
             </div>
           </div>
 
-          {!distractionFree && extensionRuntime['lab.manuscript-metrics'] && <footer className="flex min-h-9 shrink-0 items-center gap-3 border-t border-line bg-surface px-3 text-[11px] text-muted sm:px-4">
-            <span className="font-medium text-ink">{wordCount.toLocaleString('pt-BR')} palavras</span>
-            <span>{characterCount.toLocaleString('pt-BR')} caracteres</span>
-            {extensionRuntime['lab.context-mentions'] && mentionSettings.enabled && mentionSettings.showCounts && mentionStats.total > 0 && <span className="hidden md:inline">{mentionStats.total.toLocaleString('pt-BR')} {mentionStats.total === 1 ? 'referência' : 'referências'} · {mentionStats.unique.toLocaleString('pt-BR')} {mentionStats.unique === 1 ? 'entidade' : 'entidades'}</span>}
-            <span className="hidden sm:inline">Meta: {activeDocument.goal.toLocaleString('pt-BR')}</span>
-            {wordCount > 0 && activeDocument.goal > 0 && <div className="hidden h-1.5 w-24 overflow-hidden rounded-full bg-line sm:block" aria-label={`${progress}% da meta do capítulo`} role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}><span className={cn('block h-full rounded-full transition-[width]', progress < 10 ? 'bg-line-strong' : 'bg-accent')} style={{ width: `${Math.max(progress, 2)}%` }} /></div>}
-            {pagePreset !== 'continuous' && <span className="hidden lg:inline">{currentPagePreset.label} · {pageCount} {pageCount === 1 ? 'página' : 'páginas'}</span>}
-            {saveState !== 'saved' && <span className={cn('ml-auto inline-flex items-center gap-1.5', saveState === 'error' || saveState === 'offline' ? 'text-danger' : undefined)} role="status" title={saveLabel} aria-label={saveLabel}>
-              {saveState === 'saving' ? <Cloud className="size-3.5 animate-pulse" /> : <Check className="size-3.5" />}
-              <span>{saveState === 'saving' ? 'Salvando' : saveState === 'offline' ? 'Nuvem pendente' : 'Não salvo'}</span>
-            </span>}
-          </footer>}
           </> : initialView === 'encyclopedia' ? (
             <div className="workspace-scrollbar min-h-0 flex-1 overflow-y-auto">
-              <EncyclopediaView entries={project.encyclopediaEntries} onSave={saveEncyclopediaEntry} onDelete={deleteEncyclopediaEntry} />
+              <EncyclopediaView entries={project.encyclopediaEntries} workTitle={project.title} persistence={project.encyclopediaPersistence} onSave={saveEncyclopediaEntry} onDelete={deleteEncyclopediaEntry} />
             </div>
           ) : (
             <div className="workspace-scrollbar min-h-0 flex-1 overflow-y-auto">
               <WritingCollection view={initialView} documents={project.documents} onCreate={createDocument} onOpen={selectDocument} />
             </div>
           )}
+          {!distractionFree && initialView !== 'encyclopedia' && <footer className="writing-dock" aria-label="Barra de ferramentas da escrita">
+            <div className="workspace-scrollbar flex min-h-12 items-center justify-center gap-1 overflow-x-auto px-2 sm:gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex min-h-9 shrink-0 items-center gap-1.5 rounded-control px-2 text-xs font-semibold text-ink hover:bg-surface-muted" aria-label="Abrir áreas de escrita"><LayoutList className="size-4 text-accent" /><span className="hidden sm:inline">{initialView === 'editor' ? 'Editor' : initialView === 'chapters' ? 'Capítulos' : initialView === 'scenes' ? 'Cenas' : initialView === 'notes' ? 'Notas' : 'Enciclopédia'}</span><ChevronDown className="size-3" /></DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  {([['editor', 'Editor'], ['chapters', 'Capítulos'], ['scenes', 'Cenas'], ['notes', 'Notas'], ['encyclopedia', 'Enciclopédia']] as const).map(([view, label]) => <DropdownMenuItem key={view} asChild><Link href={`/write/${view}?work=${project.id}`} aria-current={initialView === view ? 'page' : undefined}>{label}{initialView === view && <Check className="ml-auto size-3.5 text-accent" />}</Link></DropdownMenuItem>)}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <span className="mx-0.5 h-6 w-px shrink-0 bg-line" aria-hidden="true" />
+              <ToolbarButton label="Novo capítulo" shortcut="Ctrl N" onClick={() => createDocument('chapter')}><FilePlus2 className="size-4" /></ToolbarButton>
+              <ToolbarButton label="Salvar agora" shortcut="Ctrl S" onClick={saveNow}><Save className="size-4" /></ToolbarButton>
+              <span className="mx-0.5 h-6 w-px shrink-0 bg-line" aria-hidden="true" />
+              {initialView === 'editor' && <ToolbarButton label={showBinder ? 'Ocultar estrutura' : 'Mostrar estrutura'} active={showBinder} onClick={toggleBinder}>{showBinder ? <PanelLeftClose className="size-4" /> : <PanelLeftOpen className="size-4" />}</ToolbarButton>}
+              {initialView === 'editor' && <ToolbarButton label={showInspector ? 'Ocultar inspetor' : 'Mostrar inspetor'} active={showInspector} onClick={toggleInspector}>{showInspector ? <PanelRightClose className="size-4" /> : <PanelRightOpen className="size-4" />}</ToolbarButton>}
+              {initialView === 'editor' && <DropdownMenu><DropdownMenuTrigger className="flex min-h-8 items-center gap-1 rounded-control px-2 text-xs text-muted hover:bg-accent-subtle hover:text-accent" aria-label="Visualização de páginas"><BookOpenText className="size-4" /><span className="hidden md:inline">{currentPagePreset.label}</span><ChevronDown className="size-3" /></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuRadioGroup value={pagePreset} onValueChange={(value) => setPagePreset(value as PagePreset)}>{(Object.entries(pagePresets) as Array<[PagePreset, { label: string }]>).map(([preset, option]) => <DropdownMenuRadioItem key={preset} value={preset}>{option.label}</DropdownMenuRadioItem>)}</DropdownMenuRadioGroup></DropdownMenuContent></DropdownMenu>}
+              {initialView === 'editor' && extensionRuntime['lab.immersive-focus'] && <ToolbarButton label="Modo foco" shortcut="Ctrl Shift F" onClick={() => setDistractionFree(true)}><Focus className="size-4" /></ToolbarButton>}
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex size-8 shrink-0 items-center justify-center rounded-control text-muted hover:bg-accent-subtle hover:text-accent" aria-label="Mais ações de escrita" title="Mais ações"><MoreHorizontal className="size-4" /></DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-64">
+                  <DropdownMenuLabel>Ações da obra</DropdownMenuLabel>
+                  <DropdownMenuItem onSelect={() => void createSnapshot()}><Camera className="size-4" />Criar instantâneo</DropdownMenuItem>
+                  <DropdownMenuItem onSelect={exportMarkdown}><Download className="size-4" />Exportar Markdown</DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuCheckboxItem checked={wideMargins} onCheckedChange={setWideMargins}>Margens amplas</DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem checked={paragraphIndent} onCheckedChange={setParagraphIndent}>Recuo de parágrafo</DropdownMenuCheckboxItem>
+                  <DropdownMenuSub><DropdownMenuSubTrigger><AlignLeft className="size-4" />Espaço entre parágrafos</DropdownMenuSubTrigger><DropdownMenuSubContent><DropdownMenuRadioGroup value={paragraphSpacing} onValueChange={(value) => setParagraphSpacing(value as ParagraphSpacing)}><DropdownMenuRadioItem value="compact">Compacto</DropdownMenuRadioItem><DropdownMenuRadioItem value="book">Livro</DropdownMenuRadioItem><DropdownMenuRadioItem value="airy">Arejado</DropdownMenuRadioItem></DropdownMenuRadioGroup></DropdownMenuSubContent></DropdownMenuSub>
+                  {extensionRuntime['lab.typewriter-mode'] && <><DropdownMenuSeparator /><DropdownMenuCheckboxItem checked={typewriterMode} onCheckedChange={setTypewriterMode}>Modo máquina de escrever</DropdownMenuCheckboxItem></>}
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <span className="mx-0.5 h-6 w-px shrink-0 bg-line" aria-hidden="true" />
+              <span className={cn('flex shrink-0 items-center gap-1 px-1 text-[11px] text-muted', saveState === 'error' || saveState === 'offline' ? 'text-danger' : undefined)} role="status" title={saveLabel} aria-label={saveLabel}>{saveState === 'saving' ? <Cloud className="size-3.5 animate-pulse" /> : <Check className="size-3.5" />}<span className="hidden lg:inline">{saveState === 'saving' ? 'Salvando' : saveState === 'offline' ? 'Pendente' : saveState === 'error' ? 'Não salvo' : 'Salvo'}</span></span>
+            </div>
+            {initialView === 'editor' && extensionRuntime['lab.manuscript-metrics'] && <div className="workspace-scrollbar flex min-h-8 items-center gap-3 overflow-x-auto border-t border-line px-3 text-[11px] text-muted sm:px-4">
+              <span className="shrink-0 font-medium text-ink">{wordCount.toLocaleString('pt-BR')} palavras</span>
+              <span className="hidden shrink-0 sm:inline">{characterCount.toLocaleString('pt-BR')} caracteres</span>
+              {extensionRuntime['lab.context-mentions'] && mentionSettings.enabled && mentionSettings.showCounts && mentionStats.total > 0 && <span className="hidden shrink-0 md:inline">{mentionStats.total.toLocaleString('pt-BR')} {mentionStats.total === 1 ? 'referência' : 'referências'} · {mentionStats.unique.toLocaleString('pt-BR')} {mentionStats.unique === 1 ? 'entidade' : 'entidades'}</span>}
+              <span className="hidden shrink-0 sm:inline">Meta: {activeDocument.goal.toLocaleString('pt-BR')}</span>
+              {wordCount > 0 && activeDocument.goal > 0 && <div className="hidden h-1.5 w-20 shrink-0 overflow-hidden rounded-full bg-line sm:block" aria-label={`${progress}% da meta do capítulo`} role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}><span className={cn('block h-full rounded-full transition-[width]', progress < 10 ? 'bg-line-strong' : 'bg-accent')} style={{ width: `${Math.max(progress, 2)}%` }} /></div>}
+              {pagePreset !== 'continuous' && <span className="hidden shrink-0 lg:inline">{pageCount} {pageCount === 1 ? 'página' : 'páginas'}</span>}
+            </div>}
+          </footer>}
         </main>
 
         {!distractionFree && showInspector && initialView === 'editor' && (
-          <aside className="absolute inset-y-0 right-0 z-30 flex w-[19rem] shrink-0 flex-col border-l border-line bg-surface shadow-floating xl:static xl:shadow-none" aria-label="Inspetor do documento">
-            <div className="flex min-h-12 items-center gap-2 border-b border-line px-4"><Settings2 className="size-4 text-accent" /><div><p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-accent">Documento</p><h2 className="font-serif text-sm font-semibold">Inspetor</h2></div></div>
-            <div className="workspace-scrollbar min-h-0 flex-1 overflow-y-auto px-3 pb-28 pt-3">
+          <aside className="writing-inspector absolute inset-y-0 right-0 z-30 flex w-[18rem] shrink-0 flex-col border-l shadow-floating xl:static xl:shadow-none" aria-label="Inspetor do documento">
+            <div className="border-b border-line px-5 pb-5 pt-20 xl:pt-7"><div className="flex items-center justify-between gap-2"><p className="text-[10px] font-bold uppercase tracking-[0.2em] text-accent">Ficha de escrita</p><button type="button" onClick={toggleInspector} className="flex size-7 items-center justify-center rounded-control text-muted hover:bg-surface-muted xl:hidden" aria-label="Fechar inspetor"><X className="size-4" /></button></div><h2 className="mt-2 truncate font-serif text-lg font-semibold text-ink">{activeDocument.title}</h2><p className="mt-1 text-[11px] text-muted">{statusLabels[activeDocument.status]} · {kindLabels[activeDocument.kind]}</p></div>
+            <div className="workspace-scrollbar min-h-0 flex-1 overflow-y-auto px-3 pb-28 pt-4">
+              <section className="mb-3 rounded-2xl border border-accent/20 bg-accent-subtle p-4" aria-live="polite">
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-accent">Ritmo deste capítulo</p>
+                <div className="mt-3"><strong className="block font-serif text-2xl leading-tight text-ink">{wordCount === 0 ? 'Pronto para começar' : activeDocument.goal > 0 ? `${progress}%` : `${wordCount} palavras`}</strong><span className="mt-1 block text-[11px] leading-snug text-muted">{wordCount > 0 ? activeDocument.goal > 0 ? `${wordCount.toLocaleString('pt-BR')} de ${activeDocument.goal.toLocaleString('pt-BR')} palavras` : 'Sem meta definida' : activeDocument.goal > 0 ? `${activeDocument.goal.toLocaleString('pt-BR')} palavras como referência` : 'Meta opcional'}</span></div>
+                {wordCount > 0 && activeDocument.goal > 0 && <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-line"><span className={cn('block h-full rounded-full transition-[width]', progress < 10 ? 'bg-line-strong' : 'bg-accent')} style={{ width: `${Math.max(progress, 2)}%` }} /></div>}
+                <p className="mt-4 text-[11px] leading-relaxed text-muted">A meta orienta o caminho. O texto encontra o próprio ritmo.</p>
+              </section>
               {selectedEntity && <section className="mb-3 rounded-card border border-accent/25 bg-accent-subtle p-4">
                 <div className="flex items-start justify-between gap-3"><div><p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-accent">Contexto vinculado</p><h3 className="mt-1 font-serif text-lg font-semibold text-ink">{selectedEntity.name}</h3><p className="mt-0.5 text-[10px] font-semibold uppercase tracking-wider text-accent">{encyclopediaTypeLabels[selectedEntity.type]}</p></div><button type="button" onClick={() => setSelectedEntityId(null)} className="flex size-7 shrink-0 items-center justify-center rounded-control text-muted hover:bg-surface hover:text-ink" aria-label="Fechar contexto"><X className="size-3.5" /></button></div>
                 <p className="mt-3 text-xs leading-relaxed text-muted">{selectedEntity.summary || 'Esta entrada ainda não tem um resumo contextual.'}</p>
@@ -1220,17 +1237,24 @@ export function WritingStudio({
                 {mentionSettings.showCounts && Object.keys(mentionStats.byType).length > 0 && <div className="mt-3 flex flex-wrap gap-1.5">{(Object.entries(mentionStats.byType) as Array<[EncyclopediaEntry['type'], number]>).map(([type, count]) => <span key={type} className="rounded-full border border-line bg-editor px-2 py-1 text-[10px] text-muted"><span className="font-medium text-ink">{encyclopediaTypeLabels[type]}</span> · {count}</span>)}</div>}
                 {mentionSettings.verifyReferences && <div className={cn('mt-3 flex items-start gap-2 rounded-control px-3 py-2 text-[11px] leading-relaxed', mentionStats.broken ? 'bg-warning-subtle text-warning' : 'bg-success-subtle text-success')}>{mentionStats.broken ? <><AlertTriangle className="mt-0.5 size-3.5 shrink-0" /><span>{mentionStats.broken} {mentionStats.broken === 1 ? 'referência aponta' : 'referências apontam'} para uma entrada removida. Passe o cursor sobre o texto sublinhado para localizar.</span></> : <><ShieldCheck className="mt-0.5 size-3.5 shrink-0" /><span>{mentionStats.total ? 'Todos os vínculos estão íntegros.' : 'Nenhuma referência para verificar neste capítulo.'}</span></>}</div>}
               </section>}
-              <section className="rounded-card border border-line bg-surface-muted p-4" aria-live="polite">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-accent">Progresso do capítulo</p>
-                <div className="mt-3"><strong className="block font-serif text-2xl leading-tight text-ink">{wordCount === 0 ? 'Pronto para começar' : activeDocument.goal > 0 ? `${progress}%` : `${wordCount} palavras`}</strong><span className="mt-1 block text-[11px] leading-snug text-muted">{wordCount > 0 ? activeDocument.goal > 0 ? `${wordCount.toLocaleString('pt-BR')} de ${activeDocument.goal.toLocaleString('pt-BR')} palavras` : 'Sem meta definida' : activeDocument.goal > 0 ? `${activeDocument.goal.toLocaleString('pt-BR')} palavras como referência` : 'Meta opcional'}</span></div>
-                {wordCount > 0 && activeDocument.goal > 0 && <div className="mt-3 h-2 overflow-hidden rounded-full bg-line"><span className={cn('block h-full rounded-full transition-[width]', progress < 10 ? 'bg-line-strong' : 'bg-accent')} style={{ width: `${Math.max(progress, 2)}%` }} /></div>}
-                <p className="mt-4 max-w-full [overflow-wrap:anywhere] rounded-control border border-line bg-surface px-3 py-2.5 text-xs leading-relaxed text-muted">O progresso existe para orientar. Ele não reduz a qualidade do seu dia de escrita a um número.</p>
+              <section className="mb-3 rounded-xl border border-line bg-surface p-4" aria-label="Dados do documento">
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-accent">Visão rápida</p>
+                <div className="mt-3 grid grid-cols-2 gap-2 text-xs"><div className="rounded-lg bg-surface-muted p-3"><strong className="block font-serif text-lg text-ink">{wordCount.toLocaleString('pt-BR')}</strong><span className="text-muted">Palavras</span></div><div className="rounded-lg bg-surface-muted p-3"><strong className="block font-serif text-lg text-ink">{wordCount ? Math.max(1, Math.ceil(wordCount / 220)) : 0} min</strong><span className="text-muted">Leitura estimada</span></div></div>
+                <p className="mt-3 text-[11px] text-muted">{characterCount.toLocaleString('pt-BR')} caracteres · Atualizado em {new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' }).format(new Date(activeDocument.updatedAt))}</p>
               </section>
-              <details className="group mt-3 rounded-control border border-line bg-surface p-4">
+              <section className="mb-3 rounded-xl border border-line bg-surface p-4" aria-label="Ações do capítulo">
+                <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-accent">Ações do capítulo</p>
+                <div className="mt-3 grid gap-1">
+                  <button type="button" onClick={() => void createSnapshot()} className="flex min-h-9 items-center gap-2 rounded-lg px-2 text-left text-xs text-ink hover:bg-surface-muted"><Camera className="size-3.5 text-accent" />Criar instantâneo</button>
+                  <button type="button" onClick={exportMarkdown} className="flex min-h-9 items-center gap-2 rounded-lg px-2 text-left text-xs text-ink hover:bg-surface-muted"><Download className="size-3.5 text-accent" />Exportar Markdown</button>
+                  <Link href={`/write/encyclopedia?work=${project.id}`} className="flex min-h-9 items-center gap-2 rounded-lg px-2 text-left text-xs text-ink hover:bg-surface-muted"><BookOpenText className="size-3.5 text-accent" />Abrir Enciclopédia</Link>
+                </div>
+              </section>
+              <details className="group mt-3 rounded-xl border border-line bg-surface p-4">
                 <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-semibold text-ink">Sinopse <ChevronDown className="size-3.5 transition-transform group-open:rotate-180" /></summary>
                 <textarea id="document-synopsis" aria-label="Sinopse" value={activeDocument.synopsis} onChange={(event) => updateActiveDocument({ synopsis: event.target.value })} rows={5} placeholder="Resuma o que acontece neste capítulo." className="mt-3 w-full resize-none rounded-control border border-line bg-editor px-3 py-2 text-sm leading-relaxed text-ink outline-none placeholder:text-muted focus:border-accent" />
               </details>
-              <details className="group mt-2 rounded-control border border-line bg-surface p-4">
+              <details className="group mt-2 rounded-xl border border-line bg-surface p-4">
                 <summary className="flex cursor-pointer list-none items-center justify-between text-xs font-semibold text-ink">Configurações <ChevronDown className="size-3.5 transition-transform group-open:rotate-180" /></summary>
                 <div className="mt-4 space-y-4"><div><label htmlFor="document-status" className="text-xs text-muted">Status</label><select id="document-status" value={activeDocument.status} onChange={(event) => updateActiveDocument({ status: event.target.value as WritingDocumentStatus })} className="mt-2 min-h-10 w-full rounded-control border border-line bg-editor px-3 text-sm text-ink"><option value="draft">Rascunho</option><option value="review">Em revisão</option><option value="final">Final</option></select></div><div><label htmlFor="document-goal" className="text-xs text-muted">Meta de palavras</label><input id="document-goal" type="number" min={0} step={100} value={activeDocument.goal} onChange={(event) => updateActiveDocument({ goal: Math.max(0, Number(event.target.value)) })} className="mt-2 min-h-10 w-full rounded-control border border-line bg-editor px-3 text-sm text-ink" /></div></div>
               </details>

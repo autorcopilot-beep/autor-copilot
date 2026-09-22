@@ -49,7 +49,7 @@ function WorkActions({ work, catalogs, returnTo }: { work: LibraryWork; catalogs
 function WorkCard({ work, catalogs, returnTo }: { work: LibraryWork; catalogs: LibraryCatalog[]; returnTo: string }) {
   const progress = work.wordGoal ? Math.min(100, Math.round((work.wordCount / work.wordGoal) * 100)) : 0;
   return (
-    <article className="group grid min-h-[20rem] grid-rows-[1fr_auto] overflow-hidden rounded-card border border-line bg-surface shadow-soft transition-transform duration-200 hover:-translate-y-1 hover:shadow-floating">
+    <article className="group grid min-h-[20rem] grid-rows-[1fr_auto] overflow-hidden rounded-2xl border border-line bg-surface transition-transform duration-200 hover:-translate-y-1 hover:shadow-floating">
       <div className={cn('relative isolate min-h-56 overflow-hidden bg-gradient-to-br p-5 text-white', toneClasses[work.coverTone] ?? toneClasses.sage)}>
         <div className="absolute inset-0 -z-10 opacity-30 [background-image:repeating-linear-gradient(105deg,transparent_0,transparent_3px,rgba(255,255,255,.08)_4px,transparent_5px)]" />
         <div className="absolute inset-y-0 left-4 w-px bg-white/20 shadow-[3px_0_8px_rgba(0,0,0,.25)]" />
@@ -79,23 +79,22 @@ export function LibraryPage({ view, works, catalogs, stats, query = '', sort = '
   const returnTo = `${currentPath}${params.size ? `?${params}` : ''}`;
   const tabs = [['all', 'Todas'], ['recent', 'Recentes'], ['favorites', 'Favoritas'], ['archived', 'Arquivadas'], ['catalogs', 'Catálogos']] as const;
   return (
-    <div className="mx-auto w-full max-w-7xl py-4 sm:py-7">
-      <section className="relative isolate overflow-hidden rounded-card border border-line bg-editor px-6 py-8 shadow-soft sm:px-10 sm:py-10">
-        <div className="absolute inset-0 -z-20 bg-[url('/images/kit_marca/03_backgrounds/papel-claro.svg')] bg-cover opacity-45 dark:opacity-[0.06]" />
-        <div className="absolute -right-16 -top-24 -z-10 size-72 rounded-full bg-accent-subtle blur-3xl" />
+    <div className="w-full">
+      <section className="creative-page-hero px-6 py-7 sm:px-10 sm:py-9">
         <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
           <div className="max-w-2xl"><p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">{meta.eyebrow}</p><h1 className="mt-3 font-serif text-4xl font-semibold text-ink sm:text-5xl">{meta.title}</h1><p className="mt-4 max-w-xl text-base leading-relaxed text-muted">{meta.description}</p></div>
           <div className="flex flex-wrap gap-2"><NewCatalogDialog /><NewWorkDialog /></div>
         </div>
-        <div className="mt-8 grid gap-px overflow-hidden rounded-control border border-line bg-line sm:grid-cols-4">
-          <div className="bg-surface/85 p-4"><Library className="size-4 text-accent" /><p className="mt-2 text-2xl font-semibold text-ink">{stats.active}</p><p className="text-xs text-muted">obras ativas</p></div>
-          <div className="bg-surface/85 p-4"><BookOpen className="size-4 text-accent" /><p className="mt-2 text-2xl font-semibold text-ink">{formatNumber(stats.words)}</p><p className="text-xs text-muted">palavras escritas</p></div>
-          <div className="bg-surface/85 p-4"><Heart className="size-4 text-accent" /><p className="mt-2 text-2xl font-semibold text-ink">{stats.favorites}</p><p className="text-xs text-muted">favoritas</p></div>
-          <div className="bg-surface/85 p-4"><Archive className="size-4 text-accent" /><p className="mt-2 text-2xl font-semibold text-ink">{stats.archived}</p><p className="text-xs text-muted">arquivadas</p></div>
-        </div>
       </section>
 
-      <nav className="workspace-scrollbar mt-7 flex gap-1 overflow-x-auto border-b border-line" aria-label="Seções da biblioteca">{tabs.map(([key, label]) => <Link key={key} href={`/library/${key}`} className={cn('whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors', (!catalogId && view === key) || (catalogId && key === 'catalogs') ? 'border-accent text-accent' : 'border-transparent text-muted hover:text-ink')}>{label}</Link>)}</nav>
+      <section className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Resumo da biblioteca">
+        <div className="creative-stat"><Library className="size-4 text-accent" /><p className="mt-2 text-2xl font-semibold text-ink">{stats.active}</p><p className="text-xs text-muted">obras ativas</p></div>
+        <div className="creative-stat"><BookOpen className="size-4 text-accent" /><p className="mt-2 text-2xl font-semibold text-ink">{formatNumber(stats.words)}</p><p className="text-xs text-muted">palavras escritas</p></div>
+        <div className="creative-stat"><Heart className="size-4 text-accent" /><p className="mt-2 text-2xl font-semibold text-ink">{stats.favorites}</p><p className="text-xs text-muted">favoritas</p></div>
+        <div className="creative-stat"><Archive className="size-4 text-accent" /><p className="mt-2 text-2xl font-semibold text-ink">{stats.archived}</p><p className="text-xs text-muted">arquivadas</p></div>
+      </section>
+
+      <nav className="creative-page-tabs workspace-scrollbar mt-7" aria-label="Seções da biblioteca">{tabs.map(([key, label]) => <Link key={key} href={`/library/${key}`} aria-current={(!catalogId && view === key) || (catalogId && key === 'catalogs') ? 'page' : undefined} className={cn('creative-page-tab', ((!catalogId && view === key) || (catalogId && key === 'catalogs')) && 'creative-page-tab-active')}>{label}</Link>)}</nav>
 
       {view === 'catalogs' && !catalogId && <section className="mt-8" aria-labelledby="catalogs-heading"><div className="flex items-end justify-between border-b border-line pb-4"><div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-accent">Organização</p><h2 id="catalogs-heading" className="mt-1 font-serif text-2xl font-semibold">Seus catálogos</h2></div><span className="text-xs text-muted">{catalogs.length} coleções</span></div>{catalogs.length ? <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">{catalogs.map((catalog) => <Link key={catalog.id} href={`/library/catalogs/${catalog.id}`} className="group relative overflow-hidden rounded-card border border-line bg-surface p-5 shadow-soft transition-colors hover:border-accent"><span className={cn('absolute inset-y-0 left-0 w-1 bg-gradient-to-b', toneClasses[catalog.color] ?? toneClasses.sage)} /><FolderOpen className="size-5 text-accent" /><h3 className="mt-5 font-serif text-xl font-semibold text-ink">{catalog.name}</h3><p className="mt-2 line-clamp-2 min-h-10 text-sm leading-relaxed text-muted">{catalog.description || 'Catálogo editorial personalizado.'}</p><div className="mt-5 flex items-center justify-between text-xs text-muted"><span>{catalog.workCount} {catalog.workCount === 1 ? 'obra' : 'obras'}</span><ChevronRight className="size-4 transition-transform group-hover:translate-x-1" /></div></Link>)}</div> : <div className="mt-5 border-l-2 border-accent py-3 pl-5"><p className="font-serif text-xl text-ink">Crie sua primeira coleção.</p><p className="mt-1 text-sm text-muted">Catálogos ajudam a reunir séries, universos e projetos relacionados.</p></div>}</section>}
 

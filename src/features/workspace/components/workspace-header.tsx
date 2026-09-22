@@ -43,7 +43,7 @@ function initials(name: string) {
 function ResponsiveBreadcrumb() {
   const pathname = usePathname();
   const isAccountArea = pathname === '/account' || pathname.startsWith('/account/');
-  const current = pathname === '/dashboard' ? 'Mesa de escrita' : pathname.startsWith('/overview') ? 'Visão geral' : pathname.startsWith('/library') ? 'Biblioteca' : pathname === '/account' ? 'Conta' : pathname.startsWith('/account/') ? 'Configurações' : 'Área de trabalho';
+  const current = pathname === '/dashboard' ? 'Mesa de escrita' : pathname.startsWith('/write') ? 'Ambiente de escrita' : pathname.startsWith('/overview') ? 'Visão geral' : pathname.startsWith('/library') ? 'Biblioteca' : pathname === '/account' ? 'Conta' : pathname.startsWith('/account/') ? 'Configurações' : 'Área de trabalho';
   return (
     <Breadcrumb>
       <BreadcrumbList className="flex-nowrap">

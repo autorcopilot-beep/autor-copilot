@@ -1,4 +1,5 @@
 @import './book-flip.css';
+@import './writing-workspace.css';
 
 @tailwind base;
 @tailwind components;
@@ -463,8 +464,8 @@
     to bottom,
     transparent 0,
     transparent calc(var(--writing-page-height) - 1px),
-    var(--color-border-strong) calc(var(--writing-page-height) - 1px),
-    var(--color-border-strong) var(--writing-page-height)
+    color-mix(in srgb, var(--color-border-strong) 45%, transparent) calc(var(--writing-page-height) - 1px),
+    color-mix(in srgb, var(--color-border-strong) 45%, transparent) var(--writing-page-height)
   );
 }
 

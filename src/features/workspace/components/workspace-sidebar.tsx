@@ -3,14 +3,14 @@
 import { BookOpenText, ChevronDown, ChevronRight, ChevronsUpDown, LogOut, PanelLeftClose, PanelLeftOpen, Plus, X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger, DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui';
 import { logout } from '@/features/auth/actions/logout';
 import { OperationalTagBadge } from '@/features/workspace/components/operational-tag';
-import { contextOptions, footerNavigation, platformNavigation, workNavigation } from '@/features/workspace/navigation';
+import { contextOptions, footerNavigation, workNavigation } from '@/features/workspace/navigation';
 import { brandImage } from '@/lib/brand-image';
 
 function ContextSelector({ collapsed = false }: { collapsed?: boolean }) {
@@ -33,14 +33,17 @@ function ContextSelector({ collapsed = false }: { collapsed?: boolean }) {
 }
 
 function WorkItem({ item, collapsed = false }: { item: (typeof workNavigation)[number]; collapsed?: boolean }) {
-  const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const active = Boolean(item.href && (pathname === item.href || pathname.startsWith(`${item.href.split('/').slice(0, 2).join('/')}/`)));
+  const [open, setOpen] = useState(active);
+  const workId = pathname.startsWith('/write/') ? searchParams.get('work') : null;
+  const withCurrentWork = (href: string) => workId && href.startsWith('/write/') ? `${href}?work=${encodeURIComponent(workId)}` : href;
   const Icon = item.icon;
   if (collapsed) {
     if (item.href) {
       return (
-        <Link href={item.href} title={item.label} aria-label={item.label} aria-current={active ? 'page' : undefined} className={`relative flex min-h-10 w-full items-center justify-center rounded-control transition-colors hover:bg-accent-subtle hover:text-accent ${active ? 'bg-accent-subtle text-accent' : 'text-muted'}`}>
+        <Link href={withCurrentWork(item.href)} title={item.label} aria-label={item.label} aria-current={active ? 'page' : undefined} className={`relative flex min-h-10 w-full items-center justify-center rounded-control transition-colors hover:bg-accent-subtle hover:text-accent ${active ? 'bg-accent-subtle text-accent' : 'text-muted'}`}>
           <Icon className="size-[18px]" aria-hidden="true" />
         </Link>
       );
@@ -53,16 +56,16 @@ function WorkItem({ item, collapsed = false }: { item: (typeof workNavigation)[n
   }
 
   return (
-    <Collapsible open={open || active} onOpenChange={setOpen}>
+    <Collapsible open={open} onOpenChange={setOpen}>
       {item.href ? (
         <div className={`group flex min-h-10 w-full items-center rounded-control text-sm transition-colors hover:bg-surface-muted ${active ? 'bg-accent-subtle text-accent' : 'text-ink'}`}>
-          <Link href={item.href} aria-current={active ? 'page' : undefined} className="flex min-w-0 flex-1 items-center gap-2 self-stretch px-2.5">
+          <Link href={withCurrentWork(item.href)} aria-current={active ? 'page' : undefined} className="flex min-w-0 flex-1 items-center gap-2 self-stretch px-2.5">
             <Icon className={`size-4 shrink-0 ${active ? 'text-accent' : 'text-muted group-hover:text-accent'}`} aria-hidden="true" />
             <span className="min-w-0 flex-1 truncate font-medium">{item.label}</span>
             {item.tag && <OperationalTagBadge tag={item.tag} compact />}
           </Link>
-          <CollapsibleTrigger className="flex size-10 shrink-0 items-center justify-center rounded-control text-muted hover:text-accent" aria-label={`${open || active ? 'Recolher' : 'Expandir'} ${item.label}`}>
-            {open || active ? <ChevronDown className="size-3.5" /> : <ChevronRight className="size-3.5" />}
+          <CollapsibleTrigger className="flex size-10 shrink-0 items-center justify-center rounded-control text-muted hover:text-accent" aria-label={`${open ? 'Recolher' : 'Expandir'} ${item.label}`}>
+            {open ? <ChevronDown className="size-3.5" /> : <ChevronRight className="size-3.5" />}
           </CollapsibleTrigger>
         </div>
       ) : (
@@ -76,7 +79,7 @@ function WorkItem({ item, collapsed = false }: { item: (typeof workNavigation)[n
       <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-[auth-fade-out_100ms_ease-in] data-[state=open]:animate-[auth-fade-in_150ms_ease-out]">
         <div className="ml-4 border-l border-line py-1 pl-3">
           {item.children.map((child) => child.href ? (
-            <Link key={child.label} href={child.href} aria-current={pathname === child.href ? 'page' : undefined} className={`flex min-h-9 w-full items-center gap-2 rounded-control px-2 text-left text-xs transition-colors hover:bg-accent-subtle hover:text-accent ${pathname === child.href ? 'bg-accent-subtle font-medium text-accent' : 'text-muted'}`}>
+            <Link key={child.label} href={withCurrentWork(child.href)} aria-current={pathname === child.href ? 'page' : undefined} className={`flex min-h-9 w-full items-center gap-2 rounded-control px-2 text-left text-xs transition-colors hover:bg-accent-subtle hover:text-accent ${pathname === child.href ? 'bg-accent-subtle font-medium text-accent' : 'text-muted'}`}>
               <span className="flex-1">{child.label}</span>{child.tag && <OperationalTagBadge tag={child.tag} compact />}
             </Link>
           ) : (
@@ -108,28 +111,13 @@ function SidebarContent({ mobile = false, collapsed = false, onCollapsedChange }
         {!collapsed && <p className="px-2 pb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">Funções de trabalho</p>}
         <nav className="space-y-0.5" aria-label="Funções de trabalho">{workNavigation.map((item) => <WorkItem key={item.label} item={item} collapsed={collapsed} />)}</nav>
 
-        {!collapsed && <p className="mt-6 px-2 pb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">Plataforma</p>}
-        {collapsed && <div className="my-3 border-t border-line" />}
-        <nav className="space-y-0.5" aria-label="Plataforma">
-          {platformNavigation.map(({ label, icon: Icon, tag }) => (
-            <button key={label} type="button" disabled title={collapsed ? `${label} — Em breve` : undefined} className={`relative flex min-h-10 w-full cursor-not-allowed items-center rounded-control text-sm text-muted ${collapsed ? 'justify-center px-1' : 'gap-2 px-2.5 text-left'}`}>
-              <Icon className="size-4" />{!collapsed && <><span className="flex-1">{label}</span><OperationalTagBadge tag={tag} compact /></>}
-            </button>
-          ))}
-        </nav>
       </div>
 
       <div className="mt-4 border-t border-line pt-3">
-        {footerNavigation.map(({ label, icon: Icon, tag }) => (
-          tag ? (
-            <button key={label} type="button" disabled title={collapsed ? `${label} — Em breve` : undefined} className={`flex min-h-9 w-full cursor-not-allowed items-center rounded-control text-xs text-muted ${collapsed ? 'justify-center px-1' : 'gap-2 px-2.5 text-left'}`}>
-              <Icon className="size-4" />{!collapsed && <><span className="flex-1">{label}</span><OperationalTagBadge tag={tag} compact /></>}
-            </button>
-          ) : (
-            <Link key={label} href="/account" title={collapsed ? label : undefined} className={`flex min-h-9 w-full items-center rounded-control text-xs text-muted transition-colors hover:bg-surface-muted hover:text-ink ${collapsed ? 'justify-center px-1' : 'gap-2 px-2.5 text-left'}`}>
-              <Icon className="size-4" />{!collapsed && <span className="flex-1">{label}</span>}
-            </Link>
-          )
+        {footerNavigation.map(({ label, icon: Icon, href }) => (
+          <Link key={label} href={href} title={collapsed ? label : undefined} className={`flex min-h-9 w-full items-center rounded-control text-xs text-muted transition-colors hover:bg-surface-muted hover:text-ink ${collapsed ? 'justify-center px-1' : 'gap-2 px-2.5 text-left'}`}>
+            <Icon className="size-4" />{!collapsed && <span className="flex-1">{label}</span>}
+          </Link>
         ))}
         <form action={logout}>
           <button type="submit" title={collapsed ? 'Sair' : undefined} className={`mt-1 flex min-h-10 w-full items-center rounded-control text-sm text-muted transition-colors hover:bg-danger-subtle hover:text-danger ${collapsed ? 'justify-center px-1' : 'gap-2 px-2.5 text-left'}`}>
