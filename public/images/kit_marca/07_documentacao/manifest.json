@@ -1,0 +1,649 @@
+{
+  "versao": "1.0.0",
+  "data": "2026-09-20",
+  "total_svg": 30,
+  "assets": [
+    {
+      "id": "folhas-soltas",
+      "titulo": "Folhas Soltas",
+      "descricao": "Tile vetorial de repetição contínua, com fundo transparente.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 160 160",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "02_patterns/folhas-soltas.svg",
+      "repetivel": true,
+      "tamanho_tile_px": 160,
+      "uso": "background-repeat: repeat; background-size: 160px 160px",
+      "bytes": 1530,
+      "sha256": "3fa21b7a625aa09a8668e923442d93aedf544968d150a53bc2e99b6254cd68cb"
+    },
+    {
+      "id": "livros-abertos",
+      "titulo": "Livros Abertos",
+      "descricao": "Tile vetorial de repetição contínua, com fundo transparente.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 160 160",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "02_patterns/livros-abertos.svg",
+      "repetivel": true,
+      "tamanho_tile_px": 160,
+      "uso": "background-repeat: repeat; background-size: 160px 160px",
+      "bytes": 1375,
+      "sha256": "e3005232807f5d50c9697da6458c173c0c522695abc7e4dd605fc0afb426f9ed"
+    },
+    {
+      "id": "constelacoes",
+      "titulo": "Constelacoes",
+      "descricao": "Tile vetorial de repetição contínua, com fundo transparente.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 160 160",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "02_patterns/constelacoes.svg",
+      "repetivel": true,
+      "tamanho_tile_px": 160,
+      "uso": "background-repeat: repeat; background-size: 160px 160px",
+      "bytes": 1408,
+      "sha256": "8289746705a41a6c1ec374b24ffda0a121e8d7b660c4af749193b06b3659c9ee"
+    },
+    {
+      "id": "linhas-editoriais",
+      "titulo": "Linhas Editoriais",
+      "descricao": "Tile vetorial de repetição contínua, com fundo transparente.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 160 160",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "02_patterns/linhas-editoriais.svg",
+      "repetivel": true,
+      "tamanho_tile_px": 160,
+      "uso": "background-repeat: repeat; background-size: 160px 160px",
+      "bytes": 1313,
+      "sha256": "0f966e79ea708425637c590a7eb3236d6b7fa4106d0744cb154d57177034e6d0"
+    },
+    {
+      "id": "arcos",
+      "titulo": "Arcos",
+      "descricao": "Tile vetorial de repetição contínua, com fundo transparente.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 160 160",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "02_patterns/arcos.svg",
+      "repetivel": true,
+      "tamanho_tile_px": 160,
+      "uso": "background-repeat: repeat; background-size: 160px 160px",
+      "bytes": 1234,
+      "sha256": "ccf71e4bea9b23b85014f00e1859a7a0aad53b7ab9ac454916c0a046f0bbb513"
+    },
+    {
+      "id": "pontos-organicos",
+      "titulo": "Pontos Organicos",
+      "descricao": "Tile vetorial de repetição contínua, com fundo transparente.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 160 160",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "02_patterns/pontos-organicos.svg",
+      "repetivel": true,
+      "tamanho_tile_px": 160,
+      "uso": "background-repeat: repeat; background-size: 160px 160px",
+      "bytes": 1384,
+      "sha256": "d9429379700ef840ca08248f490b04b18634c88e372e99e77975d5be8273920d"
+    },
+    {
+      "id": "ramos",
+      "titulo": "Ramos",
+      "descricao": "Tile vetorial de repetição contínua, com fundo transparente.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 160 160",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "02_patterns/ramos.svg",
+      "repetivel": true,
+      "tamanho_tile_px": 160,
+      "uso": "background-repeat: repeat; background-size: 160px 160px",
+      "bytes": 1546,
+      "sha256": "3758079fdb5f9648f004cedefc04d2e550998a9559524c5f0d2e7a8f0c8c6221"
+    },
+    {
+      "id": "ondas-de-tinta",
+      "titulo": "Ondas De Tinta",
+      "descricao": "Tile vetorial de repetição contínua, com fundo transparente.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 160 160",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "02_patterns/ondas-de-tinta.svg",
+      "repetivel": true,
+      "tamanho_tile_px": 160,
+      "uso": "background-repeat: repeat; background-size: 160px 160px",
+      "bytes": 1303,
+      "sha256": "020fb227a1b0bffd7d68a0df5d6f1c5ca67ecdb08b20d4a761077fb443938a12"
+    },
+    {
+      "id": "papel-claro",
+      "titulo": "Papel Claro",
+      "descricao": "Fundo editorial com ondas suaves e área central livre para conteúdo.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 1600 1000",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "03_backgrounds/papel-claro.svg",
+      "repetivel": false,
+      "bytes": 1275,
+      "sha256": "003674021e262827c3167bf719a9868f3662fa84fbd535ca915d7ec04f388222"
+    },
+    {
+      "id": "nevoa-verde",
+      "titulo": "Nevoa Verde",
+      "descricao": "Fundo editorial com ondas suaves e área central livre para conteúdo.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 1600 1000",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "03_backgrounds/nevoa-verde.svg",
+      "repetivel": false,
+      "bytes": 1275,
+      "sha256": "6566dd786c687b4ab639e6bcc033e281dad51912ee7dd79ef1cca436d299b1b4"
+    },
+    {
+      "id": "floresta-noturna",
+      "titulo": "Floresta Noturna",
+      "descricao": "Fundo editorial com ondas suaves e área central livre para conteúdo.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 1600 1000",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "03_backgrounds/floresta-noturna.svg",
+      "repetivel": false,
+      "bytes": 1315,
+      "sha256": "832aa1f5ba400eceb8fd504d5dd040f00a6b0a8cbf5ff99fd7f3adb3e190bbaa"
+    },
+    {
+      "id": "cantos-botanicos",
+      "titulo": "Cantos botânicos",
+      "descricao": "Fundo claro com ramos discretos nos cantos; texto no centro.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 1600 1000",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "03_backgrounds/cantos-botanicos.svg",
+      "repetivel": false,
+      "bytes": 1531,
+      "sha256": "8c80671c6f9cf051e4303309a8ce4ed01cdf37dd88fb92dc751bd72dff68d87c"
+    },
+    {
+      "id": "halo-salvia",
+      "titulo": "Halo sálvia",
+      "descricao": "Gradiente suave para cabeçalhos e onboarding.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 1600 1000",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "03_backgrounds/halo-salvia.svg",
+      "repetivel": false,
+      "bytes": 1285,
+      "sha256": "af8a88a1b27247902ae5cd88786b9dc8eb1c5cc9424bb79ec875a91c22e3b5f9"
+    },
+    {
+      "id": "margem-manuscrito",
+      "titulo": "Margem de manuscrito",
+      "descricao": "Papel com margem e linhas sutis para telas de boas-vindas.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 1600 1000",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "03_backgrounds/margem-manuscrito.svg",
+      "repetivel": false,
+      "bytes": 1751,
+      "sha256": "b6d6165c3eda5a41dd0143af6e9d862485fc9cbebc5f772f99e3de12b49897a7"
+    },
+    {
+      "id": "papel-fibras",
+      "titulo": "Papel Fibras",
+      "descricao": "Textura vetorial transparente de baixa opacidade; sobrepor ao fundo. Não é fotografia de papel.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 800 800",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "04_texturas/papel-fibras.svg",
+      "repetivel": false,
+      "bytes": 130447,
+      "sha256": "5f8d1250d00225e6a55d2049dace352043484eeaca7d072e10a274a5940ebd51"
+    },
+    {
+      "id": "grao-salvia",
+      "titulo": "Grao Salvia",
+      "descricao": "Textura vetorial transparente de baixa opacidade; sobrepor ao fundo. Não é fotografia de papel.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 800 800",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "04_texturas/grao-salvia.svg",
+      "repetivel": false,
+      "bytes": 76452,
+      "sha256": "7f2f009de43eeb716bb39eb9fa75eab179a537803d359b447d9043e65ab63ef3"
+    },
+    {
+      "id": "pigmento-floresta",
+      "titulo": "Pigmento Floresta",
+      "descricao": "Textura vetorial transparente de baixa opacidade; sobrepor ao fundo. Não é fotografia de papel.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 800 800",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "04_texturas/pigmento-floresta.svg",
+      "repetivel": false,
+      "bytes": 76525,
+      "sha256": "851e1a507047100c52ab265504c426222bc86d287fc7220454eb6acc98e289f0"
+    },
+    {
+      "id": "poeira-editorial",
+      "titulo": "Poeira Editorial",
+      "descricao": "Textura vetorial transparente de baixa opacidade; sobrepor ao fundo. Não é fotografia de papel.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 800 800",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "04_texturas/poeira-editorial.svg",
+      "repetivel": false,
+      "bytes": 76498,
+      "sha256": "898c213f9de0028fc30ced197920c955fc60dbef26f6a49340666b1b41b47e98"
+    },
+    {
+      "id": "divisor-ramo",
+      "titulo": "Divisor Ramo",
+      "descricao": "Ornamento editorial vetorial com fundo transparente.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 600 160",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "05_ornamentos/divisor-ramo.svg",
+      "repetivel": false,
+      "bytes": 1264,
+      "sha256": "7ff562f00bcccf50a3486fab67cfa193f38dd6d2846573cad02215541dff28a0"
+    },
+    {
+      "id": "divisor-capitulo",
+      "titulo": "Divisor Capitulo",
+      "descricao": "Ornamento editorial vetorial com fundo transparente.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 600 160",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "05_ornamentos/divisor-capitulo.svg",
+      "repetivel": false,
+      "bytes": 1175,
+      "sha256": "d727614db1fcebf017758f97c16bfd875ce7675b3cd692ef1b6c79780a897e88"
+    },
+    {
+      "id": "marcador-pagina",
+      "titulo": "Marcador Pagina",
+      "descricao": "Ornamento editorial vetorial com fundo transparente.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 600 160",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "05_ornamentos/marcador-pagina.svg",
+      "repetivel": false,
+      "bytes": 1178,
+      "sha256": "086edc81d00138d873e496b8dbf9add8d8190ef16abbb18c8e2d937b85b528dd"
+    },
+    {
+      "id": "aspas-editoriais",
+      "titulo": "Aspas Editoriais",
+      "descricao": "Ornamento editorial vetorial com fundo transparente.",
+      "tipo": "vetorial",
+      "viewBox": "0 0 600 160",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "05_ornamentos/aspas-editoriais.svg",
+      "repetivel": false,
+      "bytes": 1176,
+      "sha256": "e33e97e97acc35c409813f9a0bc41917d7e44bcb9c00fbf1efe40838a3baa80a"
+    },
+    {
+      "id": "romance",
+      "titulo": "Romance",
+      "descricao": "Two folded ivory love letters tied with a sage green silk ribbon, one small white camellia with dark green leaves. Quiet intimate literary romance, no hearts.",
+      "tipo": "hibrido-png-incorporado",
+      "viewBox": "0 0 1254 1254",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "01_ilustracoes/romance.svg",
+      "repetivel": false,
+      "resolucao_raster": [
+        1254,
+        1254
+      ],
+      "fundo": "papel claro opaco",
+      "prompt": "Create one finished square editorial watercolor illustration for a premium reading and writing app. Subject: Two folded ivory love letters tied with a sage green silk ribbon, one small white camellia with dark green leaves. Quiet intimate literary romance, no hearts. Style: refined naturalistic handmade watercolor and dry brush on cold-pressed paper, pigment granulation, restrained delicate detail, organic uneven edges, understated mature design like traditional book arts. Palette strictly ivory #F7F5EC, sage #9AAE99, dark forest green #254D3D, muted olive accents. Composition one cohesive isolated vignette centered occupying 75% of canvas, generous clean margin, plain warm ivory background #F7F5EC. No black background, no lettering, no logos, no text, no cartoon, no 3D, no glossy effects, no ornamental clutter. Fine nuanced brushwork. Output high quality 1536x1536 or larger.",
+      "origem": "gerado com IA — ferramenta integrada de imagens; direção editorial baseada na referência fornecida",
+      "bytes": 3060729,
+      "sha256": "eb3176b98ccf69a8e8f95548cd3ec29318b5b8ab07e565696367bf1261d8ed2b"
+    },
+    {
+      "id": "ficcao",
+      "titulo": "Ficção",
+      "descricao": "An open antique ivory book, a small luminous misty green landscape rises subtly between its pages, one distant tiny doorway. Literary fiction, understated imaginative composition.",
+      "tipo": "hibrido-png-incorporado",
+      "viewBox": "0 0 1254 1254",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "01_ilustracoes/ficcao.svg",
+      "repetivel": false,
+      "resolucao_raster": [
+        1254,
+        1254
+      ],
+      "fundo": "papel claro opaco",
+      "prompt": "Create one finished square editorial watercolor illustration for a premium reading and writing app. Subject: An open antique ivory book, a small luminous misty green landscape rises subtly between its pages, one distant tiny doorway. Literary fiction, understated imaginative composition. Style: refined naturalistic handmade watercolor and dry brush on cold-pressed paper, pigment granulation, restrained delicate detail, organic uneven edges, understated mature design like traditional book arts. Palette strictly ivory #F7F5EC, sage #9AAE99, dark forest green #254D3D, muted olive accents. Composition one cohesive isolated vignette centered occupying 75% of canvas, generous clean margin, plain warm ivory background #F7F5EC. No black background, no lettering, no logos, no text, no cartoon, no 3D, no glossy effects, no ornamental clutter. Fine nuanced brushwork. Output high quality 1536x1536 or larger.",
+      "origem": "gerado com IA — ferramenta integrada de imagens; direção editorial baseada na referência fornecida",
+      "bytes": 3335280,
+      "sha256": "63c18ff57b163a4398a6ed1670e9ca14fd51577d9c834545e73f0f8dc75078e0"
+    },
+    {
+      "id": "fantasia",
+      "titulo": "Fantasia",
+      "descricao": "A weathered ivy-covered stone arch with three stone steps and a small crescent moon visible through it, elegant high-fantasy mood, no sparkles.",
+      "tipo": "hibrido-png-incorporado",
+      "viewBox": "0 0 1254 1254",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "01_ilustracoes/fantasia.svg",
+      "repetivel": false,
+      "resolucao_raster": [
+        1254,
+        1254
+      ],
+      "fundo": "papel claro opaco",
+      "prompt": "Create one finished square editorial watercolor illustration for a premium reading and writing app. Subject: A weathered ivy-covered stone arch with three stone steps and a small crescent moon visible through it, elegant high-fantasy mood, no sparkles. Style: refined naturalistic handmade watercolor and dry brush on cold-pressed paper, pigment granulation, restrained delicate detail, organic uneven edges, understated mature design like traditional book arts. Palette strictly ivory #F7F5EC, sage #9AAE99, dark forest green #254D3D, muted olive accents. Composition one cohesive isolated vignette centered occupying 75% of canvas, generous clean margin, plain warm ivory background #F7F5EC. No black background, no lettering, no logos, no text, no cartoon, no 3D, no glossy effects, no ornamental clutter. Fine nuanced brushwork. Output high quality 1536x1536 or larger.",
+      "origem": "gerado com IA — ferramenta integrada de imagens; direção editorial baseada na referência fornecida",
+      "bytes": 4042896,
+      "sha256": "9eeaf14414a2537baabf8a6c670fa51f43c7628213864e492d2a8a66c57c0bb2"
+    },
+    {
+      "id": "misterio",
+      "titulo": "Mistério",
+      "descricao": "A vintage deep green key resting diagonally on a closed ivory notebook beside one single eucalyptus leaf. Literary mystery, quiet precise still life.",
+      "tipo": "hibrido-png-incorporado",
+      "viewBox": "0 0 1254 1254",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "01_ilustracoes/misterio.svg",
+      "repetivel": false,
+      "resolucao_raster": [
+        1254,
+        1254
+      ],
+      "fundo": "papel claro opaco",
+      "prompt": "Create one finished square editorial watercolor illustration for a premium reading and writing app. Subject: A vintage deep green key resting diagonally on a closed ivory notebook beside one single eucalyptus leaf. Literary mystery, quiet precise still life. Style: refined naturalistic handmade watercolor and dry brush on cold-pressed paper, pigment granulation, restrained delicate detail, organic uneven edges, understated mature design like traditional book arts. Palette strictly ivory #F7F5EC, sage #9AAE99, dark forest green #254D3D, muted olive accents. Composition one cohesive isolated vignette centered occupying 75% of canvas, generous clean margin, plain warm ivory background #F7F5EC. No black background, no lettering, no logos, no text, no cartoon, no 3D, no glossy effects, no ornamental clutter. Fine nuanced brushwork. Output high quality 1536x1536 or larger.",
+      "origem": "gerado com IA — ferramenta integrada de imagens; direção editorial baseada na referência fornecida",
+      "bytes": 3232540,
+      "sha256": "1ecec10ac23047601cb5573e1bfa63f880954cfa218d2ec9d740ca4d9257c04c"
+    },
+    {
+      "id": "ficcao-cientifica",
+      "titulo": "Ficção científica",
+      "descricao": "A small elegant vintage astronomical armillary sphere in muted sage patinated metal resting on two ivory books, restrained scientific fiction, no neon.",
+      "tipo": "hibrido-png-incorporado",
+      "viewBox": "0 0 1254 1254",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "01_ilustracoes/ficcao-cientifica.svg",
+      "repetivel": false,
+      "resolucao_raster": [
+        1254,
+        1254
+      ],
+      "fundo": "papel claro opaco",
+      "prompt": "Create one finished square editorial watercolor illustration for a premium reading and writing app. Subject: A small elegant vintage astronomical armillary sphere in muted sage patinated metal resting on two ivory books, restrained scientific fiction, no neon. Style: refined naturalistic handmade watercolor and dry brush on cold-pressed paper, pigment granulation, restrained delicate detail, organic uneven edges, understated mature design like traditional book arts. Palette strictly ivory #F7F5EC, sage #9AAE99, dark forest green #254D3D, muted olive accents. Composition one cohesive isolated vignette centered occupying 75% of canvas, generous clean margin, plain warm ivory background #F7F5EC. No black background, no lettering, no logos, no text, no cartoon, no 3D, no glossy effects, no ornamental clutter. Fine nuanced brushwork. Output high quality 1536x1536 or larger.",
+      "origem": "gerado com IA — ferramenta integrada de imagens; direção editorial baseada na referência fornecida",
+      "bytes": 3304138,
+      "sha256": "50bfc8a06d7dc02327d4f9e185a3b24a98afb4158410a97c96ffb661ec1a0458"
+    },
+    {
+      "id": "poesia",
+      "titulo": "Poesia",
+      "descricao": "A long forest-green writing feather laid diagonally over an irregular ivory manuscript sheet with three abstract pale green ink strokes, botanical lyrical poetry.",
+      "tipo": "hibrido-png-incorporado",
+      "viewBox": "0 0 1254 1254",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "01_ilustracoes/poesia.svg",
+      "repetivel": false,
+      "resolucao_raster": [
+        1254,
+        1254
+      ],
+      "fundo": "papel claro opaco",
+      "prompt": "Create one finished square editorial watercolor illustration for a premium reading and writing app. Subject: A long forest-green writing feather laid diagonally over an irregular ivory manuscript sheet with three abstract pale green ink strokes, botanical lyrical poetry. Style: refined naturalistic handmade watercolor and dry brush on cold-pressed paper, pigment granulation, restrained delicate detail, organic uneven edges, understated mature design like traditional book arts. Palette strictly ivory #F7F5EC, sage #9AAE99, dark forest green #254D3D, muted olive accents. Composition one cohesive isolated vignette centered occupying 75% of canvas, generous clean margin, plain warm ivory background #F7F5EC. No black background, no lettering, no logos, no text, no cartoon, no 3D, no glossy effects, no ornamental clutter. Fine nuanced brushwork. Output high quality 1536x1536 or larger.",
+      "origem": "gerado com IA — ferramenta integrada de imagens; direção editorial baseada na referência fornecida",
+      "bytes": 3057825,
+      "sha256": "ebfd084eb9477fa44c00f00766fc53dc17f37d31ba4e95f8234df33d6648dd4a"
+    },
+    {
+      "id": "aventura",
+      "titulo": "Aventura",
+      "descricao": "An ivory folded expedition map with abstract unreadable contours, a small muted brass compass and olive branch, restrained literary adventure.",
+      "tipo": "hibrido-png-incorporado",
+      "viewBox": "0 0 1254 1254",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "01_ilustracoes/aventura.svg",
+      "repetivel": false,
+      "resolucao_raster": [
+        1254,
+        1254
+      ],
+      "fundo": "papel claro opaco",
+      "prompt": "Create one finished square editorial watercolor illustration for a premium reading and writing app. Subject: An ivory folded expedition map with abstract unreadable contours, a small muted brass compass and olive branch, restrained literary adventure. Style: refined naturalistic handmade watercolor and dry brush on cold-pressed paper, pigment granulation, restrained delicate detail, organic uneven edges, understated mature design like traditional book arts. Palette strictly ivory #F7F5EC, sage #9AAE99, dark forest green #254D3D, muted olive accents. Composition one cohesive isolated vignette centered occupying 75% of canvas, generous clean margin, plain warm ivory background #F7F5EC. No black background, no lettering, no logos, no text, no cartoon, no 3D, no glossy effects, no ornamental clutter. Fine nuanced brushwork. Output high quality 1536x1536 or larger.",
+      "origem": "gerado com IA — ferramenta integrada de imagens; direção editorial baseada na referência fornecida",
+      "bytes": 3529949,
+      "sha256": "045efe023c1040747e71bfc4301ccc54fa63a1e38521ee30d66815db42091ecb"
+    },
+    {
+      "id": "escrita",
+      "titulo": "Escrita",
+      "descricao": "An open cream journal with a forest green fountain pen and a small ceramic ink bottle, asymmetrical beautiful editorial still life for a writing application.",
+      "tipo": "hibrido-png-incorporado",
+      "viewBox": "0 0 1254 1254",
+      "paleta": {
+        "papel": "#F7F5EC",
+        "branco": "#FFFFFF",
+        "floresta": "#254D3D",
+        "salvia": "#9AAE99",
+        "nevoa": "#E6ECE2",
+        "oliva": "#7C8767"
+      },
+      "arquivo": "01_ilustracoes/escrita.svg",
+      "repetivel": false,
+      "resolucao_raster": [
+        1254,
+        1254
+      ],
+      "fundo": "papel claro opaco",
+      "prompt": "Create one finished square editorial watercolor illustration for a premium reading and writing app. Subject: An open cream journal with a forest green fountain pen and a small ceramic ink bottle, asymmetrical beautiful editorial still life for a writing application. Style: refined naturalistic handmade watercolor and dry brush on cold-pressed paper, pigment granulation, restrained delicate detail, organic uneven edges, understated mature design like traditional book arts. Palette strictly ivory #F7F5EC, sage #9AAE99, dark forest green #254D3D, muted olive accents. Composition one cohesive isolated vignette centered occupying 75% of canvas, generous clean margin, plain warm ivory background #F7F5EC. No black background, no lettering, no logos, no text, no cartoon, no 3D, no glossy effects, no ornamental clutter. Fine nuanced brushwork. Output high quality 1536x1536 or larger.",
+      "origem": "gerado com IA — ferramenta integrada de imagens; direção editorial baseada na referência fornecida",
+      "bytes": 3371158,
+      "sha256": "a798486b4ac1d5515b4c0c8f2a520722aa130a0d02ab08887e50141d8ae1eedf"
+    }
+  ]
+}

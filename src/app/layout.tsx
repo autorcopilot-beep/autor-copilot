@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
 import { Inter, Literata } from 'next/font/google';
 import Script from 'next/script';
+import { Suspense } from 'react';
 
 import './globals.css';
 import { AccessibilityMenu } from '@/features/accessibility/accessibility-menu';
 import { accessibilityBootstrapScript } from '@/features/accessibility/bootstrap';
 import { faviconImage } from '@/lib/favicon-image';
+import { NavigationProgress } from '@/components/navigation-progress';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
 const literata = Literata({ subsets: ['latin'], variable: '--font-literata', display: 'swap' });
@@ -25,6 +27,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: accessibilityBootstrapScript }}
         />
+        <Suspense fallback={null}><NavigationProgress /></Suspense>
         {children}
         <AccessibilityMenu />
       </body>

@@ -1,7 +1,9 @@
 # Preferências de acessibilidade
 
-O Autor Copilot oferece um botão global “Acessibilidade”. Ele abre um diálogo
-com as preferências que afetam diretamente a experiência de leitura e escrita.
+O Autor Copilot oferece um botão global de acessibilidade representado por um
+ícone circular. Ele pode ser arrastado livremente, possui atração pelas bordas
+laterais e pode ser ocultado. Ao ser ativado, abre um diálogo com as
+preferências que afetam diretamente a experiência de leitura e escrita.
 
 ## Preferências disponíveis
 
@@ -45,3 +47,6 @@ manuscrito durante o carregamento.
 - Todos os controles funcionam pelo teclado.
 - As opções têm alvos de pelo menos 44 px.
 - Valores não reconhecidos no armazenamento são descartados com segurança.
+- O arraste do botão não substitui sua ativação normal por clique ou teclado.
+- As viradas de página do cadastro e onboarding respeitam tanto
+  `prefers-reduced-motion` quanto a preferência manual.

@@ -25,7 +25,10 @@ export default function Home() {
           )}
           <span className="font-semibold tracking-wide">AUTOR COPILOT</span>
         </div>
-        <span className="hidden text-sm text-muted sm:inline">Seu espaço de escrita</span>
+        <nav className="flex items-center gap-2" aria-label="Conta">
+          <span className="hidden text-sm text-muted md:inline">Seu espaço de escrita</span>
+          <Link href="/login" className={buttonVariants({ variant: 'ghost' })}>Entrar</Link>
+        </nav>
       </header>
 
       <section className="mx-auto grid max-w-6xl gap-12 py-16 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-24">

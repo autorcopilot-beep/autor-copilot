@@ -11,10 +11,15 @@ export async function register(
   formData: FormData,
 ): Promise<RegisterState> {
   const parsed = registerSchema.safeParse({
-    displayName: formData.get('displayName'),
+    fullName: formData.get('fullName'),
+    age: formData.get('age'),
+    nickname: formData.get('nickname'),
     email: formData.get('email'),
     password: formData.get('password'),
     confirmPassword: formData.get('confirmPassword'),
+    acceptTerms: formData.get('acceptTerms') === 'on',
+    acceptPrivacy: formData.get('acceptPrivacy') === 'on',
+    acceptCommunications: formData.get('acceptCommunications') === 'on',
   });
 
   if (!parsed.success) {
@@ -31,7 +36,15 @@ export async function register(
     password: parsed.data.password,
     options: {
       emailRedirectTo: `${getSiteUrl()}/auth/callback?next=/onboarding`,
-      data: { display_name: parsed.data.displayName },
+      data: {
+        display_name: parsed.data.nickname,
+        full_name: parsed.data.fullName,
+        nickname: parsed.data.nickname,
+        age: parsed.data.age,
+        terms_accepted: parsed.data.acceptTerms,
+        privacy_accepted: parsed.data.acceptPrivacy,
+        communications_opt_in: parsed.data.acceptCommunications,
+      },
     },
   });
 

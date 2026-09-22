@@ -49,7 +49,9 @@ acessibilidade e persistidos apenas no navegador.
 
 ## Componentes-base
 
-Os componentes estão em `src/components/ui` e podem ser importados pelo índice:
+Os componentes do shadcn/ui são copiados para `src/components/ui`, passam a
+fazer parte do código do produto e são ajustados aos tokens editoriais. Eles
+podem ser importados pelo índice:
 
 ```tsx
 import { Button, Card, Input, Label } from '@/components/ui';
@@ -84,6 +86,17 @@ ao campo com `aria-describedby` e não podem depender apenas de cor.
 `Card` usa um elemento `section`. Forneça `aria-labelledby` quando o cartão
 representar uma região identificável e associe-o ao título interno.
 
+### Componentes compostos
+
+A base atual também inclui Avatar, Badge, Breadcrumb, Checkbox, Collapsible,
+Command, DataTable, Dialog, DropdownMenu, InputGroup, Menubar, Select, Table,
+Textarea e StepFlow. O StepFlow concentra a navegação, o progresso e as animações dos
+fluxos editoriais de cadastro e onboarding.
+
+Cards devem ser usados quando a superfície ajuda a criar hierarquia. Nas
+configurações da conta, prefira seções limpas separadas por borda para evitar
+uma interface fragmentada.
+
 ## Regras de implementação
 
 1. Não adicionar cores hexadecimais diretamente em componentes.
@@ -95,7 +108,8 @@ representar uma região identificável e associe-o ao título interno.
 
 ## Preferências de acessibilidade
 
-O botão global abre um diálogo modal com gerenciamento de foco e fechamento por
-`Escape`. As preferências controlam tema, tamanho do texto literário, entrelinha,
-largura do manuscrito e redução de movimento. Consulte
+O botão global é circular, pode ser arrastado e se aproxima das bordas laterais.
+Ele abre um diálogo modal com gerenciamento de foco e fechamento por `Escape`.
+As preferências controlam tema, tamanho do texto literário, entrelinha, largura
+do manuscrito e redução de movimento. Consulte
 [`ACCESSIBILITY.md`](ACCESSIBILITY.md) para o contrato de persistência.

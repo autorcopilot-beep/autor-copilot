@@ -4,8 +4,10 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { Accessibility, RotateCcw, X } from 'lucide-react';
 import {
   useEffect,
+  useRef,
   useState,
   type ComponentProps,
+  type PointerEvent as ReactPointerEvent,
   type ReactNode,
 } from 'react';
 
@@ -43,14 +45,40 @@ const textWidthLabels = {
   75: 'Larga',
 } as const;
 
+const POSITION_STORAGE_KEY = 'autor-copilot:accessibility-button';
+const BUTTON_SIZE = 48;
+const EDGE_GAP = 12;
+
+type ButtonPosition = { x: number; y: number };
+
+function clampPosition(position: ButtonPosition): ButtonPosition {
+  return {
+    x: Math.min(window.innerWidth - BUTTON_SIZE - EDGE_GAP, Math.max(EDGE_GAP, position.x)),
+    y: Math.min(window.innerHeight - BUTTON_SIZE - EDGE_GAP, Math.max(EDGE_GAP, position.y)),
+  };
+}
+
 export function AccessibilityMenu() {
   const [preferences, setPreferences] = useState(defaultAccessibilityPreferences);
+  const [buttonPosition, setButtonPosition] = useState<ButtonPosition | null>(null);
+  const drag = useRef<{ pointerId: number; startX: number; startY: number; originX: number; originY: number; moved: boolean } | null>(null);
+  const suppressClick = useRef(false);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
       const stored = readAccessibilityPreferences();
       setPreferences(stored);
       applyAccessibilityPreferences(stored);
+
+      try {
+        const saved = window.localStorage.getItem(POSITION_STORAGE_KEY);
+        const parsed = saved ? JSON.parse(saved) as ButtonPosition : null;
+        setButtonPosition(clampPosition(parsed && Number.isFinite(parsed.x) && Number.isFinite(parsed.y)
+          ? parsed
+          : { x: window.innerWidth - BUTTON_SIZE - EDGE_GAP, y: window.innerHeight - BUTTON_SIZE - 24 }));
+      } catch {
+        setButtonPosition({ x: window.innerWidth - BUTTON_SIZE - EDGE_GAP, y: window.innerHeight - BUTTON_SIZE - 24 });
+      }
     });
 
     function syncAcrossTabs(event: StorageEvent) {
@@ -69,9 +97,12 @@ export function AccessibilityMenu() {
     }
 
     window.addEventListener('storage', syncAcrossTabs);
+    const keepButtonVisible = () => setButtonPosition((current) => current ? clampPosition(current) : current);
+    window.addEventListener('resize', keepButtonVisible);
     return () => {
       window.cancelAnimationFrame(frame);
       window.removeEventListener('storage', syncAcrossTabs);
+      window.removeEventListener('resize', keepButtonVisible);
     };
   }, []);
 
@@ -82,6 +113,46 @@ export function AccessibilityMenu() {
     setPreferences(next);
     applyAccessibilityPreferences(next);
     saveAccessibilityPreferences(next);
+  }
+
+  function startDrag(event: ReactPointerEvent<HTMLButtonElement>) {
+    if (!buttonPosition || (event.pointerType === 'mouse' && event.button !== 0)) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    drag.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      originX: buttonPosition.x,
+      originY: buttonPosition.y,
+      moved: false,
+    };
+  }
+
+  function moveButton(event: ReactPointerEvent<HTMLButtonElement>) {
+    const active = drag.current;
+    if (!active || active.pointerId !== event.pointerId) return;
+    const deltaX = event.clientX - active.startX;
+    const deltaY = event.clientY - active.startY;
+    if (Math.hypot(deltaX, deltaY) > 4) active.moved = true;
+    setButtonPosition(clampPosition({ x: active.originX + deltaX, y: active.originY + deltaY }));
+  }
+
+  function finishDrag(event: ReactPointerEvent<HTMLButtonElement>) {
+    const active = drag.current;
+    if (!active || active.pointerId !== event.pointerId) return;
+    const rightEdge = window.innerWidth - BUTTON_SIZE - EDGE_GAP;
+    const released = clampPosition({
+      x: active.originX + event.clientX - active.startX,
+      y: active.originY + event.clientY - active.startY,
+    });
+    const snapped = clampPosition({
+      x: released.x + BUTTON_SIZE / 2 < window.innerWidth / 2 ? EDGE_GAP : rightEdge,
+      y: released.y,
+    });
+    suppressClick.current = active.moved;
+    drag.current = null;
+    setButtonPosition(snapped);
+    try { window.localStorage.setItem(POSITION_STORAGE_KEY, JSON.stringify(snapped)); } catch { /* posição válida nesta aba */ }
   }
 
   function resetPreferences() {
@@ -95,11 +166,22 @@ export function AccessibilityMenu() {
       <Dialog.Trigger
         className={cn(
           buttonVariants({ variant: 'secondary' }),
-          'fixed bottom-4 right-4 z-40 shadow-floating sm:bottom-6 sm:right-6',
+          'fixed z-40 size-12 cursor-grab touch-none rounded-full p-0 shadow-floating active:cursor-grabbing',
         )}
+        style={buttonPosition ? { left: buttonPosition.x, top: buttonPosition.y } : { right: EDGE_GAP, bottom: 24 }}
+        onPointerDown={startDrag}
+        onPointerMove={moveButton}
+        onPointerUp={finishDrag}
+        onPointerCancel={finishDrag}
+        onClick={(event) => {
+          if (!suppressClick.current) return;
+          event.preventDefault();
+          suppressClick.current = false;
+        }}
+        aria-label="Mostrar ou ocultar preferências de acessibilidade"
+        title="Acessibilidade — arraste para mover"
       >
         <Accessibility aria-hidden="true" className="size-5" />
-        <span>Acessibilidade</span>
       </Dialog.Trigger>
 
       <Dialog.Portal>

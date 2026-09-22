@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { BookOpen, Check } from 'lucide-react';
 
-import { Badge, Card, CardContent } from '@/components/ui';
+import { AuthBrand } from '@/features/auth/components/auth-brand';
+import { ProfileForm } from '@/features/onboarding/components/profile-form';
 import { createClient } from '@/lib/supabase/server';
 
 export const metadata: Metadata = { title: 'Seu espaço de escrita' };
@@ -16,32 +16,19 @@ export default async function OnboardingPage() {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('display_name')
+    .select('display_name, pen_name, writing_focus, experience_level, onboarding_completed_at')
     .eq('id', userId)
     .single();
 
+  if (profile?.onboarding_completed_at) redirect('/dashboard');
+
   return (
-    <main className="flex min-h-screen items-center justify-center px-4 py-10">
-      <Card className="auth-enter w-full max-w-2xl bg-editor" aria-labelledby="welcome-title">
-        <CardContent className="p-7 sm:p-12">
-          <div className="flex items-center justify-between gap-4">
-            <Badge>Conta confirmada</Badge>
-            <span className="flex size-9 items-center justify-center rounded-full bg-success-subtle text-success">
-              <Check className="size-4" aria-hidden="true" />
-            </span>
-          </div>
-          <BookOpen className="mt-10 size-8 text-accent" aria-hidden="true" />
-          <h1 id="welcome-title" className="mt-5 max-w-xl font-serif text-4xl font-semibold leading-tight text-ink">
-            {profile?.display_name ? `${profile.display_name}, seu espaço está aberto.` : 'Seu espaço está aberto.'}
-          </h1>
-          <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted">
-            Na próxima etapa, você vai escolher o tipo de obra e preparar o primeiro projeto. Por enquanto, sua conta e seu perfil de autor já estão protegidos.
-          </p>
-          <div className="mt-9 border-t border-line pt-6 text-sm text-muted">
-            Próximo capítulo do desenvolvimento: acesso à conta e retomada segura da sessão.
-          </div>
-        </CardContent>
-      </Card>
+    <main className="relative flex h-dvh items-center justify-center overflow-hidden px-3 pb-3 pt-[4.75rem] sm:px-6 sm:pb-5 sm:pt-20">
+      <header className="absolute inset-x-3 top-3 mx-auto flex max-w-4xl items-center justify-between sm:inset-x-6 sm:top-5"><AuthBrand /><span className="hidden text-sm text-muted sm:block">Preparando seu perfil</span></header>
+      <section className="auth-enter flex h-full max-h-[42rem] w-full max-w-5xl flex-col" aria-labelledby="welcome-title">
+          <h1 id="welcome-title" className="sr-only">{profile?.display_name ? `${profile.display_name}, personalize seu espaço` : 'Personalize seu espaço'}</h1>
+          <ProfileForm defaultPenName={profile?.pen_name ?? undefined} defaultWritingFocus={profile?.writing_focus ?? undefined} defaultExperienceLevel={profile?.experience_level ?? undefined} />
+      </section>
     </main>
   );
 }
