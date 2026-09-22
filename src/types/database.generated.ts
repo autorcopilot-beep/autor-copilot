@@ -12,178 +12,33 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "14.5"
   }
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
-      extension_catalog: {
-        Row: { allowed_groups: string[]; author: string; category: string; config: Json; created_at: string; currency: string; description: string; feature_flag: string | null; id: string; is_featured: boolean; is_published: boolean; media_type: string; media_url: string; name: string; price_cents: number; price_model: string; product_kind: string; tags: string[]; updated_at: string; version: string }
-        Insert: { allowed_groups?: string[]; author?: string; category: string; config?: Json; created_at?: string; currency?: string; description: string; feature_flag?: string | null; id: string; is_featured?: boolean; is_published?: boolean; media_type?: string; media_url?: string; name: string; price_cents?: number; price_model?: string; product_kind?: string; tags?: string[]; updated_at?: string; version?: string }
-        Update: { allowed_groups?: string[]; author?: string; category?: string; config?: Json; created_at?: string; currency?: string; description?: string; feature_flag?: string | null; id?: string; is_featured?: boolean; is_published?: boolean; media_type?: string; media_url?: string; name?: string; price_cents?: number; price_model?: string; product_kind?: string; tags?: string[]; updated_at?: string; version?: string }
-        Relationships: []
-      }
-      feature_flags: {
-        Row: { allowed_groups: string[]; description: string; enabled: boolean; key: string; name: string; rollout_percentage: number; tags: string[]; updated_at: string }
-        Insert: { allowed_groups?: string[]; description?: string; enabled?: boolean; key: string; name: string; rollout_percentage?: number; tags?: string[]; updated_at?: string }
-        Update: { allowed_groups?: string[]; description?: string; enabled?: boolean; key?: string; name?: string; rollout_percentage?: number; tags?: string[]; updated_at?: string }
-        Relationships: []
-      }
-      legal_documents: {
-        Row: { department: string; effective_at: string; is_published: boolean; pdf_href: string; related_features: string[]; sections: Json; short_description: string; slug: string; title: string; updated_at: string; version: string }
-        Insert: { department?: string; effective_at?: string; is_published?: boolean; pdf_href?: string; related_features?: string[]; sections?: Json; short_description?: string; slug: string; title: string; updated_at?: string; version?: string }
-        Update: { department?: string; effective_at?: string; is_published?: boolean; pdf_href?: string; related_features?: string[]; sections?: Json; short_description?: string; slug?: string; title?: string; updated_at?: string; version?: string }
-        Relationships: []
-      }
-      user_access_profiles: {
-        Row: { groups: string[]; notes: string; status: string; tags: string[]; updated_at: string; user_id: string }
-        Insert: { groups?: string[]; notes?: string; status?: string; tags?: string[]; updated_at?: string; user_id: string }
-        Update: { groups?: string[]; notes?: string; status?: string; tags?: string[]; updated_at?: string; user_id?: string }
-        Relationships: []
-      }
-      user_extension_installations: {
-        Row: { extension_id: string; installed_at: string; is_active: boolean; settings: Json; updated_at: string; user_id: string }
-        Insert: { extension_id: string; installed_at?: string; is_active?: boolean; settings?: Json; updated_at?: string; user_id: string }
-        Update: { extension_id?: string; installed_at?: string; is_active?: boolean; settings?: Json; updated_at?: string; user_id?: string }
-        Relationships: [{ foreignKeyName: "user_extension_installations_extension_id_fkey"; columns: ["extension_id"]; isOneToOne: false; referencedRelation: "extension_catalog"; referencedColumns: ["id"] }]
-      }
-      user_extension_entitlements: {
-        Row: { created_at: string; ends_at: string | null; extension_id: string; granted_by: string | null; metadata: Json; source: string; starts_at: string; status: string; updated_at: string; user_id: string }
-        Insert: { created_at?: string; ends_at?: string | null; extension_id: string; granted_by?: string | null; metadata?: Json; source: string; starts_at?: string; status?: string; updated_at?: string; user_id: string }
-        Update: { created_at?: string; ends_at?: string | null; extension_id?: string; granted_by?: string | null; metadata?: Json; source?: string; starts_at?: string; status?: string; updated_at?: string; user_id?: string }
-        Relationships: [{ foreignKeyName: "user_extension_entitlements_extension_id_fkey"; columns: ["extension_id"]; isOneToOne: false; referencedRelation: "extension_catalog"; referencedColumns: ["id"] }]
-      }
-      encyclopedia_entries: {
-        Row: {
-          aliases: string[]
-          appearance: string
-          connections: string
-          history: string
-          is_pinned: boolean
-          is_spoiler: boolean
-          rules: string
-          status: "draft" | "canon" | "archived"
-          story_role: string
-          tags: string[]
-          profile_answers: Json
-          color: string
-          created_at: string
-          details: string
-          entry_type: Database["public"]["Enums"]["encyclopedia_entry_type"]
-          id: string
-          name: string
-          owner_id: string
-          summary: string
-          updated_at: string
-          work_id: string
-        }
-        Insert: {
-          aliases?: string[]
-          appearance?: string
-          connections?: string
-          history?: string
-          is_pinned?: boolean
-          is_spoiler?: boolean
-          rules?: string
-          status?: "draft" | "canon" | "archived"
-          story_role?: string
-          tags?: string[]
-          profile_answers?: Json
-          color?: string
-          created_at?: string
-          details?: string
-          entry_type?: Database["public"]["Enums"]["encyclopedia_entry_type"]
-          id?: string
-          name: string
-          owner_id: string
-          summary?: string
-          updated_at?: string
-          work_id: string
-        }
-        Update: {
-          aliases?: string[]
-          appearance?: string
-          connections?: string
-          history?: string
-          is_pinned?: boolean
-          is_spoiler?: boolean
-          rules?: string
-          status?: "draft" | "canon" | "archived"
-          story_role?: string
-          tags?: string[]
-          profile_answers?: Json
-          color?: string
-          created_at?: string
-          details?: string
-          entry_type?: Database["public"]["Enums"]["encyclopedia_entry_type"]
-          id?: string
-          name?: string
-          owner_id?: string
-          summary?: string
-          updated_at?: string
-          work_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "encyclopedia_entries_work_owner_fk"
-            columns: ["work_id", "owner_id"]
-            isOneToOne: false
-            referencedRelation: "works"
-            referencedColumns: ["id", "owner_id"]
-          },
-        ]
-      }
-      library_catalog_works: {
-        Row: {
-          added_at: string
-          catalog_id: string
-          owner_id: string
-          work_id: string
-        }
-        Insert: {
-          added_at?: string
-          catalog_id: string
-          owner_id: string
-          work_id: string
-        }
-        Update: {
-          added_at?: string
-          catalog_id?: string
-          owner_id?: string
-          work_id?: string
-        }
-        Relationships: []
-      }
-      library_catalogs: {
-        Row: {
-          color: string
-          created_at: string
-          description: string
-          id: string
-          name: string
-          owner_id: string
-          position: number
-          updated_at: string
-        }
-        Insert: {
-          color?: string
-          created_at?: string
-          description?: string
-          id?: string
-          name: string
-          owner_id: string
-          position?: number
-          updated_at?: string
-        }
-        Update: {
-          color?: string
-          created_at?: string
-          description?: string
-          id?: string
-          name?: string
-          owner_id?: string
-          position?: number
-          updated_at?: string
-        }
-        Relationships: []
-      }
       admin_accounts: {
         Row: {
           created_at: string
@@ -271,6 +126,457 @@ export type Database = {
         }
         Relationships: []
       }
+      audio_editorial_markers: {
+        Row: {
+          created_at: string
+          id: string
+          marker_type: string
+          note: string
+          time_ms: number
+          track_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          marker_type?: string
+          note?: string
+          time_ms: number
+          track_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          marker_type?: string
+          note?: string
+          time_ms?: number
+          track_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audio_editorial_markers_track_id_fkey"
+            columns: ["track_id"]
+            isOneToOne: false
+            referencedRelation: "audio_tracks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audio_tracks: {
+        Row: {
+          audio_path: string
+          author_name: string
+          cover_path: string
+          created_at: string
+          created_by: string | null
+          description: string
+          duration_seconds: number
+          format_encoding: string
+          id: string
+          is_featured: boolean
+          is_published: boolean
+          license_name: string
+          license_url: string
+          listen_count: number
+          mental_rhythm_bpm: number
+          sampling_rate_hz: number
+          spatial_mode: string
+          subtitle: string
+          tags: string[]
+          title: string
+          track_kind: Database["public"]["Enums"]["audio_track_kind"]
+          transcript: Json
+          updated_at: string
+          waveform_peaks: number[]
+        }
+        Insert: {
+          audio_path?: string
+          author_name?: string
+          cover_path?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          duration_seconds?: number
+          format_encoding?: string
+          id?: string
+          is_featured?: boolean
+          is_published?: boolean
+          license_name?: string
+          license_url?: string
+          listen_count?: number
+          mental_rhythm_bpm?: number
+          sampling_rate_hz?: number
+          spatial_mode?: string
+          subtitle?: string
+          tags?: string[]
+          title: string
+          track_kind?: Database["public"]["Enums"]["audio_track_kind"]
+          transcript?: Json
+          updated_at?: string
+          waveform_peaks?: number[]
+        }
+        Update: {
+          audio_path?: string
+          author_name?: string
+          cover_path?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          duration_seconds?: number
+          format_encoding?: string
+          id?: string
+          is_featured?: boolean
+          is_published?: boolean
+          license_name?: string
+          license_url?: string
+          listen_count?: number
+          mental_rhythm_bpm?: number
+          sampling_rate_hz?: number
+          spatial_mode?: string
+          subtitle?: string
+          tags?: string[]
+          title?: string
+          track_kind?: Database["public"]["Enums"]["audio_track_kind"]
+          transcript?: Json
+          updated_at?: string
+          waveform_peaks?: number[]
+        }
+        Relationships: []
+      }
+      audio_user_settings: {
+        Row: {
+          auto_pause_on_typing_stop: boolean
+          crossfade_duration_ms: number
+          favorite_track_ids: string[]
+          master_volume: number
+          mixer_channels: Json
+          playback_rate: number
+          spatial_mode: string
+          typing_inactivity_threshold_ms: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          auto_pause_on_typing_stop?: boolean
+          crossfade_duration_ms?: number
+          favorite_track_ids?: string[]
+          master_volume?: number
+          mixer_channels?: Json
+          playback_rate?: number
+          spatial_mode?: string
+          typing_inactivity_threshold_ms?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          auto_pause_on_typing_stop?: boolean
+          crossfade_duration_ms?: number
+          favorite_track_ids?: string[]
+          master_volume?: number
+          mixer_channels?: Json
+          playback_rate?: number
+          spatial_mode?: string
+          typing_inactivity_threshold_ms?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      encyclopedia_entries: {
+        Row: {
+          aliases: string[]
+          appearance: string
+          color: string
+          connections: string
+          created_at: string
+          details: string
+          entry_type: Database["public"]["Enums"]["encyclopedia_entry_type"]
+          history: string
+          id: string
+          is_pinned: boolean
+          is_spoiler: boolean
+          name: string
+          owner_id: string
+          profile_answers: Json
+          rules: string
+          status: string
+          story_role: string
+          summary: string
+          tags: string[]
+          updated_at: string
+          work_id: string
+        }
+        Insert: {
+          aliases?: string[]
+          appearance?: string
+          color?: string
+          connections?: string
+          created_at?: string
+          details?: string
+          entry_type?: Database["public"]["Enums"]["encyclopedia_entry_type"]
+          history?: string
+          id?: string
+          is_pinned?: boolean
+          is_spoiler?: boolean
+          name: string
+          owner_id: string
+          profile_answers?: Json
+          rules?: string
+          status?: string
+          story_role?: string
+          summary?: string
+          tags?: string[]
+          updated_at?: string
+          work_id: string
+        }
+        Update: {
+          aliases?: string[]
+          appearance?: string
+          color?: string
+          connections?: string
+          created_at?: string
+          details?: string
+          entry_type?: Database["public"]["Enums"]["encyclopedia_entry_type"]
+          history?: string
+          id?: string
+          is_pinned?: boolean
+          is_spoiler?: boolean
+          name?: string
+          owner_id?: string
+          profile_answers?: Json
+          rules?: string
+          status?: string
+          story_role?: string
+          summary?: string
+          tags?: string[]
+          updated_at?: string
+          work_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "encyclopedia_entries_work_owner_fk"
+            columns: ["work_id", "owner_id"]
+            isOneToOne: false
+            referencedRelation: "works"
+            referencedColumns: ["id", "owner_id"]
+          },
+        ]
+      }
+      extension_catalog: {
+        Row: {
+          allowed_groups: string[]
+          author: string
+          category: string
+          config: Json
+          created_at: string
+          currency: string
+          description: string
+          feature_flag: string | null
+          id: string
+          is_featured: boolean
+          is_published: boolean
+          media_type: string
+          media_url: string
+          name: string
+          price_cents: number
+          price_model: string
+          product_kind: string
+          tags: string[]
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          allowed_groups?: string[]
+          author?: string
+          category: string
+          config?: Json
+          created_at?: string
+          currency?: string
+          description: string
+          feature_flag?: string | null
+          id: string
+          is_featured?: boolean
+          is_published?: boolean
+          media_type?: string
+          media_url?: string
+          name: string
+          price_cents?: number
+          price_model?: string
+          product_kind?: string
+          tags?: string[]
+          updated_at?: string
+          version?: string
+        }
+        Update: {
+          allowed_groups?: string[]
+          author?: string
+          category?: string
+          config?: Json
+          created_at?: string
+          currency?: string
+          description?: string
+          feature_flag?: string | null
+          id?: string
+          is_featured?: boolean
+          is_published?: boolean
+          media_type?: string
+          media_url?: string
+          name?: string
+          price_cents?: number
+          price_model?: string
+          product_kind?: string
+          tags?: string[]
+          updated_at?: string
+          version?: string
+        }
+        Relationships: []
+      }
+      feature_flags: {
+        Row: {
+          allowed_groups: string[]
+          description: string
+          enabled: boolean
+          key: string
+          name: string
+          rollout_percentage: number
+          tags: string[]
+          updated_at: string
+        }
+        Insert: {
+          allowed_groups?: string[]
+          description?: string
+          enabled?: boolean
+          key: string
+          name: string
+          rollout_percentage?: number
+          tags?: string[]
+          updated_at?: string
+        }
+        Update: {
+          allowed_groups?: string[]
+          description?: string
+          enabled?: boolean
+          key?: string
+          name?: string
+          rollout_percentage?: number
+          tags?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      legal_documents: {
+        Row: {
+          department: string
+          effective_at: string
+          is_published: boolean
+          pdf_href: string
+          related_features: string[]
+          sections: Json
+          short_description: string
+          slug: string
+          title: string
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          department?: string
+          effective_at?: string
+          is_published?: boolean
+          pdf_href?: string
+          related_features?: string[]
+          sections?: Json
+          short_description?: string
+          slug: string
+          title: string
+          updated_at?: string
+          version?: string
+        }
+        Update: {
+          department?: string
+          effective_at?: string
+          is_published?: boolean
+          pdf_href?: string
+          related_features?: string[]
+          sections?: Json
+          short_description?: string
+          slug?: string
+          title?: string
+          updated_at?: string
+          version?: string
+        }
+        Relationships: []
+      }
+      library_catalog_works: {
+        Row: {
+          added_at: string
+          catalog_id: string
+          owner_id: string
+          work_id: string
+        }
+        Insert: {
+          added_at?: string
+          catalog_id: string
+          owner_id: string
+          work_id: string
+        }
+        Update: {
+          added_at?: string
+          catalog_id?: string
+          owner_id?: string
+          work_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "library_catalog_works_catalog_owner_fk"
+            columns: ["catalog_id", "owner_id"]
+            isOneToOne: false
+            referencedRelation: "library_catalogs"
+            referencedColumns: ["id", "owner_id"]
+          },
+          {
+            foreignKeyName: "library_catalog_works_work_owner_fk"
+            columns: ["work_id", "owner_id"]
+            isOneToOne: false
+            referencedRelation: "works"
+            referencedColumns: ["id", "owner_id"]
+          },
+        ]
+      }
+      library_catalogs: {
+        Row: {
+          color: string
+          created_at: string
+          description: string
+          id: string
+          name: string
+          owner_id: string
+          position: number
+          updated_at: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          description?: string
+          id?: string
+          name: string
+          owner_id: string
+          position?: number
+          updated_at?: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          description?: string
+          id?: string
+          name?: string
+          owner_id?: string
+          position?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           age: number | null
@@ -342,6 +648,115 @@ export type Database = {
           writing_genres?: string[]
         }
         Relationships: []
+      }
+      user_access_profiles: {
+        Row: {
+          groups: string[]
+          notes: string
+          status: string
+          tags: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          groups?: string[]
+          notes?: string
+          status?: string
+          tags?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          groups?: string[]
+          notes?: string
+          status?: string
+          tags?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_extension_entitlements: {
+        Row: {
+          created_at: string
+          ends_at: string | null
+          extension_id: string
+          granted_by: string | null
+          metadata: Json
+          source: string
+          starts_at: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at?: string | null
+          extension_id: string
+          granted_by?: string | null
+          metadata?: Json
+          source: string
+          starts_at?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string | null
+          extension_id?: string
+          granted_by?: string | null
+          metadata?: Json
+          source?: string
+          starts_at?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_extension_entitlements_extension_id_fkey"
+            columns: ["extension_id"]
+            isOneToOne: false
+            referencedRelation: "extension_catalog"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_extension_installations: {
+        Row: {
+          extension_id: string
+          installed_at: string
+          is_active: boolean
+          settings: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          extension_id: string
+          installed_at?: string
+          is_active?: boolean
+          settings?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          extension_id?: string
+          installed_at?: string
+          is_active?: boolean
+          settings?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_extension_installations_extension_id_fkey"
+            columns: ["extension_id"]
+            isOneToOne: false
+            referencedRelation: "extension_catalog"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       works: {
         Row: {
@@ -494,7 +909,15 @@ export type Database = {
           updated_at?: string
           work_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "writing_goals_work_owner_fk"
+            columns: ["work_id", "owner_id"]
+            isOneToOne: false
+            referencedRelation: "works"
+            referencedColumns: ["id", "owner_id"]
+          },
+        ]
       }
       writing_snapshots: {
         Row: {
@@ -556,6 +979,7 @@ export type Database = {
         | "finance"
         | "product"
       admin_status: "active" | "suspended"
+      audio_track_kind: "ambient" | "longform" | "audiobook" | "mixer_layer"
       encyclopedia_entry_type:
         | "character"
         | "location"
@@ -698,6 +1122,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       admin_role: [
@@ -709,6 +1136,7 @@ export const Constants = {
         "product",
       ],
       admin_status: ["active", "suspended"],
+      audio_track_kind: ["ambient", "longform", "audiobook", "mixer_layer"],
       encyclopedia_entry_type: [
         "character",
         "location",

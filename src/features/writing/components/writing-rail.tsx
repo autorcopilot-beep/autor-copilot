@@ -1,6 +1,6 @@
 'use client';
 
-import { BookOpenText, ChartNoAxesCombined, House, LibraryBig, PenLine, Settings2 } from 'lucide-react';
+import { BookOpenText, ChartNoAxesCombined, Headphones, House, LibraryBig, PenLine, Settings2 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 
@@ -18,6 +18,7 @@ export function WritingRail({ displayName, avatarUrl }: { displayName: string; a
     { label: 'Visão geral', href: '/overview/dashboard', icon: ChartNoAxesCombined, active: pathname.startsWith('/overview') },
     { label: 'Editor', href: writingLink('editor'), icon: PenLine, active: pathname.startsWith('/write') && pathname !== '/write/encyclopedia' },
     { label: 'Enciclopédia', href: writingLink('encyclopedia'), icon: BookOpenText, active: pathname === '/write/encyclopedia' },
+    { label: 'Som', href: '/sound', icon: Headphones, active: pathname.startsWith('/sound') },
   ];
 
   return (

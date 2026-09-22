@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 
 import { WorkspaceShell } from '@/features/workspace/components/workspace-shell';
+import { loadExtensionRuntimeAccess } from '@/features/writing/server';
 import { createClient } from '@/lib/supabase/server';
 
 export default async function WritingLayout({ children }: { children: React.ReactNode }) {
@@ -22,9 +23,10 @@ export default async function WritingLayout({ children }: { children: React.Reac
     ? await supabase.storage.from('profile-avatars').createSignedUrl(profile.avatar_path, 60 * 60)
     : { data: null };
   const email = typeof claimsData.claims.email === 'string' ? claimsData.claims.email : undefined;
+  const extensionAccess = await loadExtensionRuntimeAccess(supabase, userId);
 
   return (
-    <WorkspaceShell profile={{ displayName: profile.display_name, penName: profile.pen_name ?? undefined, email, avatarUrl: avatarData?.signedUrl }}>
+    <WorkspaceShell soundEnabled={extensionAccess['lab.media-sound']} profile={{ displayName: profile.display_name, penName: profile.pen_name ?? undefined, email, avatarUrl: avatarData?.signedUrl }}>
       {children}
     </WorkspaceShell>
   );

@@ -46,7 +46,7 @@ export function mapEncyclopediaEntry(row: Database['public']['Tables']['encyclop
     summary: row.summary,
     details: row.details,
     color: row.color,
-    status: row.status ?? 'draft',
+    status: ['draft', 'canon', 'archived'].includes(row.status) ? row.status as EncyclopediaStatus : 'draft',
     tags: row.tags ?? [],
     storyRole: row.story_role ?? '',
     appearance: row.appearance ?? '',

@@ -1,4 +1,4 @@
-import { Activity, FileText, Flag, PackageCheck, Shield, Users } from 'lucide-react';
+import { Activity, FileText, Flag, Headphones, PackageCheck, Shield, Users } from 'lucide-react';
 import Link from 'next/link';
 
 import { requireAdmin } from '@/features/admin/auth';
@@ -10,6 +10,7 @@ export default async function AdminHomePage({ searchParams }: { searchParams: Pr
   const modules = [
     { href: '/admin/users', permission: 'users.read' as const, icon: Users, title: 'Usuários', copy: 'Status, grupos de acesso e tags operacionais.' },
     { href: '/admin/extensions', permission: 'features.read' as const, icon: PackageCheck, title: 'Extensões', copy: 'Catálogo, publicação, preço e elegibilidade.' },
+    { href: '/admin/sound', permission: 'features.read' as const, icon: Headphones, title: 'Media & Sound', copy: 'Faixas, capas, licenças e provas de audiolivro.' },
     { href: '/admin/flags', permission: 'features.read' as const, icon: Flag, title: 'Flags e tags', copy: 'Rollout e liberação por segmento.' },
     { href: '/admin/legal', permission: 'legal.read' as const, icon: FileText, title: 'Termos legais', copy: 'Conteúdo, versões, vigência e publicação.' },
     { href: '/admin/admins', permission: 'admins.read' as const, icon: Shield, title: 'Administradores', copy: 'Identidades administrativas e RBAC.' },

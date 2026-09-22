@@ -8,6 +8,7 @@ import { AccessibilityMenu } from '@/features/accessibility/accessibility-menu';
 import { accessibilityBootstrapScript } from '@/features/accessibility/bootstrap';
 import { faviconImage } from '@/lib/favicon-image';
 import { NavigationProgress } from '@/components/navigation-progress';
+import { SoundProvider } from '@/features/sound/sound-provider';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
 const literata = Literata({ subsets: ['latin'], variable: '--font-literata', display: 'swap' });
@@ -28,7 +29,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           dangerouslySetInnerHTML={{ __html: accessibilityBootstrapScript }}
         />
         <Suspense fallback={null}><NavigationProgress /></Suspense>
-        {children}
+        <SoundProvider>{children}</SoundProvider>
         <AccessibilityMenu />
       </body>
     </html>

@@ -1,6 +1,6 @@
 'use client';
 
-import { FileClock, FileText, Flag, Gauge, Package, Search, ShieldCheck, UserPlus, Users } from 'lucide-react';
+import { FileClock, FileText, Flag, Gauge, Headphones, Package, Search, ShieldCheck, UserPlus, Users } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -10,7 +10,7 @@ export type AdminCommand = {
   href: string;
   label: string;
   keywords: string;
-  icon: 'dashboard' | 'admins' | 'new-admin' | 'audit' | 'users' | 'extensions' | 'flags' | 'legal';
+  icon: 'dashboard' | 'admins' | 'new-admin' | 'audit' | 'users' | 'extensions' | 'sound' | 'flags' | 'legal';
 };
 
 const icons = {
@@ -20,6 +20,7 @@ const icons = {
   audit: FileClock,
   users: Users,
   extensions: Package,
+  sound: Headphones,
   flags: Flag,
   legal: FileText,
 };
