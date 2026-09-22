@@ -22,5 +22,23 @@ export type SoundTrack = {
   transcript: Array<{ word: string; startTimeMs: number; endTimeMs: number; confidenceScore: number }>;
 };
 
-export type MixerChannelId = 'pink_noise' | 'rain_glass' | 'typewriter_keys';
+export type MixerChannelId =
+  | 'pink_noise'
+  | 'brown_noise'
+  | 'rain_glass'
+  | 'ocean_tide'
+  | 'fireplace'
+  | 'forest_night'
+  | 'cafe_room'
+  | 'night_train'
+  | 'typewriter_keys';
 export type MixerChannel = { id: MixerChannelId; label: string; volumePercent: number; syncWithTypingWpm: boolean; active: boolean };
+
+export type SoundPreset = {
+  id: string;
+  title: string;
+  description: string;
+  mood: string;
+  durationLabel: string;
+  channels: Partial<Record<MixerChannelId, number>>;
+};

@@ -12,7 +12,7 @@ export default async function AdminSoundPage() {
   await requireAdmin('features.read');
   const supabase = createAdminClient();
   const { data: tracks, error } = await supabase.from('audio_tracks').select('*').order('updated_at', { ascending: false });
-  return <div><p className="text-xs uppercase tracking-[.2em] text-emerald-300">Media & Sound</p><h1 className="mt-2 text-3xl font-semibold">Catálogo sonoro</h1><p className="mt-3 max-w-3xl text-sm text-white/50">Faça upload de faixas autorais, capas e provas de audiolivro. A publicação define o que usuários licenciados enxergam em `/sound`.</p>
+  return <div><p className="text-xs uppercase tracking-[.2em] text-emerald-300">Media & Sound</p><h1 className="mt-2 text-3xl font-semibold">Catálogo sonoro</h1><p className="mt-3 max-w-3xl text-sm text-white/50">Faça upload de faixas autorais, capas e provas de audiolivro. A publicação define o que usuários licenciados encontram no menu Som do ambiente de escrita.</p>
     <section className="mt-7 rounded-card border border-emerald-400/15 bg-emerald-400/[.04] p-5"><div className="flex items-start gap-3"><span className="flex size-10 items-center justify-center rounded-control bg-emerald-400/10 text-emerald-300"><Upload className="size-5" /></span><div><h2 className="font-medium">Publicar nova faixa</h2><p className="mt-1 text-sm text-white/45">Até 250 MB por áudio. Use apenas conteúdo com licença válida.</p></div></div>
       <SoundUploadForm />
     </section>

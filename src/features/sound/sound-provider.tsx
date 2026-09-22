@@ -6,7 +6,13 @@ import type { MixerChannel, MixerChannelId, SoundTrack } from '@/features/sound/
 
 const defaultChannels: MixerChannel[] = [
   { id: 'pink_noise', label: 'Ruído rosa', volumePercent: 35, syncWithTypingWpm: false, active: false },
+  { id: 'brown_noise', label: 'Ruído profundo', volumePercent: 28, syncWithTypingWpm: false, active: false },
   { id: 'rain_glass', label: 'Chuva na janela', volumePercent: 60, syncWithTypingWpm: true, active: false },
+  { id: 'ocean_tide', label: 'Maré lenta', volumePercent: 48, syncWithTypingWpm: false, active: false },
+  { id: 'fireplace', label: 'Lareira baixa', volumePercent: 32, syncWithTypingWpm: true, active: false },
+  { id: 'forest_night', label: 'Floresta noturna', volumePercent: 38, syncWithTypingWpm: false, active: false },
+  { id: 'cafe_room', label: 'Café distante', volumePercent: 34, syncWithTypingWpm: true, active: false },
+  { id: 'night_train', label: 'Trem noturno', volumePercent: 40, syncWithTypingWpm: false, active: false },
   { id: 'typewriter_keys', label: 'Teclas mecânicas', volumePercent: 20, syncWithTypingWpm: true, active: false },
 ];
 
@@ -32,6 +38,7 @@ type SoundContextValue = {
   setTypingInactivityThresholdMs: (value: number) => void;
   updateChannel: (id: MixerChannelId, changes: Partial<MixerChannel>) => void;
   toggleMixer: () => Promise<void>;
+  startMixer: () => Promise<void>;
   stopAll: () => void;
 };
 
@@ -122,16 +129,22 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
       for (let index = 0; index < data.length; index += 1) {
         const white = Math.random() * 2 - 1;
         pink = pink * 0.985 + white * 0.015;
-        data[index] = id === 'rain_glass' ? white * 0.22 : pink * 2.2;
+        if (id === 'rain_glass') data[index] = white * 0.22;
+        else if (id === 'brown_noise' || id === 'night_train') data[index] = pink * 3.1;
+        else if (id === 'ocean_tide') data[index] = pink * (0.75 + Math.sin(index / context.sampleRate * Math.PI * 0.22) * 0.65);
+        else if (id === 'fireplace') data[index] = pink * 0.55 + (Math.random() > 0.998 ? white * 0.9 : 0);
+        else if (id === 'forest_night') data[index] = pink * 0.4 + (Math.random() > 0.9995 ? Math.sin(index * 0.18) * 0.35 : 0);
+        else if (id === 'cafe_room') data[index] = pink * 0.72 + white * 0.035;
+        else data[index] = pink * 2.2;
       }
     }
     const source = context.createBufferSource();
     source.buffer = buffer;
     source.loop = true;
     const filter = context.createBiquadFilter();
-    filter.type = id === 'rain_glass' ? 'bandpass' : 'lowpass';
-    filter.frequency.value = id === 'rain_glass' ? 3400 : 900;
-    filter.Q.value = id === 'rain_glass' ? 0.45 : 0.7;
+    filter.type = id === 'rain_glass' || id === 'fireplace' || id === 'forest_night' ? 'bandpass' : 'lowpass';
+    filter.frequency.value = id === 'rain_glass' ? 3400 : id === 'fireplace' ? 1800 : id === 'forest_night' ? 4200 : id === 'cafe_room' ? 1350 : id === 'ocean_tide' ? 620 : id === 'night_train' ? 380 : 900;
+    filter.Q.value = id === 'rain_glass' ? 0.45 : id === 'fireplace' ? 0.7 : 0.55;
     const gain = context.createGain();
     gain.gain.value = level / 100;
     source.connect(filter).connect(gain).connect(masterGainRef.current!);
@@ -213,12 +226,13 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
       if (contextRef.current?.state === 'running') await contextRef.current.suspend();
     } else { await ensureContext(); setMixerActive(true); }
   }, [ensureContext, mixerActive]);
+  const startMixer = useCallback(async () => { await ensureContext(); setMixerActive(true); }, [ensureContext]);
   const stopAll = useCallback(() => {
     audioRef.current?.pause();
     Object.values(noiseNodesRef.current).forEach((node) => node?.source.stop()); noiseNodesRef.current = {}; setMixerActive(false);
   }, []);
 
-  const value = useMemo<SoundContextValue>(() => ({ currentTrack, playing, currentTime, duration, volume, playbackRate, channels, mixerActive, typingWpm, autoPauseOnTypingStop, typingInactivityThresholdMs, typingIdle, playTrack, togglePlayback, seek, setVolume, setPlaybackRate, setAutoPauseOnTypingStop, setTypingInactivityThresholdMs, updateChannel, toggleMixer, stopAll }), [autoPauseOnTypingStop, channels, currentTime, currentTrack, duration, mixerActive, playTrack, playbackRate, playing, seek, setPlaybackRate, setVolume, stopAll, toggleMixer, togglePlayback, typingIdle, typingInactivityThresholdMs, typingWpm, updateChannel, volume]);
+  const value = useMemo<SoundContextValue>(() => ({ currentTrack, playing, currentTime, duration, volume, playbackRate, channels, mixerActive, typingWpm, autoPauseOnTypingStop, typingInactivityThresholdMs, typingIdle, playTrack, togglePlayback, seek, setVolume, setPlaybackRate, setAutoPauseOnTypingStop, setTypingInactivityThresholdMs, updateChannel, toggleMixer, startMixer, stopAll }), [autoPauseOnTypingStop, channels, currentTime, currentTrack, duration, mixerActive, playTrack, playbackRate, playing, seek, setPlaybackRate, setVolume, startMixer, stopAll, toggleMixer, togglePlayback, typingIdle, typingInactivityThresholdMs, typingWpm, updateChannel, volume]);
   return <SoundContext.Provider value={value}>{children}</SoundContext.Provider>;
 }
 

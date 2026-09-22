@@ -80,6 +80,7 @@ import {
 } from '@/features/writing/types';
 import { cn } from '@/lib/cn';
 import { createClient } from '@/lib/supabase/client';
+import { SoundBinderFooter } from '@/features/sound/components/sound-binder-footer';
 
 function plainTextFromHtml(html: string) {
   return html
@@ -1075,6 +1076,7 @@ export function WritingStudio({
                 ))}
               </div>
             </div>
+            {extensionRuntime['lab.media-sound'] && <SoundBinderFooter />}
           </aside>
         )}
 

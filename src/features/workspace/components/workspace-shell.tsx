@@ -7,6 +7,7 @@ import { WorkspaceHeader } from '@/features/workspace/components/workspace-heade
 import { WorkspaceSidebar } from '@/features/workspace/components/workspace-sidebar';
 import { WritingRail } from '@/features/writing/components/writing-rail';
 import { SoundDock } from '@/features/sound/components/sound-dock';
+import type { SoundTrack } from '@/features/sound/types';
 
 type WorkspaceShellProps = {
   children: React.ReactNode;
@@ -17,9 +18,10 @@ type WorkspaceShellProps = {
     avatarUrl?: string;
   };
   soundEnabled?: boolean;
+  soundTracks?: SoundTrack[];
 };
 
-export function WorkspaceShell({ children, profile, soundEnabled = false }: WorkspaceShellProps) {
+export function WorkspaceShell({ children, profile, soundEnabled = false, soundTracks = [] }: WorkspaceShellProps) {
   const pathname = usePathname();
   const isAccountArea = pathname === '/account' || pathname.startsWith('/account/');
   const isWritingArea = pathname === '/write' || pathname.startsWith('/write/');
@@ -29,11 +31,11 @@ export function WorkspaceShell({ children, profile, soundEnabled = false }: Work
   if (isCreativeArea) {
     return (
       <div className="writing-workspace-frame">
-        <WritingRail displayName={profile.penName || profile.displayName} avatarUrl={profile.avatarUrl} />
+        <WritingRail displayName={profile.penName || profile.displayName} avatarUrl={profile.avatarUrl} soundEnabled={soundEnabled} soundTracks={soundTracks} />
         {isWritingArea
           ? <div className="min-h-0 min-w-0 flex-1 overflow-hidden">{children}</div>
           : <main className="creative-workspace-content workspace-scrollbar"><div className="creative-workspace-inner">{children}</div></main>}
-        <SoundDock enabled={soundEnabled} />
+        {!isWritingArea && <SoundDock enabled={soundEnabled} />}
       </div>
     );
   }
