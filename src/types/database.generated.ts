@@ -164,16 +164,124 @@ export type Database = {
           },
         ]
       }
+      audio_mix_presets: {
+        Row: {
+          channels: Json
+          created_at: string
+          id: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          channels?: Json
+          created_at?: string
+          id?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          channels?: Json
+          created_at?: string
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      audio_playlist_items: {
+        Row: {
+          created_at: string
+          id: string
+          playlist_id: string
+          position: number
+          preset_id: string | null
+          track_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          playlist_id: string
+          position?: number
+          preset_id?: string | null
+          track_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          playlist_id?: string
+          position?: number
+          preset_id?: string | null
+          track_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audio_playlist_items_playlist_id_fkey"
+            columns: ["playlist_id"]
+            isOneToOne: false
+            referencedRelation: "audio_playlists"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audio_playlist_items_track_id_fkey"
+            columns: ["track_id"]
+            isOneToOne: false
+            referencedRelation: "audio_tracks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audio_playlists: {
+        Row: {
+          cover_key: string
+          created_at: string
+          description: string
+          genre: string
+          id: string
+          is_official: boolean
+          owner_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cover_key?: string
+          created_at?: string
+          description?: string
+          genre?: string
+          id?: string
+          is_official?: boolean
+          owner_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cover_key?: string
+          created_at?: string
+          description?: string
+          genre?: string
+          id?: string
+          is_official?: boolean
+          owner_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       audio_tracks: {
         Row: {
           audio_path: string
           author_name: string
+          catalog_slug: string
           cover_path: string
           created_at: string
           created_by: string | null
           description: string
           duration_seconds: number
+          energy_level: number
           format_encoding: string
+          genre: string
           id: string
           is_featured: boolean
           is_published: boolean
@@ -181,6 +289,7 @@ export type Database = {
           license_url: string
           listen_count: number
           mental_rhythm_bpm: number
+          mood: string
           sampling_rate_hz: number
           spatial_mode: string
           subtitle: string
@@ -194,12 +303,15 @@ export type Database = {
         Insert: {
           audio_path?: string
           author_name?: string
+          catalog_slug?: string
           cover_path?: string
           created_at?: string
           created_by?: string | null
           description?: string
           duration_seconds?: number
+          energy_level?: number
           format_encoding?: string
+          genre?: string
           id?: string
           is_featured?: boolean
           is_published?: boolean
@@ -207,6 +319,7 @@ export type Database = {
           license_url?: string
           listen_count?: number
           mental_rhythm_bpm?: number
+          mood?: string
           sampling_rate_hz?: number
           spatial_mode?: string
           subtitle?: string
@@ -220,12 +333,15 @@ export type Database = {
         Update: {
           audio_path?: string
           author_name?: string
+          catalog_slug?: string
           cover_path?: string
           created_at?: string
           created_by?: string | null
           description?: string
           duration_seconds?: number
+          energy_level?: number
           format_encoding?: string
+          genre?: string
           id?: string
           is_featured?: boolean
           is_published?: boolean
@@ -233,6 +349,7 @@ export type Database = {
           license_url?: string
           listen_count?: number
           mental_rhythm_bpm?: number
+          mood?: string
           sampling_rate_hz?: number
           spatial_mode?: string
           subtitle?: string
@@ -253,6 +370,14 @@ export type Database = {
           master_volume: number
           mixer_channels: Json
           playback_rate: number
+          pomodoro_auto_start: boolean
+          pomodoro_break_minutes: number
+          pomodoro_cycles: number
+          pomodoro_focus_minutes: number
+          pomodoro_long_break_minutes: number
+          preferred_genres: string[]
+          show_waveform: boolean
+          sound_follows_pomodoro: boolean
           spatial_mode: string
           typing_inactivity_threshold_ms: number
           updated_at: string
@@ -265,6 +390,14 @@ export type Database = {
           master_volume?: number
           mixer_channels?: Json
           playback_rate?: number
+          pomodoro_auto_start?: boolean
+          pomodoro_break_minutes?: number
+          pomodoro_cycles?: number
+          pomodoro_focus_minutes?: number
+          pomodoro_long_break_minutes?: number
+          preferred_genres?: string[]
+          show_waveform?: boolean
+          sound_follows_pomodoro?: boolean
           spatial_mode?: string
           typing_inactivity_threshold_ms?: number
           updated_at?: string
@@ -277,6 +410,14 @@ export type Database = {
           master_volume?: number
           mixer_channels?: Json
           playback_rate?: number
+          pomodoro_auto_start?: boolean
+          pomodoro_break_minutes?: number
+          pomodoro_cycles?: number
+          pomodoro_focus_minutes?: number
+          pomodoro_long_break_minutes?: number
+          preferred_genres?: string[]
+          show_waveform?: boolean
+          sound_follows_pomodoro?: boolean
           spatial_mode?: string
           typing_inactivity_threshold_ms?: number
           updated_at?: string

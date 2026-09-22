@@ -18,6 +18,10 @@ export type SoundTrack = {
   tags: string[];
   listenCount: number;
   isFeatured: boolean;
+  genre: string;
+  mood: string;
+  catalogSlug: string;
+  energyLevel: number;
   waveformPeaks: number[];
   transcript: Array<{ word: string; startTimeMs: number; endTimeMs: number; confidenceScore: number }>;
 };
@@ -40,5 +44,8 @@ export type SoundPreset = {
   description: string;
   mood: string;
   durationLabel: string;
+  genre: string;
+  bpm: number;
+  coverUrl: string;
   channels: Partial<Record<MixerChannelId, number>>;
 };

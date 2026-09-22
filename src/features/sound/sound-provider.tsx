@@ -29,6 +29,16 @@ type SoundContextValue = {
   autoPauseOnTypingStop: boolean;
   typingInactivityThresholdMs: number;
   typingIdle: boolean;
+  pomodoroPhase: 'focus' | 'break' | 'long_break';
+  pomodoroRemainingSeconds: number;
+  pomodoroRunning: boolean;
+  pomodoroCompletedCycles: number;
+  pomodoroFocusMinutes: number;
+  pomodoroBreakMinutes: number;
+  pomodoroLongBreakMinutes: number;
+  pomodoroCycles: number;
+  pomodoroAutoStart: boolean;
+  soundFollowsPomodoro: boolean;
   playTrack: (track: SoundTrack) => Promise<void>;
   togglePlayback: () => Promise<void>;
   seek: (seconds: number) => void;
@@ -36,6 +46,9 @@ type SoundContextValue = {
   setPlaybackRate: (value: number) => void;
   setAutoPauseOnTypingStop: (value: boolean) => void;
   setTypingInactivityThresholdMs: (value: number) => void;
+  setPomodoroConfig: (changes: Partial<{ focusMinutes: number; breakMinutes: number; longBreakMinutes: number; cycles: number; autoStart: boolean; soundFollows: boolean }>) => void;
+  togglePomodoro: () => void;
+  resetPomodoro: () => void;
   updateChannel: (id: MixerChannelId, changes: Partial<MixerChannel>) => void;
   toggleMixer: () => Promise<void>;
   startMixer: () => Promise<void>;
@@ -65,26 +78,42 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
   const [autoPauseOnTypingStop, setAutoPauseOnTypingStop] = useState(false);
   const [typingInactivityThresholdMs, setTypingInactivityThresholdMs] = useState(2000);
   const [typingIdle, setTypingIdle] = useState(true);
+  const [pomodoroPhase, setPomodoroPhase] = useState<'focus' | 'break' | 'long_break'>('focus');
+  const [pomodoroRemainingSeconds, setPomodoroRemainingSeconds] = useState(25 * 60);
+  const [pomodoroRunning, setPomodoroRunning] = useState(false);
+  const [pomodoroCompletedCycles, setPomodoroCompletedCycles] = useState(0);
+  const [pomodoroFocusMinutes, setPomodoroFocusMinutes] = useState(25);
+  const [pomodoroBreakMinutes, setPomodoroBreakMinutes] = useState(5);
+  const [pomodoroLongBreakMinutes, setPomodoroLongBreakMinutes] = useState(15);
+  const [pomodoroCycles, setPomodoroCycles] = useState(4);
+  const [pomodoroAutoStart, setPomodoroAutoStart] = useState(false);
+  const [soundFollowsPomodoro, setSoundFollowsPomodoro] = useState(true);
 
   useEffect(() => {
     const stored = window.localStorage.getItem(storageKey);
     if (!stored) return;
     const hydrate = window.setTimeout(() => {
       try {
-        const parsed = JSON.parse(stored) as { volume?: number; playbackRate?: number; channels?: MixerChannel[]; autoPauseOnTypingStop?: boolean; typingInactivityThresholdMs?: number };
+        const parsed = JSON.parse(stored) as { volume?: number; playbackRate?: number; channels?: MixerChannel[]; autoPauseOnTypingStop?: boolean; typingInactivityThresholdMs?: number; pomodoroFocusMinutes?: number; pomodoroBreakMinutes?: number; pomodoroLongBreakMinutes?: number; pomodoroCycles?: number; pomodoroAutoStart?: boolean; soundFollowsPomodoro?: boolean };
         if (typeof parsed.volume === 'number') setVolumeState(Math.min(100, Math.max(0, parsed.volume)));
         if ([0.8, 1, 1.2, 1.5, 2].includes(parsed.playbackRate ?? 0)) setPlaybackRateState(parsed.playbackRate as number);
         if (Array.isArray(parsed.channels)) setChannels(defaultChannels.map((channel) => ({ ...channel, ...parsed.channels?.find((item) => item.id === channel.id) })));
         if (typeof parsed.autoPauseOnTypingStop === 'boolean') setAutoPauseOnTypingStop(parsed.autoPauseOnTypingStop);
         if (typeof parsed.typingInactivityThresholdMs === 'number') setTypingInactivityThresholdMs(Math.min(10_000, Math.max(500, parsed.typingInactivityThresholdMs)));
+        if (typeof parsed.pomodoroFocusMinutes === 'number') { const value = Math.min(120, Math.max(5, parsed.pomodoroFocusMinutes)); setPomodoroFocusMinutes(value); setPomodoroRemainingSeconds(value * 60); }
+        if (typeof parsed.pomodoroBreakMinutes === 'number') setPomodoroBreakMinutes(Math.min(30, Math.max(1, parsed.pomodoroBreakMinutes)));
+        if (typeof parsed.pomodoroLongBreakMinutes === 'number') setPomodoroLongBreakMinutes(Math.min(60, Math.max(5, parsed.pomodoroLongBreakMinutes)));
+        if (typeof parsed.pomodoroCycles === 'number') setPomodoroCycles(Math.min(12, Math.max(1, parsed.pomodoroCycles)));
+        if (typeof parsed.pomodoroAutoStart === 'boolean') setPomodoroAutoStart(parsed.pomodoroAutoStart);
+        if (typeof parsed.soundFollowsPomodoro === 'boolean') setSoundFollowsPomodoro(parsed.soundFollowsPomodoro);
       } catch { /* Preferences remain at safe defaults. */ }
     }, 0);
     return () => window.clearTimeout(hydrate);
   }, []);
 
   useEffect(() => {
-    window.localStorage.setItem(storageKey, JSON.stringify({ volume, playbackRate, channels, autoPauseOnTypingStop, typingInactivityThresholdMs }));
-  }, [autoPauseOnTypingStop, channels, playbackRate, typingInactivityThresholdMs, volume]);
+    window.localStorage.setItem(storageKey, JSON.stringify({ volume, playbackRate, channels, autoPauseOnTypingStop, typingInactivityThresholdMs, pomodoroFocusMinutes, pomodoroBreakMinutes, pomodoroLongBreakMinutes, pomodoroCycles, pomodoroAutoStart, soundFollowsPomodoro }));
+  }, [autoPauseOnTypingStop, channels, playbackRate, pomodoroAutoStart, pomodoroBreakMinutes, pomodoroCycles, pomodoroFocusMinutes, pomodoroLongBreakMinutes, soundFollowsPomodoro, typingInactivityThresholdMs, volume]);
 
   useEffect(() => {
     const audio = new Audio();
@@ -100,7 +129,11 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
     return () => { audio.pause(); audio.src = ''; audioRef.current = null; };
   }, []);
 
-  useEffect(() => { if (audioRef.current) audioRef.current.volume = volume / 100; if (masterGainRef.current) masterGainRef.current.gain.value = volume / 100; }, [volume]);
+  useEffect(() => {
+    const pomodoroMuted = soundFollowsPomodoro && pomodoroPhase !== 'focus';
+    if (audioRef.current) audioRef.current.volume = pomodoroMuted ? 0 : volume / 100;
+    if (masterGainRef.current) masterGainRef.current.gain.value = pomodoroMuted ? 0 : volume / 100;
+  }, [pomodoroPhase, soundFollowsPomodoro, volume]);
   useEffect(() => { if (audioRef.current) audioRef.current.playbackRate = playbackRate; }, [playbackRate]);
 
   const ensureContext = useCallback(async () => {
@@ -173,6 +206,27 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
   }, [typingInactivityThresholdMs]);
 
   useEffect(() => {
+    if (!pomodoroRunning) return;
+    const timer = window.setInterval(() => {
+      setPomodoroRemainingSeconds((remaining) => {
+        if (remaining > 1) return remaining - 1;
+        if (pomodoroPhase === 'focus') {
+          const completed = pomodoroCompletedCycles + 1;
+          setPomodoroCompletedCycles(completed);
+          const longBreak = completed % pomodoroCycles === 0;
+          setPomodoroPhase(longBreak ? 'long_break' : 'break');
+          if (!pomodoroAutoStart) setPomodoroRunning(false);
+          return (longBreak ? pomodoroLongBreakMinutes : pomodoroBreakMinutes) * 60;
+        }
+        setPomodoroPhase('focus');
+        if (!pomodoroAutoStart) setPomodoroRunning(false);
+        return pomodoroFocusMinutes * 60;
+      });
+    }, 1000);
+    return () => window.clearInterval(timer);
+  }, [pomodoroAutoStart, pomodoroBreakMinutes, pomodoroCompletedCycles, pomodoroCycles, pomodoroFocusMinutes, pomodoroLongBreakMinutes, pomodoroPhase, pomodoroRunning]);
+
+  useEffect(() => {
     if (!mixerActive) return;
     channels.forEach((channel) => {
       const existing = noiseNodesRef.current[channel.id];
@@ -220,6 +274,16 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
   const seek = useCallback((seconds: number) => { if (audioRef.current) audioRef.current.currentTime = Math.min(audioRef.current.duration || 0, Math.max(0, seconds)); }, []);
   const setVolume = useCallback((value: number) => setVolumeState(Math.min(100, Math.max(0, value))), []);
   const setPlaybackRate = useCallback((value: number) => setPlaybackRateState(value), []);
+  const setPomodoroConfig = useCallback((changes: Partial<{ focusMinutes: number; breakMinutes: number; longBreakMinutes: number; cycles: number; autoStart: boolean; soundFollows: boolean }>) => {
+    if (typeof changes.focusMinutes === 'number') { const value = Math.min(120, Math.max(5, changes.focusMinutes)); setPomodoroFocusMinutes(value); setPomodoroRemainingSeconds(value * 60); }
+    if (typeof changes.breakMinutes === 'number') setPomodoroBreakMinutes(Math.min(30, Math.max(1, changes.breakMinutes)));
+    if (typeof changes.longBreakMinutes === 'number') setPomodoroLongBreakMinutes(Math.min(60, Math.max(5, changes.longBreakMinutes)));
+    if (typeof changes.cycles === 'number') setPomodoroCycles(Math.min(12, Math.max(1, changes.cycles)));
+    if (typeof changes.autoStart === 'boolean') setPomodoroAutoStart(changes.autoStart);
+    if (typeof changes.soundFollows === 'boolean') setSoundFollowsPomodoro(changes.soundFollows);
+  }, []);
+  const togglePomodoro = useCallback(() => setPomodoroRunning((running) => !running), []);
+  const resetPomodoro = useCallback(() => { setPomodoroRunning(false); setPomodoroPhase('focus'); setPomodoroRemainingSeconds(pomodoroFocusMinutes * 60); setPomodoroCompletedCycles(0); }, [pomodoroFocusMinutes]);
   const toggleMixer = useCallback(async () => {
     if (mixerActive) {
       Object.values(noiseNodesRef.current).forEach((node) => node?.source.stop()); noiseNodesRef.current = {}; setMixerActive(false);
@@ -232,7 +296,7 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
     Object.values(noiseNodesRef.current).forEach((node) => node?.source.stop()); noiseNodesRef.current = {}; setMixerActive(false);
   }, []);
 
-  const value = useMemo<SoundContextValue>(() => ({ currentTrack, playing, currentTime, duration, volume, playbackRate, channels, mixerActive, typingWpm, autoPauseOnTypingStop, typingInactivityThresholdMs, typingIdle, playTrack, togglePlayback, seek, setVolume, setPlaybackRate, setAutoPauseOnTypingStop, setTypingInactivityThresholdMs, updateChannel, toggleMixer, startMixer, stopAll }), [autoPauseOnTypingStop, channels, currentTime, currentTrack, duration, mixerActive, playTrack, playbackRate, playing, seek, setPlaybackRate, setVolume, startMixer, stopAll, toggleMixer, togglePlayback, typingIdle, typingInactivityThresholdMs, typingWpm, updateChannel, volume]);
+  const value = useMemo<SoundContextValue>(() => ({ currentTrack, playing, currentTime, duration, volume, playbackRate, channels, mixerActive, typingWpm, autoPauseOnTypingStop, typingInactivityThresholdMs, typingIdle, pomodoroPhase, pomodoroRemainingSeconds, pomodoroRunning, pomodoroCompletedCycles, pomodoroFocusMinutes, pomodoroBreakMinutes, pomodoroLongBreakMinutes, pomodoroCycles, pomodoroAutoStart, soundFollowsPomodoro, playTrack, togglePlayback, seek, setVolume, setPlaybackRate, setAutoPauseOnTypingStop, setTypingInactivityThresholdMs, setPomodoroConfig, togglePomodoro, resetPomodoro, updateChannel, toggleMixer, startMixer, stopAll }), [autoPauseOnTypingStop, channels, currentTime, currentTrack, duration, mixerActive, playTrack, playbackRate, playing, pomodoroAutoStart, pomodoroBreakMinutes, pomodoroCompletedCycles, pomodoroCycles, pomodoroFocusMinutes, pomodoroLongBreakMinutes, pomodoroPhase, pomodoroRemainingSeconds, pomodoroRunning, resetPomodoro, seek, setPlaybackRate, setPomodoroConfig, setVolume, soundFollowsPomodoro, startMixer, stopAll, toggleMixer, togglePlayback, togglePomodoro, typingIdle, typingInactivityThresholdMs, typingWpm, updateChannel, volume]);
   return <SoundContext.Provider value={value}>{children}</SoundContext.Provider>;
 }
 

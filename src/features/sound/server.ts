@@ -21,6 +21,7 @@ export async function loadSoundLibrary(supabase: SupabaseClient<Database>): Prom
       samplingRateHz: track.sampling_rate_hz, formatEncoding: track.format_encoding,
       spatialMode: track.spatial_mode as SpatialAudioMode, mentalRhythmBpm: track.mental_rhythm_bpm,
       tags: track.tags, listenCount: track.listen_count, isFeatured: track.is_featured,
+      genre: track.genre, mood: track.mood, catalogSlug: track.catalog_slug, energyLevel: track.energy_level,
       waveformPeaks: track.waveform_peaks,
       transcript: Array.isArray(track.transcript) ? track.transcript.flatMap((item) => {
         if (!item || typeof item !== 'object' || Array.isArray(item)) return [];

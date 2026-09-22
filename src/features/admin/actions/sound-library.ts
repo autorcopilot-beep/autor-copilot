@@ -46,6 +46,9 @@ export async function createAudioTrack(formData: FormData) {
     duration_seconds: Math.max(0, Number(formData.get('duration_seconds') ?? 0)), sampling_rate_hz: Number(formData.get('sampling_rate_hz') ?? 48000),
     format_encoding: String(formData.get('format_encoding') ?? 'mp3'), spatial_mode: String(formData.get('spatial_mode') ?? 'stereo'),
     mental_rhythm_bpm: Math.min(180, Math.max(20, Number(formData.get('mental_rhythm_bpm') ?? 50))), tags: list(formData.get('tags')),
+    genre: String(formData.get('genre') ?? 'geral').trim().slice(0, 80) || 'geral', mood: String(formData.get('mood') ?? '').trim().slice(0, 80),
+    catalog_slug: String(formData.get('catalog_slug') ?? 'sound-lab').trim().toLocaleLowerCase('pt-BR').replace(/[^a-z0-9-]+/g, '-').slice(0, 80) || 'sound-lab',
+    energy_level: Math.min(5, Math.max(1, Number(formData.get('energy_level') ?? 2))),
     transcript, waveform_peaks: waveformPeaks, license_name: String(formData.get('license_name') ?? '').trim() || 'Todos os direitos reservados',
     license_url: String(formData.get('license_url') ?? '').trim(), is_published: formData.get('is_published') === 'on',
     is_featured: formData.get('is_featured') === 'on', created_by: actor.userId,
@@ -53,7 +56,7 @@ export async function createAudioTrack(formData: FormData) {
   const { error } = await supabase.from('audio_tracks').insert(record);
   if (error) { await Promise.all([supabase.storage.from('sound-library').remove([audioPath]), coverPath ? supabase.storage.from('sound-covers').remove([coverPath]) : Promise.resolve()]); throw new Error(error.message); }
   await writeAdminAudit({ actor, action: 'sound.track.created', targetType: 'audio_track', targetId: id, newData: record as unknown as Json });
-  revalidatePath('/admin/sound'); revalidatePath('/sound');
+  revalidatePath('/admin/sound'); revalidatePath('/write/editor');
 }
 
 export async function prepareAudioTrackUpload(input: { audioName: string; audioType: string; audioSize: number; coverName?: string; coverType?: string; coverSize?: number }) {
@@ -82,11 +85,11 @@ export async function updateAudioTrack(formData: FormData) {
   const supabase = createAdminClient();
   const { data: previous } = await supabase.from('audio_tracks').select('*').eq('id', id).maybeSingle();
   if (!previous) throw new Error('Faixa não encontrada.');
-  const changes = { title: String(formData.get('title') ?? '').trim(), tags: list(formData.get('tags')), is_published: formData.get('is_published') === 'on', is_featured: formData.get('is_featured') === 'on' };
+  const changes = { title: String(formData.get('title') ?? '').trim(), tags: list(formData.get('tags')), genre: String(formData.get('genre') ?? previous.genre).trim().slice(0, 80), is_published: formData.get('is_published') === 'on', is_featured: formData.get('is_featured') === 'on' };
   const { error } = await supabase.from('audio_tracks').update(changes).eq('id', id);
   if (error) throw new Error(error.message);
   await writeAdminAudit({ actor, action: 'sound.track.updated', targetType: 'audio_track', targetId: id, oldData: previous as unknown as Json, newData: changes as unknown as Json });
-  revalidatePath('/admin/sound'); revalidatePath('/sound');
+  revalidatePath('/admin/sound'); revalidatePath('/write/editor');
 }
 
 export async function deleteAudioTrack(formData: FormData) {
@@ -99,5 +102,5 @@ export async function deleteAudioTrack(formData: FormData) {
   if (error) throw new Error(error.message);
   await Promise.all([previous.audio_path ? supabase.storage.from('sound-library').remove([previous.audio_path]) : Promise.resolve(), previous.cover_path ? supabase.storage.from('sound-covers').remove([previous.cover_path]) : Promise.resolve()]);
   await writeAdminAudit({ actor, action: 'sound.track.deleted', targetType: 'audio_track', targetId: id, oldData: previous as unknown as Json });
-  revalidatePath('/admin/sound'); revalidatePath('/sound');
+  revalidatePath('/admin/sound'); revalidatePath('/write/editor');
 }
