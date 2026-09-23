@@ -20,7 +20,7 @@ const columns: ColumnDef<AdminAccountRow>[] = [
     id: 'identity',
     accessorFn: (account) => `${account.display_name} ${account.email}`,
     header: ({ column }) => <DataTableColumnHeader column={column} title="Nome" />,
-    cell: ({ row }) => <div><span className="font-medium text-white">{row.original.display_name}</span><span className="block text-xs text-white/40">{row.original.email}</span></div>,
+    cell: ({ row }) => <div><span className="font-medium text-ink">{row.original.display_name}</span><span className="block text-xs text-muted">{row.original.email}</span></div>,
   },
   {
     id: 'role',
@@ -31,12 +31,12 @@ const columns: ColumnDef<AdminAccountRow>[] = [
   {
     accessorKey: 'status',
     header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
-    cell: ({ row }) => <span className={`rounded-full px-2 py-1 text-xs ${row.original.status === 'active' ? 'bg-emerald-400/10 text-emerald-300' : 'bg-red-400/10 text-red-300'}`}>{row.original.status === 'active' ? 'Ativo' : 'Suspenso'}</span>,
+    cell: ({ row }) => <span className={`rounded-full px-2 py-1 text-xs ${row.original.status === 'active' ? 'bg-accent-subtle text-accent' : 'bg-red-400/10 text-danger'}`}>{row.original.status === 'active' ? 'Ativo' : 'Suspenso'}</span>,
   },
   {
     accessorKey: 'created_at',
     header: ({ column }) => <DataTableColumnHeader column={column} title="Criado em" />,
-    cell: ({ row }) => <span className="text-white/45">{new Intl.DateTimeFormat('pt-BR').format(new Date(row.original.created_at))}</span>,
+    cell: ({ row }) => <span className="text-muted">{new Intl.DateTimeFormat('pt-BR').format(new Date(row.original.created_at))}</span>,
   },
 ];
 

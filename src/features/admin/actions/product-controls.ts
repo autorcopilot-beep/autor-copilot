@@ -87,6 +87,35 @@ export async function updateUserAccess(formData: FormData) {
   revalidatePath('/admin/users');
 }
 
+export async function updateUserSubscription(formData: FormData) {
+  const actor = await requireAdmin('billing.manage');
+  const userId = String(formData.get('user_id') ?? '');
+  const planCode = String(formData.get('plan_code') ?? 'free');
+  const status = String(formData.get('subscription_status') ?? 'active');
+  const billingInterval = String(formData.get('billing_interval') ?? 'none');
+  if (!['free', 'essential', 'creator', 'studio', 'enterprise'].includes(planCode)) throw new Error('Plano inválido.');
+  if (!['trialing', 'active', 'past_due', 'paused', 'canceled', 'legacy'].includes(status)) throw new Error('Status de assinatura inválido.');
+  if (!['none', 'monthly', 'annual', 'lifetime'].includes(billingInterval)) throw new Error('Ciclo de cobrança inválido.');
+  const renewsAt = String(formData.get('renews_at') ?? '').trim();
+  const changes = {
+    user_id: userId,
+    plan_code: planCode,
+    status,
+    billing_interval: billingInterval,
+    price_cents: Math.max(0, Number(formData.get('price_cents') ?? 0)),
+    currency: String(formData.get('currency') ?? 'BRL').toUpperCase().slice(0, 3),
+    renews_at: renewsAt ? new Date(renewsAt).toISOString() : null,
+    legacy_price_locked: formData.get('legacy_price_locked') === 'on',
+    updated_by: actor.userId,
+  };
+  const supabase = createAdminClient();
+  const { data: previous } = await supabase.from('user_subscriptions').select('*').eq('user_id', userId).maybeSingle();
+  const { error } = await supabase.from('user_subscriptions').upsert(changes, { onConflict: 'user_id' });
+  if (error) throw new Error(error.message);
+  await writeAdminAudit({ actor, action: 'user.subscription.updated', targetType: 'user', targetId: userId, oldData: previous as unknown as Json, newData: changes as unknown as Json });
+  revalidatePath('/admin/users');
+}
+
 export async function syncLegalDocuments() {
   const actor = await requireAdmin('legal.manage');
   const supabase = createAdminClient();

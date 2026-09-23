@@ -16,6 +16,7 @@ import { cn } from '@/lib/cn';
 
 import {
   ACCESSIBILITY_STORAGE_KEY,
+  ACCESSIBILITY_CHANGE_EVENT,
   applyAccessibilityPreferences,
   defaultAccessibilityPreferences,
   lineHeightOptions,
@@ -95,13 +96,20 @@ export function AccessibilityMenu() {
         applyAccessibilityPreferences(defaultAccessibilityPreferences);
       }
     }
+    function syncInThisTab(event: Event) {
+      const next = parseAccessibilityPreferences((event as CustomEvent).detail);
+      setPreferences(next);
+      applyAccessibilityPreferences(next);
+    }
 
     window.addEventListener('storage', syncAcrossTabs);
+    window.addEventListener(ACCESSIBILITY_CHANGE_EVENT, syncInThisTab);
     const keepButtonVisible = () => setButtonPosition((current) => current ? clampPosition(current) : current);
     window.addEventListener('resize', keepButtonVisible);
     return () => {
       window.cancelAnimationFrame(frame);
       window.removeEventListener('storage', syncAcrossTabs);
+      window.removeEventListener(ACCESSIBILITY_CHANGE_EVENT, syncInThisTab);
       window.removeEventListener('resize', keepButtonVisible);
     };
   }, []);

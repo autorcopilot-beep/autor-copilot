@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { extensionCatalog, type ExtensionId } from '@/features/extensions/catalog';
 import { Marketplace, type MarketplaceControl } from '@/features/extensions/components/marketplace';
 import { activeEntitlementIds } from '@/features/extensions/entitlements';
+import { parseMentionExtensionSettings } from '@/features/extensions/mention-settings';
 import { createClient } from '@/lib/supabase/server';
 
 export const metadata: Metadata = {
@@ -24,7 +25,7 @@ export default async function ExtensionsPage() {
     supabase.from('extension_catalog').select('id, product_kind, price_model, price_cents, currency, tags, media_url, media_type, allowed_groups, feature_flag').eq('is_published', true),
     supabase.from('user_access_profiles').select('groups, status').eq('user_id', userId).maybeSingle(),
     supabase.from('feature_flags').select('key, enabled, rollout_percentage, allowed_groups'),
-    supabase.from('user_extension_installations').select('extension_id, is_active').eq('user_id', userId),
+    supabase.from('user_extension_installations').select('extension_id, is_active, settings').eq('user_id', userId),
     supabase.from('user_extension_entitlements').select('extension_id, status, starts_at, ends_at').eq('user_id', userId),
   ]);
   const groups = accessResult.data?.groups?.length ? accessResult.data.groups : ['free'];
@@ -43,5 +44,7 @@ export default async function ExtensionsPage() {
     return { id: extension.id as ExtensionId, productKind: extension.product_kind, priceModel: extension.price_model, priceCents: extension.price_cents, currency: extension.currency, tags: extension.tags, mediaUrl: extension.media_url, mediaType: extension.media_type, acquired, canInstall: acquired && accessResult.data?.status !== 'suspended' };
   });
   const installationState = Object.fromEntries((installationsResult.data ?? []).filter((item) => knownIds.has(item.extension_id as ExtensionId)).map((item) => [item.extension_id, item.is_active]));
-  return <Marketplace controls={controls} installationState={installationState} catalogBacked={!catalogResult.error} />;
+  const mentionInstallation = installationsResult.data?.find((item) => item.extension_id === 'lab.context-mentions');
+  const initialMentionSettings = parseMentionExtensionSettings(JSON.stringify(mentionInstallation?.settings ?? null));
+  return <Marketplace controls={controls} installationState={installationState} initialMentionSettings={initialMentionSettings} catalogBacked={!catalogResult.error} />;
 }

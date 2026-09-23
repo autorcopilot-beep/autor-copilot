@@ -1,0 +1,5699 @@
+[
+  {
+    "name": "clampPosition",
+    "file": "src/features/accessibility/accessibility-menu.tsx",
+    "line": 55,
+    "kind": "função",
+    "exported": false,
+    "params": "position: ButtonPosition",
+    "area": "Acessibilidade"
+  },
+  {
+    "name": "AccessibilityMenu",
+    "file": "src/features/accessibility/accessibility-menu.tsx",
+    "line": 62,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Acessibilidade"
+  },
+  {
+    "name": "syncAcrossTabs",
+    "file": "src/features/accessibility/accessibility-menu.tsx",
+    "line": 85,
+    "kind": "função",
+    "exported": false,
+    "params": "event: StorageEvent",
+    "area": "Acessibilidade"
+  },
+  {
+    "name": "syncInThisTab",
+    "file": "src/features/accessibility/accessibility-menu.tsx",
+    "line": 99,
+    "kind": "função",
+    "exported": false,
+    "params": "event: Event",
+    "area": "Acessibilidade"
+  },
+  {
+    "name": "keepButtonVisible",
+    "file": "src/features/accessibility/accessibility-menu.tsx",
+    "line": 107,
+    "kind": "arrow",
+    "exported": false,
+    "params": "",
+    "area": "Acessibilidade"
+  },
+  {
+    "name": "updatePreferences",
+    "file": "src/features/accessibility/accessibility-menu.tsx",
+    "line": 117,
+    "kind": "função",
+    "exported": false,
+    "params": "update: Partial<AccessibilityPreferences>,",
+    "area": "Acessibilidade"
+  },
+  {
+    "name": "startDrag",
+    "file": "src/features/accessibility/accessibility-menu.tsx",
+    "line": 126,
+    "kind": "função",
+    "exported": false,
+    "params": "event: ReactPointerEvent<HTMLButtonElement>",
+    "area": "Acessibilidade"
+  },
+  {
+    "name": "moveButton",
+    "file": "src/features/accessibility/accessibility-menu.tsx",
+    "line": 139,
+    "kind": "função",
+    "exported": false,
+    "params": "event: ReactPointerEvent<HTMLButtonElement>",
+    "area": "Acessibilidade"
+  },
+  {
+    "name": "finishDrag",
+    "file": "src/features/accessibility/accessibility-menu.tsx",
+    "line": 148,
+    "kind": "função",
+    "exported": false,
+    "params": "event: ReactPointerEvent<HTMLButtonElement>",
+    "area": "Acessibilidade"
+  },
+  {
+    "name": "resetPreferences",
+    "file": "src/features/accessibility/accessibility-menu.tsx",
+    "line": 166,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Acessibilidade"
+  },
+  {
+    "name": "PreferenceGroup",
+    "file": "src/features/accessibility/accessibility-menu.tsx",
+    "line": 315,
+    "kind": "função",
+    "exported": false,
+    "params": "{ legend, children, }: { legend: string; children: ReactNode; }",
+    "area": "Acessibilidade"
+  },
+  {
+    "name": "Choice",
+    "file": "src/features/accessibility/accessibility-menu.tsx",
+    "line": 330,
+    "kind": "função",
+    "exported": false,
+    "params": "{ children, ...props }: ComponentProps<'input'> & { children: ReactNode }",
+    "area": "Acessibilidade"
+  },
+  {
+    "name": "parseAccessibilityPreferences",
+    "file": "src/features/accessibility/preferences.ts",
+    "line": 37,
+    "kind": "função",
+    "exported": true,
+    "params": "value: unknown,",
+    "area": "Acessibilidade"
+  },
+  {
+    "name": "applyAccessibilityPreferences",
+    "file": "src/features/accessibility/preferences.ts",
+    "line": 71,
+    "kind": "função",
+    "exported": true,
+    "params": "preferences: AccessibilityPreferences,",
+    "area": "Acessibilidade"
+  },
+  {
+    "name": "readAccessibilityPreferences",
+    "file": "src/features/accessibility/preferences.ts",
+    "line": 96,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Acessibilidade"
+  },
+  {
+    "name": "saveAccessibilityPreferences",
+    "file": "src/features/accessibility/preferences.ts",
+    "line": 109,
+    "kind": "função",
+    "exported": true,
+    "params": "preferences: AccessibilityPreferences,",
+    "area": "Acessibilidade"
+  },
+  {
+    "name": "AdminLoginPage",
+    "file": "src/app/admin/(auth)/login/page.tsx",
+    "line": 15,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ searchParams }: { searchParams: Promise<{ error?: string; status?: string }> }",
+    "area": "Administração"
+  },
+  {
+    "name": "NewAdminPage",
+    "file": "src/app/admin/(secure)/admins/new/page.tsx",
+    "line": 7,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "AdminsPage",
+    "file": "src/app/admin/(secure)/admins/page.tsx",
+    "line": 9,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "AdminApisPage",
+    "file": "src/app/admin/(secure)/apis/page.tsx",
+    "line": 11,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "Metric",
+    "file": "src/app/admin/(secure)/apis/page.tsx",
+    "line": 25,
+    "kind": "função",
+    "exported": false,
+    "params": "{ icon: Icon, label, value, detail }: { icon: typeof Activity; label: string; value: string; detail: string }",
+    "area": "Administração"
+  },
+  {
+    "name": "AuditPage",
+    "file": "src/app/admin/(secure)/audit/page.tsx",
+    "line": 5,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "AdminAuthorProfilesPage",
+    "file": "src/app/admin/(secure)/author-profiles/page.tsx",
+    "line": 11,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "AdminExtensionsPage",
+    "file": "src/app/admin/(secure)/extensions/page.tsx",
+    "line": 10,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "AdminFlagsPage",
+    "file": "src/app/admin/(secure)/flags/page.tsx",
+    "line": 8,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "csv",
+    "file": "src/app/admin/(secure)/guidance/page.tsx",
+    "line": 13,
+    "kind": "função",
+    "exported": false,
+    "params": "values: string[]",
+    "area": "Administração"
+  },
+  {
+    "name": "AdminGuidancePage",
+    "file": "src/app/admin/(secure)/guidance/page.tsx",
+    "line": 15,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "GuidancePlaygroundPage",
+    "file": "src/app/admin/(secure)/guidance/playground/page.tsx",
+    "line": 8,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "AdminSecureLayout",
+    "file": "src/app/admin/(secure)/layout.tsx",
+    "line": 6,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ children }: { children: React.ReactNode }",
+    "area": "Administração"
+  },
+  {
+    "name": "AdminLegalPage",
+    "file": "src/app/admin/(secure)/legal/page.tsx",
+    "line": 11,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "AdminLoading",
+    "file": "src/app/admin/(secure)/loading.tsx",
+    "line": 1,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "AdminHomePage",
+    "file": "src/app/admin/(secure)/page.tsx",
+    "line": 7,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ searchParams }: { searchParams: Promise<{ error?: string }> }",
+    "area": "Administração"
+  },
+  {
+    "name": "OmniPublishLoading",
+    "file": "src/app/admin/(secure)/publish/loading.tsx",
+    "line": 1,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "NewOmniPublishCampaignPage",
+    "file": "src/app/admin/(secure)/publish/new/page.tsx",
+    "line": 6,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ searchParams }: { searchParams: Promise<{ channel?: string }> }",
+    "area": "Administração"
+  },
+  {
+    "name": "OmniPublishPage",
+    "file": "src/app/admin/(secure)/publish/page.tsx",
+    "line": 10,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ searchParams }: { searchParams: Promise<{ created?: string }> }",
+    "area": "Administração"
+  },
+  {
+    "name": "AdminSoundPage",
+    "file": "src/app/admin/(secure)/sound/page.tsx",
+    "line": 11,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "AdminUsersPage",
+    "file": "src/app/admin/(secure)/users/page.tsx",
+    "line": 10,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "text",
+    "file": "src/features/admin/actions/author-profiles.ts",
+    "line": 10,
+    "kind": "função",
+    "exported": false,
+    "params": "formData: FormData, key: string, max: number",
+    "area": "Administração"
+  },
+  {
+    "name": "benefits",
+    "file": "src/features/admin/actions/author-profiles.ts",
+    "line": 11,
+    "kind": "função",
+    "exported": false,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "archetypeValues",
+    "file": "src/features/admin/actions/author-profiles.ts",
+    "line": 12,
+    "kind": "função",
+    "exported": false,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "createAuthorArchetype",
+    "file": "src/features/admin/actions/author-profiles.ts",
+    "line": 22,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "updateAuthorArchetype",
+    "file": "src/features/admin/actions/author-profiles.ts",
+    "line": 33,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "createAdministrativeUser",
+    "file": "src/features/admin/actions/create-admin.ts",
+    "line": 11,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "_previousState: CreateAdminState, formData: FormData,",
+    "area": "Administração"
+  },
+  {
+    "name": "adminLogin",
+    "file": "src/features/admin/actions/login.ts",
+    "line": 8,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "_previousState: LoginState, formData: FormData,",
+    "area": "Administração"
+  },
+  {
+    "name": "adminLogout",
+    "file": "src/features/admin/actions/logout.ts",
+    "line": 7,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "clean",
+    "file": "src/features/admin/actions/omnipublish.ts",
+    "line": 17,
+    "kind": "função",
+    "exported": false,
+    "params": "value: unknown, max = 2000",
+    "area": "Administração"
+  },
+  {
+    "name": "safeFileName",
+    "file": "src/features/admin/actions/omnipublish.ts",
+    "line": 21,
+    "kind": "função",
+    "exported": false,
+    "params": "name: string",
+    "area": "Administração"
+  },
+  {
+    "name": "legalSections",
+    "file": "src/features/admin/actions/omnipublish.ts",
+    "line": 25,
+    "kind": "função",
+    "exported": false,
+    "params": "body: string",
+    "area": "Administração"
+  },
+  {
+    "name": "prepareCommunicationMediaUpload",
+    "file": "src/features/admin/actions/omnipublish.ts",
+    "line": 38,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "input: { fileName: string; mimeType: string; size: number }",
+    "area": "Administração"
+  },
+  {
+    "name": "registerCommunicationMediaAsset",
+    "file": "src/features/admin/actions/omnipublish.ts",
+    "line": 50,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "input: { uploadId: string; path: string; fileName: string; mimeType: string; size: number; title: string; altText: string; caption: string }",
+    "area": "Administração"
+  },
+  {
+    "name": "saveCommunicationComponent",
+    "file": "src/features/admin/actions/omnipublish.ts",
+    "line": 77,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "input: { name: string; description: string; category: string; htmlCode: string; cssCode: string; jsCode: string }",
+    "area": "Administração"
+  },
+  {
+    "name": "validateCampaign",
+    "file": "src/features/admin/actions/omnipublish.ts",
+    "line": 106,
+    "kind": "função",
+    "exported": false,
+    "params": "input: CampaignDraftInput",
+    "area": "Administração"
+  },
+  {
+    "name": "createCommunicationCampaign",
+    "file": "src/features/admin/actions/omnipublish.ts",
+    "line": 117,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "input: CampaignDraftInput",
+    "area": "Administração"
+  },
+  {
+    "name": "changeCommunicationCampaignStatus",
+    "file": "src/features/admin/actions/omnipublish.ts",
+    "line": 183,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "createCommunicationApiKey",
+    "file": "src/features/admin/actions/omnipublish.ts",
+    "line": 240,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "input: { name: string; scopes: string[]; expiresAt?: string | null }",
+    "area": "Administração"
+  },
+  {
+    "name": "revokeCommunicationApiKey",
+    "file": "src/features/admin/actions/omnipublish.ts",
+    "line": 266,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "archiveCommunicationCampaign",
+    "file": "src/features/admin/actions/omnipublish.ts",
+    "line": 276,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "list",
+    "file": "src/features/admin/actions/product-controls.ts",
+    "line": 11,
+    "kind": "função",
+    "exported": false,
+    "params": "value: FormDataEntryValue | null",
+    "area": "Administração"
+  },
+  {
+    "name": "updateExtensionControl",
+    "file": "src/features/admin/actions/product-controls.ts",
+    "line": 15,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "updateExtensionEntitlement",
+    "file": "src/features/admin/actions/product-controls.ts",
+    "line": 43,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "updateFeatureFlag",
+    "file": "src/features/admin/actions/product-controls.ts",
+    "line": 66,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "updateUserAccess",
+    "file": "src/features/admin/actions/product-controls.ts",
+    "line": 78,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "updateUserSubscription",
+    "file": "src/features/admin/actions/product-controls.ts",
+    "line": 90,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "syncLegalDocuments",
+    "file": "src/features/admin/actions/product-controls.ts",
+    "line": 119,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "updateLegalDocument",
+    "file": "src/features/admin/actions/product-controls.ts",
+    "line": 129,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "list",
+    "file": "src/features/admin/actions/product-guidance.ts",
+    "line": 14,
+    "kind": "função",
+    "exported": false,
+    "params": "value: FormDataEntryValue | null",
+    "area": "Administração"
+  },
+  {
+    "name": "text",
+    "file": "src/features/admin/actions/product-guidance.ts",
+    "line": 18,
+    "kind": "função",
+    "exported": false,
+    "params": "formData: FormData, key: string, max = 2000",
+    "area": "Administração"
+  },
+  {
+    "name": "guideValues",
+    "file": "src/features/admin/actions/product-guidance.ts",
+    "line": 22,
+    "kind": "função",
+    "exported": false,
+    "params": "formData: FormData, actorId: string",
+    "area": "Administração"
+  },
+  {
+    "name": "stepValues",
+    "file": "src/features/admin/actions/product-guidance.ts",
+    "line": 45,
+    "kind": "função",
+    "exported": false,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "createProductGuide",
+    "file": "src/features/admin/actions/product-guidance.ts",
+    "line": 65,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "updateProductGuide",
+    "file": "src/features/admin/actions/product-guidance.ts",
+    "line": 81,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "updateProductGuideStep",
+    "file": "src/features/admin/actions/product-guidance.ts",
+    "line": 98,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "addProductGuideStep",
+    "file": "src/features/admin/actions/product-guidance.ts",
+    "line": 112,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "reannounceProductGuide",
+    "file": "src/features/admin/actions/product-guidance.ts",
+    "line": 125,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "safeFileName",
+    "file": "src/features/admin/actions/sound-library.ts",
+    "line": 14,
+    "kind": "função",
+    "exported": false,
+    "params": "name: string",
+    "area": "Administração"
+  },
+  {
+    "name": "list",
+    "file": "src/features/admin/actions/sound-library.ts",
+    "line": 15,
+    "kind": "função",
+    "exported": false,
+    "params": "value: FormDataEntryValue | null",
+    "area": "Administração"
+  },
+  {
+    "name": "createAudioTrack",
+    "file": "src/features/admin/actions/sound-library.ts",
+    "line": 17,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "prepareAudioTrackUpload",
+    "file": "src/features/admin/actions/sound-library.ts",
+    "line": 62,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "input: { audioName: string; audioType: string; audioSize: number; coverName?: string; coverType?: string; coverSize?: number }",
+    "area": "Administração"
+  },
+  {
+    "name": "updateAudioTrack",
+    "file": "src/features/admin/actions/sound-library.ts",
+    "line": 82,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "deleteAudioTrack",
+    "file": "src/features/admin/actions/sound-library.ts",
+    "line": 95,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Administração"
+  },
+  {
+    "name": "firstForwardedValue",
+    "file": "src/features/admin/audit.ts",
+    "line": 19,
+    "kind": "função",
+    "exported": false,
+    "params": "value: string | null",
+    "area": "Administração"
+  },
+  {
+    "name": "writeAdminAudit",
+    "file": "src/features/admin/audit.ts",
+    "line": 23,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "event: AuditEvent",
+    "area": "Administração"
+  },
+  {
+    "name": "getAdminContext",
+    "file": "src/features/admin/auth.ts",
+    "line": 16,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "requireAdmin",
+    "file": "src/features/admin/auth.ts",
+    "line": 40,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "permission?: AdminPermission",
+    "area": "Administração"
+  },
+  {
+    "name": "AdminAccountsTable",
+    "file": "src/features/admin/components/admin-accounts-table.tsx",
+    "line": 43,
+    "kind": "função",
+    "exported": true,
+    "params": "{ accounts }: { accounts: AdminAccountRow[] }",
+    "area": "Administração"
+  },
+  {
+    "name": "AdminCommandPalette",
+    "file": "src/features/admin/components/admin-command-palette.tsx",
+    "line": 32,
+    "kind": "função",
+    "exported": true,
+    "params": "{ commands }: { commands: AdminCommand[] }",
+    "area": "Administração"
+  },
+  {
+    "name": "handleKeyDown",
+    "file": "src/features/admin/components/admin-command-palette.tsx",
+    "line": 37,
+    "kind": "arrow",
+    "exported": false,
+    "params": "event: KeyboardEvent",
+    "area": "Administração"
+  },
+  {
+    "name": "run",
+    "file": "src/features/admin/components/admin-command-palette.tsx",
+    "line": 47,
+    "kind": "arrow",
+    "exported": false,
+    "params": "href: string",
+    "area": "Administração"
+  },
+  {
+    "name": "SubmitButton",
+    "file": "src/features/admin/components/admin-login-form.tsx",
+    "line": 14,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "AdminLoginForm",
+    "file": "src/features/admin/components/admin-login-form.tsx",
+    "line": 23,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "isCurrent",
+    "file": "src/features/admin/components/admin-shell.tsx",
+    "line": 39,
+    "kind": "função",
+    "exported": false,
+    "params": "pathname: string, href: string",
+    "area": "Administração"
+  },
+  {
+    "name": "AdminShell",
+    "file": "src/features/admin/components/admin-shell.tsx",
+    "line": 43,
+    "kind": "função",
+    "exported": true,
+    "params": "{ children, displayName, roleLabel, environment, commands, navigation, }: { children: React.ReactNode; displayName: string; roleLabel: string; environment: string; commands: AdminCommand[]; navigation: AdminNavItem[]; }",
+    "area": "Administração"
+  },
+  {
+    "name": "close",
+    "file": "src/features/admin/components/admin-shell.tsx",
+    "line": 65,
+    "kind": "arrow",
+    "exported": false,
+    "params": "event: KeyboardEvent",
+    "area": "Administração"
+  },
+  {
+    "name": "ApiKeyManager",
+    "file": "src/features/admin/components/api-key-manager.tsx",
+    "line": 14,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "createKey",
+    "file": "src/features/admin/components/api-key-manager.tsx",
+    "line": 22,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "copy",
+    "file": "src/features/admin/components/api-key-manager.tsx",
+    "line": 33,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "AuditEventsTable",
+    "file": "src/features/admin/components/audit-events-table.tsx",
+    "line": 48,
+    "kind": "função",
+    "exported": true,
+    "params": "{ events }: { events: AuditEventRow[] }",
+    "area": "Administração"
+  },
+  {
+    "name": "SubmitButton",
+    "file": "src/features/admin/components/create-admin-form.tsx",
+    "line": 14,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "CreateAdminForm",
+    "file": "src/features/admin/components/create-admin-form.tsx",
+    "line": 23,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "GuidancePlayground",
+    "file": "src/features/admin/components/guidance-playground.tsx",
+    "line": 8,
+    "kind": "função",
+    "exported": true,
+    "params": "{ targets }: { targets: Target[] }",
+    "area": "Administração"
+  },
+  {
+    "name": "copy",
+    "file": "src/features/admin/components/guidance-playground.tsx",
+    "line": 14,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "value: string, key: string",
+    "area": "Administração"
+  },
+  {
+    "name": "escapeClosingScript",
+    "file": "src/features/admin/components/guide-code-preview.tsx",
+    "line": 6,
+    "kind": "função",
+    "exported": false,
+    "params": "value: string",
+    "area": "Administração"
+  },
+  {
+    "name": "hydrate",
+    "file": "src/features/admin/components/guide-code-preview.tsx",
+    "line": 10,
+    "kind": "função",
+    "exported": false,
+    "params": "template: string, values: Record<string, string>",
+    "area": "Administração"
+  },
+  {
+    "name": "GuideCodePreview",
+    "file": "src/features/admin/components/guide-code-preview.tsx",
+    "line": 14,
+    "kind": "função",
+    "exported": true,
+    "params": "{ html, css, js, title, message, actionLabel }: { html: string; css: string; js: string; title: string; message: string; actionLabel: string }",
+    "area": "Administração"
+  },
+  {
+    "name": "SoundUploadForm",
+    "file": "src/features/admin/components/sound-upload-form.tsx",
+    "line": 12,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "submit",
+    "file": "src/features/admin/components/sound-upload-form.tsx",
+    "line": 20,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "event: React.FormEvent<HTMLFormElement>",
+    "area": "Administração"
+  },
+  {
+    "name": "iconMarkup",
+    "file": "src/features/admin/omnipublish/creative-composer.tsx",
+    "line": 25,
+    "kind": "função",
+    "exported": false,
+    "params": "icon: (typeof iconLibrary",
+    "area": "Administração"
+  },
+  {
+    "name": "CreativeComposer",
+    "file": "src/features/admin/omnipublish/creative-composer.tsx",
+    "line": 29,
+    "kind": "função",
+    "exported": true,
+    "params": "{ value, onChange, initialComponents, initialAssets }: { value: CodeValue; onChange: (value: CodeValue",
+    "area": "Administração"
+  },
+  {
+    "name": "insertComponent",
+    "file": "src/features/admin/omnipublish/creative-composer.tsx",
+    "line": 47,
+    "kind": "função",
+    "exported": false,
+    "params": "component: CommunicationComponent",
+    "area": "Administração"
+  },
+  {
+    "name": "insertAsset",
+    "file": "src/features/admin/omnipublish/creative-composer.tsx",
+    "line": 52,
+    "kind": "função",
+    "exported": false,
+    "params": "asset: CommunicationMediaAsset",
+    "area": "Administração"
+  },
+  {
+    "name": "upload",
+    "file": "src/features/admin/omnipublish/creative-composer.tsx",
+    "line": 60,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "file: File",
+    "area": "Administração"
+  },
+  {
+    "name": "saveAsComponent",
+    "file": "src/features/admin/omnipublish/creative-composer.tsx",
+    "line": 76,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "CodeEditor",
+    "file": "src/features/admin/omnipublish/creative-composer.tsx",
+    "line": 100,
+    "kind": "função",
+    "exported": false,
+    "params": "{ label, language, value, onChange, rows }: { label: string; language: string; value: string; onChange: (value: string",
+    "area": "Administração"
+  },
+  {
+    "name": "QuickInsert",
+    "file": "src/features/admin/omnipublish/creative-composer.tsx",
+    "line": 104,
+    "kind": "função",
+    "exported": false,
+    "params": "{ icon: Icon, label, onClick }: { icon: typeof Quote; label: string; onClick: (",
+    "area": "Administração"
+  },
+  {
+    "name": "escapeHtml",
+    "file": "src/features/admin/omnipublish/creative-composer.tsx",
+    "line": 106,
+    "kind": "função",
+    "exported": false,
+    "params": "value: string",
+    "area": "Administração"
+  },
+  {
+    "name": "escapeAttribute",
+    "file": "src/features/admin/omnipublish/creative-composer.tsx",
+    "line": 107,
+    "kind": "função",
+    "exported": false,
+    "params": "value: string",
+    "area": "Administração"
+  },
+  {
+    "name": "OmniPublishBoard",
+    "file": "src/features/admin/omnipublish/omnipublish-board.tsx",
+    "line": 15,
+    "kind": "função",
+    "exported": true,
+    "params": "{ campaigns, canManage }: { campaigns: CampaignOverview[]; canManage: boolean }",
+    "area": "Administração"
+  },
+  {
+    "name": "Metric",
+    "file": "src/features/admin/omnipublish/omnipublish-board.tsx",
+    "line": 45,
+    "kind": "função",
+    "exported": false,
+    "params": "{ label, value, detail, icon: Icon }: { label: string; value: number; detail: string; icon: typeof Megaphone }",
+    "area": "Administração"
+  },
+  {
+    "name": "CampaignDetail",
+    "file": "src/features/admin/omnipublish/omnipublish-board.tsx",
+    "line": 49,
+    "kind": "função",
+    "exported": false,
+    "params": "{ campaign, onOpenChange, canManage }: { campaign: CampaignOverview | null; onOpenChange: (open: boolean",
+    "area": "Administração"
+  },
+  {
+    "name": "StatusButton",
+    "file": "src/features/admin/omnipublish/omnipublish-board.tsx",
+    "line": 53,
+    "kind": "função",
+    "exported": false,
+    "params": "{ id, status, label, icon: Icon, primary = false }: { id: string; status: string; label: string; icon: typeof Eye; primary?: boolean }",
+    "area": "Administração"
+  },
+  {
+    "name": "formatDate",
+    "file": "src/features/admin/omnipublish/omnipublish-board.tsx",
+    "line": 57,
+    "kind": "função",
+    "exported": false,
+    "params": "value: string",
+    "area": "Administração"
+  },
+  {
+    "name": "relativeDate",
+    "file": "src/features/admin/omnipublish/omnipublish-board.tsx",
+    "line": 58,
+    "kind": "função",
+    "exported": false,
+    "params": "value: string",
+    "area": "Administração"
+  },
+  {
+    "name": "initialItems",
+    "file": "src/features/admin/omnipublish/omnipublish-studio.tsx",
+    "line": 23,
+    "kind": "função",
+    "exported": false,
+    "params": "title = ''",
+    "area": "Administração"
+  },
+  {
+    "name": "slugify",
+    "file": "src/features/admin/omnipublish/omnipublish-studio.tsx",
+    "line": 30,
+    "kind": "função",
+    "exported": false,
+    "params": "value: string",
+    "area": "Administração"
+  },
+  {
+    "name": "OmniPublishStudio",
+    "file": "src/features/admin/omnipublish/omnipublish-studio.tsx",
+    "line": 34,
+    "kind": "função",
+    "exported": true,
+    "params": "{ initialComponents, initialAssets, initialChannel }: { initialComponents: CommunicationComponent[]; initialAssets: CommunicationMediaAsset[]; initialChannel?: CommunicationChannel }",
+    "area": "Administração"
+  },
+  {
+    "name": "updateMasterTitle",
+    "file": "src/features/admin/omnipublish/omnipublish-studio.tsx",
+    "line": 56,
+    "kind": "função",
+    "exported": false,
+    "params": "value: string",
+    "area": "Administração"
+  },
+  {
+    "name": "toggleChannel",
+    "file": "src/features/admin/omnipublish/omnipublish-studio.tsx",
+    "line": 69,
+    "kind": "função",
+    "exported": false,
+    "params": "channel: CommunicationChannel",
+    "area": "Administração"
+  },
+  {
+    "name": "updateField",
+    "file": "src/features/admin/omnipublish/omnipublish-studio.tsx",
+    "line": 74,
+    "kind": "função",
+    "exported": false,
+    "params": "channel: CommunicationChannel, key: string, value: string | boolean",
+    "area": "Administração"
+  },
+  {
+    "name": "goNext",
+    "file": "src/features/admin/omnipublish/omnipublish-studio.tsx",
+    "line": 78,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "saveCampaign",
+    "file": "src/features/admin/omnipublish/omnipublish-studio.tsx",
+    "line": 85,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Administração"
+  },
+  {
+    "name": "BriefingStep",
+    "file": "src/features/admin/omnipublish/omnipublish-studio.tsx",
+    "line": 130,
+    "kind": "função",
+    "exported": false,
+    "params": "{ internalName, setInternalName, title, updateMasterTitle, summary, setSummary, tags, setTags, audience, setAudience, scheduledFor, setScheduledFor }: { internalName: string; setInternalName: (value: string",
+    "area": "Administração"
+  },
+  {
+    "name": "ChannelStep",
+    "file": "src/features/admin/omnipublish/omnipublish-studio.tsx",
+    "line": 140,
+    "kind": "função",
+    "exported": false,
+    "params": "{ selected, toggle }: { selected: CommunicationChannel[]; toggle: (channel: CommunicationChannel",
+    "area": "Administração"
+  },
+  {
+    "name": "CompositionStep",
+    "file": "src/features/admin/omnipublish/omnipublish-studio.tsx",
+    "line": 144,
+    "kind": "função",
+    "exported": false,
+    "params": "{ selected, active, setActive, items, setItems, updateField, initialComponents, initialAssets }: { selected: CommunicationChannel[]; active: CommunicationChannel; setActive: (channel: CommunicationChannel",
+    "area": "Administração"
+  },
+  {
+    "name": "ChannelPreview",
+    "file": "src/features/admin/omnipublish/omnipublish-studio.tsx",
+    "line": 155,
+    "kind": "função",
+    "exported": false,
+    "params": "{ channel, item }: { channel: CommunicationChannel; item: ChannelDraft }",
+    "area": "Administração"
+  },
+  {
+    "name": "ReviewStep",
+    "file": "src/features/admin/omnipublish/omnipublish-studio.tsx",
+    "line": 163,
+    "kind": "função",
+    "exported": false,
+    "params": "{ title, summary, selected, items, scheduledFor, audience }: { title: string; summary: string; selected: CommunicationChannel[]; items: Record<CommunicationChannel, ChannelDraft>; scheduledFor: string; audience: Campaign",
+    "area": "Administração"
+  },
+  {
+    "name": "buildOmniPublishSandboxDocument",
+    "file": "src/features/admin/omnipublish/render-code-page.ts",
+    "line": 1,
+    "kind": "função",
+    "exported": true,
+    "params": "value: { html: string; css: string; js: string }",
+    "area": "Administração"
+  },
+  {
+    "name": "slugifyPublication",
+    "file": "src/features/admin/omnipublish/types.ts",
+    "line": 42,
+    "kind": "função",
+    "exported": true,
+    "params": "value: string",
+    "area": "Administração"
+  },
+  {
+    "name": "publicationPath",
+    "file": "src/features/admin/omnipublish/types.ts",
+    "line": 46,
+    "kind": "função",
+    "exported": true,
+    "params": "channel: CommunicationChannel, slug: string",
+    "area": "Administração"
+  },
+  {
+    "name": "payloadAsRecord",
+    "file": "src/features/admin/omnipublish/types.ts",
+    "line": 164,
+    "kind": "função",
+    "exported": true,
+    "params": "payload: Json",
+    "area": "Administração"
+  },
+  {
+    "name": "hasAdminPermission",
+    "file": "src/features/admin/rbac.ts",
+    "line": 69,
+    "kind": "função",
+    "exported": true,
+    "params": "role: AdminRole, permission: AdminPermission",
+    "area": "Administração"
+  },
+  {
+    "name": "isAdminRole",
+    "file": "src/features/admin/rbac.ts",
+    "line": 73,
+    "kind": "função",
+    "exported": true,
+    "params": "value: unknown",
+    "area": "Administração"
+  },
+  {
+    "name": "WritingLayout",
+    "file": "src/app/(writing)/layout.tsx",
+    "line": 8,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ children }: { children: React.ReactNode }",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "WritingLoading",
+    "file": "src/app/(writing)/loading.tsx",
+    "line": 3,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "WritingViewPage",
+    "file": "src/app/(writing)/write/[view]/page.tsx",
+    "line": 15,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ params, searchParams, }: { params: Promise<{ view: string }>; searchParams: Promise<{ document?: string; work?: string }>; }",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "WritePage",
+    "file": "src/app/(writing)/write/page.tsx",
+    "line": 3,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "updatedLabel",
+    "file": "src/features/writing/components/encyclopedia-view.tsx",
+    "line": 43,
+    "kind": "função",
+    "exported": false,
+    "params": "value: string",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "emptyDraft",
+    "file": "src/features/writing/components/encyclopedia-view.tsx",
+    "line": 60,
+    "kind": "função",
+    "exported": false,
+    "params": "type: EncyclopediaEntryType = 'character'",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "TextField",
+    "file": "src/features/writing/components/encyclopedia-view.tsx",
+    "line": 87,
+    "kind": "função",
+    "exported": false,
+    "params": "{ label, value, onChange, maxLength, placeholder, rows = 0 }: { label: string; value: string; onChange: (value: string",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "ListQuestion",
+    "file": "src/features/writing/components/encyclopedia-view.tsx",
+    "line": 98,
+    "kind": "função",
+    "exported": false,
+    "params": "{ question, values, onChange }: { question: WorldbuildingQuestion; values: string[]; onChange: (values: string[]",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "addItem",
+    "file": "src/features/writing/components/encyclopedia-view.tsx",
+    "line": 100,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "QuestionField",
+    "file": "src/features/writing/components/encyclopedia-view.tsx",
+    "line": 111,
+    "kind": "função",
+    "exported": false,
+    "params": "{ namespace, question, answers, onChange }: { namespace: string; question: WorldbuildingQuestion; answers: Record<string, string | string[] | boolean>; onChange: (answers: Record<string, string | string[] | boolean>",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "update",
+    "file": "src/features/writing/components/encyclopedia-view.tsx",
+    "line": 119,
+    "kind": "arrow",
+    "exported": false,
+    "params": "value: string | string[] | boolean",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "SchemaSections",
+    "file": "src/features/writing/components/encyclopedia-view.tsx",
+    "line": 127,
+    "kind": "função",
+    "exported": false,
+    "params": "{ namespace, sections, answers, onChange }: { namespace: string; sections: WorldbuildingSection[]; answers: Record<string, string | string[] | boolean>; onChange: (answers: Record<string, string | string[] | boolean>",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "foundationSteps",
+    "file": "src/features/writing/components/encyclopedia-view.tsx",
+    "line": 143,
+    "kind": "função",
+    "exported": false,
+    "params": "profile: WorldbuildingProfile",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "FoundationJourney",
+    "file": "src/features/writing/components/encyclopedia-view.tsx",
+    "line": 165,
+    "kind": "função",
+    "exported": false,
+    "params": "{ profile, onChange, onSave, saving, error }: { profile: WorldbuildingProfile; onChange: (profile: WorldbuildingProfile",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "move",
+    "file": "src/features/writing/components/encyclopedia-view.tsx",
+    "line": 171,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "nextIndex: number, completed = false",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "applyPreset",
+    "file": "src/features/writing/components/encyclopedia-view.tsx",
+    "line": 177,
+    "kind": "função",
+    "exported": false,
+    "params": "presetId: string",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "EncyclopediaView",
+    "file": "src/features/writing/components/encyclopedia-view.tsx",
+    "line": 202,
+    "kind": "função",
+    "exported": true,
+    "params": "{ entries, workId, ownerId, workTitle, persistence, worldbuildingProfile, onSave, onDelete, onSaveWorldbuilding, }: { entries: EncyclopediaEntry[]; workId: string; ownerId: string; workTitle: string; persistence: 'cloud'",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "startCreating",
+    "file": "src/features/writing/components/encyclopedia-view.tsx",
+    "line": 249,
+    "kind": "função",
+    "exported": false,
+    "params": "type: EncyclopediaEntryType = 'character'",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "startEditing",
+    "file": "src/features/writing/components/encyclopedia-view.tsx",
+    "line": 254,
+    "kind": "função",
+    "exported": false,
+    "params": "entry: EncyclopediaEntry",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "applyExample",
+    "file": "src/features/writing/components/encyclopedia-view.tsx",
+    "line": 269,
+    "kind": "função",
+    "exported": false,
+    "params": "example: (typeof examples",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "submit",
+    "file": "src/features/writing/components/encyclopedia-view.tsx",
+    "line": 275,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "remove",
+    "file": "src/features/writing/components/encyclopedia-view.tsx",
+    "line": 293,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "saveWorldbuilding",
+    "file": "src/features/writing/components/encyclopedia-view.tsx",
+    "line": 300,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "profile = worldDraft",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "UniverseArchitecture",
+    "file": "src/features/writing/components/universe-architecture.tsx",
+    "line": 16,
+    "kind": "função",
+    "exported": true,
+    "params": "{ ownerId, workId, workTitle, entries, standalone = false }: { ownerId: string; workId: string; workTitle: string; entries: EncyclopediaEntry[]; standalone?: boolean }",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "createStructure",
+    "file": "src/features/writing/components/universe-architecture.tsx",
+    "line": 46,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "linkCurrentWork",
+    "file": "src/features/writing/components/universe-architecture.tsx",
+    "line": 61,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "universeId: string",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "addRelation",
+    "file": "src/features/writing/components/universe-architecture.tsx",
+    "line": 68,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "deleteRelation",
+    "file": "src/features/writing/components/universe-architecture.tsx",
+    "line": 76,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "edgeId: string",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "entryName",
+    "file": "src/features/writing/components/universe-architecture.tsx",
+    "line": 86,
+    "kind": "arrow",
+    "exported": false,
+    "params": "id: string",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "Base",
+    "file": "src/features/writing/components/writing-nav-icons.tsx",
+    "line": 12,
+    "kind": "função",
+    "exported": false,
+    "params": "{ size = 18, active, className = \"\", children, ...props }: IconProps & { children: React.ReactNode }",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "BookMark",
+    "file": "src/features/writing/components/writing-nav-icons.tsx",
+    "line": 41,
+    "kind": "função",
+    "exported": true,
+    "params": "props: IconProps",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "HomeIcon",
+    "file": "src/features/writing/components/writing-nav-icons.tsx",
+    "line": 52,
+    "kind": "função",
+    "exported": true,
+    "params": "props: IconProps",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "LibraryIcon",
+    "file": "src/features/writing/components/writing-nav-icons.tsx",
+    "line": 70,
+    "kind": "função",
+    "exported": true,
+    "params": "props: IconProps",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "OverviewIcon",
+    "file": "src/features/writing/components/writing-nav-icons.tsx",
+    "line": 93,
+    "kind": "função",
+    "exported": true,
+    "params": "props: IconProps",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "EditorIcon",
+    "file": "src/features/writing/components/writing-nav-icons.tsx",
+    "line": 110,
+    "kind": "função",
+    "exported": true,
+    "params": "props: IconProps",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "EncyclopediaIcon",
+    "file": "src/features/writing/components/writing-nav-icons.tsx",
+    "line": 127,
+    "kind": "função",
+    "exported": true,
+    "params": "props: IconProps",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "SoundIcon",
+    "file": "src/features/writing/components/writing-nav-icons.tsx",
+    "line": 149,
+    "kind": "função",
+    "exported": true,
+    "params": "props: IconProps",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "SettingsIcon",
+    "file": "src/features/writing/components/writing-nav-icons.tsx",
+    "line": 166,
+    "kind": "função",
+    "exported": true,
+    "params": "props: IconProps",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "OutlineIcon",
+    "file": "src/features/writing/components/writing-nav-icons.tsx",
+    "line": 182,
+    "kind": "função",
+    "exported": true,
+    "params": "props: IconProps",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "ChevronDown",
+    "file": "src/features/writing/components/writing-nav-icons.tsx",
+    "line": 195,
+    "kind": "função",
+    "exported": true,
+    "params": "props: IconProps",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "NewPageIcon",
+    "file": "src/features/writing/components/writing-nav-icons.tsx",
+    "line": 204,
+    "kind": "função",
+    "exported": true,
+    "params": "props: IconProps",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "SaveIcon",
+    "file": "src/features/writing/components/writing-nav-icons.tsx",
+    "line": 216,
+    "kind": "função",
+    "exported": true,
+    "params": "props: IconProps",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "PanelLeftIcon",
+    "file": "src/features/writing/components/writing-nav-icons.tsx",
+    "line": 228,
+    "kind": "função",
+    "exported": true,
+    "params": "props: IconProps",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "PanelRightIcon",
+    "file": "src/features/writing/components/writing-nav-icons.tsx",
+    "line": 243,
+    "kind": "função",
+    "exported": true,
+    "params": "props: IconProps",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "ReaderIcon",
+    "file": "src/features/writing/components/writing-nav-icons.tsx",
+    "line": 259,
+    "kind": "função",
+    "exported": true,
+    "params": "props: IconProps",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "FocusIcon",
+    "file": "src/features/writing/components/writing-nav-icons.tsx",
+    "line": 276,
+    "kind": "função",
+    "exported": true,
+    "params": "props: IconProps",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "MoreIcon",
+    "file": "src/features/writing/components/writing-nav-icons.tsx",
+    "line": 288,
+    "kind": "função",
+    "exported": true,
+    "params": "props: IconProps",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "CheckIcon",
+    "file": "src/features/writing/components/writing-nav-icons.tsx",
+    "line": 298,
+    "kind": "função",
+    "exported": true,
+    "params": "props: IconProps",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "ThemeIcon",
+    "file": "src/features/writing/components/writing-nav-icons.tsx",
+    "line": 307,
+    "kind": "função",
+    "exported": true,
+    "params": "{ dark, ...props }: IconProps & { dark?: boolean }",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "WritingRail",
+    "file": "src/features/writing/components/writing-rail.tsx",
+    "line": 22,
+    "kind": "função",
+    "exported": true,
+    "params": "{ displayName, avatarUrl, soundEnabled = false, soundTracks = [] }: { displayName: string; avatarUrl?: string; soundEnabled?: boolean; soundTracks?: SoundTrack[] }",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "writingLink",
+    "file": "src/features/writing/components/writing-rail.tsx",
+    "line": 36,
+    "kind": "arrow",
+    "exported": false,
+    "params": "view: string",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "syncFromLocation",
+    "file": "src/features/writing/components/writing-rail.tsx",
+    "line": 59,
+    "kind": "arrow",
+    "exported": false,
+    "params": "",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "handleView",
+    "file": "src/features/writing/components/writing-rail.tsx",
+    "line": 60,
+    "kind": "arrow",
+    "exported": false,
+    "params": "event: Event",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "closeOnOutside",
+    "file": "src/features/writing/components/writing-rail.tsx",
+    "line": 82,
+    "kind": "arrow",
+    "exported": false,
+    "params": "event: PointerEvent",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "closeOnEscape",
+    "file": "src/features/writing/components/writing-rail.tsx",
+    "line": 83,
+    "kind": "arrow",
+    "exported": false,
+    "params": "event: KeyboardEvent",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "closeOnOutside",
+    "file": "src/features/writing/components/writing-rail.tsx",
+    "line": 97,
+    "kind": "arrow",
+    "exported": false,
+    "params": "event: PointerEvent",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "closeOnEscape",
+    "file": "src/features/writing/components/writing-rail.tsx",
+    "line": 98,
+    "kind": "arrow",
+    "exported": false,
+    "params": "event: KeyboardEvent",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "openSound",
+    "file": "src/features/writing/components/writing-rail.tsx",
+    "line": 105,
+    "kind": "arrow",
+    "exported": false,
+    "params": "",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "toggleTheme",
+    "file": "src/features/writing/components/writing-rail.tsx",
+    "line": 110,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "handleArrowNavigation",
+    "file": "src/features/writing/components/writing-rail.tsx",
+    "line": 118,
+    "kind": "função",
+    "exported": false,
+    "params": "event: React.KeyboardEvent<HTMLElement>",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "handleWritingLink",
+    "file": "src/features/writing/components/writing-rail.tsx",
+    "line": 127,
+    "kind": "função",
+    "exported": false,
+    "params": "event: React.MouseEvent<HTMLAnchorElement>, itemId: string, href?: string",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "openTool",
+    "file": "src/features/writing/components/writing-rail.tsx",
+    "line": 136,
+    "kind": "função",
+    "exported": false,
+    "params": "view: WritingView",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "plainTextFromHtml",
+    "file": "src/features/writing/components/writing-studio.tsx",
+    "line": 86,
+    "kind": "função",
+    "exported": false,
+    "params": "html: string",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "countWords",
+    "file": "src/features/writing/components/writing-studio.tsx",
+    "line": 96,
+    "kind": "função",
+    "exported": false,
+    "params": "html: string",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "entityIdsFromHtml",
+    "file": "src/features/writing/components/writing-studio.tsx",
+    "line": 101,
+    "kind": "função",
+    "exported": false,
+    "params": "html: string",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "sanitizeEditorHtml",
+    "file": "src/features/writing/components/writing-studio.tsx",
+    "line": 116,
+    "kind": "função",
+    "exported": false,
+    "params": "html: string",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "isUuid",
+    "file": "src/features/writing/components/writing-studio.tsx",
+    "line": 146,
+    "kind": "função",
+    "exported": false,
+    "params": "value: unknown",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "safeEncyclopediaEntries",
+    "file": "src/features/writing/components/writing-studio.tsx",
+    "line": 150,
+    "kind": "função",
+    "exported": false,
+    "params": "value: string | null",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "safeProject",
+    "file": "src/features/writing/components/writing-studio.tsx",
+    "line": 185,
+    "kind": "função",
+    "exported": false,
+    "params": "value: string | null, remoteProject: WritingProject",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "htmlToMarkdown",
+    "file": "src/features/writing/components/writing-studio.tsx",
+    "line": 238,
+    "kind": "função",
+    "exported": false,
+    "params": "document: WritingDocument",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "ToolbarButton",
+    "file": "src/features/writing/components/writing-studio.tsx",
+    "line": 253,
+    "kind": "função",
+    "exported": false,
+    "params": "{ label, shortcut, active = false, comfortable = false, onClick, children, }: { label: string; shortcut?: string; active?: boolean; comfortable?: boolean; onClick: (",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "WritingCollection",
+    "file": "src/features/writing/components/writing-studio.tsx",
+    "line": 310,
+    "kind": "função",
+    "exported": false,
+    "params": "{ view, documents, onCreate, onOpen, }: { view: Exclude<WritingView, 'editor' | 'encyclopedia' | 'relations'>; documents: WritingDocument[]; onCreate: (kind: WritingDocumentKind",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "WritingStudio",
+    "file": "src/features/writing/components/writing-studio.tsx",
+    "line": 363,
+    "kind": "função",
+    "exported": true,
+    "params": "{ userId, initialProject, initialView, extensionAccess, initialMentionSettings, }: { userId: string; initialProject: WritingProject; initialView: WritingView; extensionAccess: typeof defaultExtensionRuntime; initialMenti",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "syncFromLocation",
+    "file": "src/features/writing/components/writing-studio.tsx",
+    "line": 411,
+    "kind": "arrow",
+    "exported": false,
+    "params": "",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "handleView",
+    "file": "src/features/writing/components/writing-studio.tsx",
+    "line": 415,
+    "kind": "arrow",
+    "exported": false,
+    "params": "event: Event",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "measure",
+    "file": "src/features/writing/components/writing-studio.tsx",
+    "line": 676,
+    "kind": "arrow",
+    "exported": false,
+    "params": "",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "saveLocally",
+    "file": "src/features/writing/components/writing-studio.tsx",
+    "line": 944,
+    "kind": "arrow",
+    "exported": false,
+    "params": "",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "onKeyDown",
+    "file": "src/features/writing/components/writing-studio.tsx",
+    "line": 1059,
+    "kind": "arrow",
+    "exported": false,
+    "params": "event: KeyboardEvent",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "mapDocument",
+    "file": "src/features/writing/server.ts",
+    "line": 10,
+    "kind": "função",
+    "exported": false,
+    "params": "row: Database['public']['Tables']['writing_documents']['Row']",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "rolloutBucket",
+    "file": "src/features/writing/server.ts",
+    "line": 25,
+    "kind": "função",
+    "exported": false,
+    "params": "userId: string, flag: string",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "loadExtensionRuntimeAccess",
+    "file": "src/features/writing/server.ts",
+    "line": 29,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "supabase: SupabaseClient<Database>, userId: string",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "loadWritingProject",
+    "file": "src/features/writing/server.ts",
+    "line": 57,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "supabase: SupabaseClient<Database>, userId: string, requestedDocumentId?: string, requestedWorkId?: string,",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "writingViewFromPathname",
+    "file": "src/features/writing/spa-navigation.ts",
+    "line": 7,
+    "kind": "função",
+    "exported": true,
+    "params": "pathname: string",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "navigateWritingView",
+    "file": "src/features/writing/spa-navigation.ts",
+    "line": 12,
+    "kind": "função",
+    "exported": true,
+    "params": "view: WritingView, href: string, mode: 'push' | 'replace' = 'push'",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "writingHref",
+    "file": "src/features/writing/spa-navigation.ts",
+    "line": 18,
+    "kind": "função",
+    "exported": true,
+    "params": "view: WritingView, workId: string, documentId?: string",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "parseProfileAnswers",
+    "file": "src/features/writing/types.ts",
+    "line": 53,
+    "kind": "função",
+    "exported": true,
+    "params": "value: Json | undefined",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "mapEncyclopediaEntry",
+    "file": "src/features/writing/types.ts",
+    "line": 63,
+    "kind": "função",
+    "exported": true,
+    "params": "row: Database['public']['Tables']['encyclopedia_entries']['Row']",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "isWritingView",
+    "file": "src/features/writing/types.ts",
+    "line": 113,
+    "kind": "função",
+    "exported": true,
+    "params": "value: string",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "templatesForType",
+    "file": "src/features/writing/worldbuilding-schema.ts",
+    "line": 138,
+    "kind": "função",
+    "exported": true,
+    "params": "type: EncyclopediaEntryType",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "templateById",
+    "file": "src/features/writing/worldbuilding-schema.ts",
+    "line": 142,
+    "kind": "função",
+    "exported": true,
+    "params": "id: string, fallbackType: EncyclopediaEntryType = 'character'",
+    "area": "Ambiente de escrita"
+  },
+  {
+    "name": "ForgotPasswordPage",
+    "file": "src/app/(auth)/forgot-password/page.tsx",
+    "line": 12,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ searchParams }: { searchParams: Promise<{ error?: string }> }",
+    "area": "Autenticação"
+  },
+  {
+    "name": "LoginPage",
+    "file": "src/app/(auth)/login/page.tsx",
+    "line": 16,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ searchParams }: { searchParams: Promise<{ next?: string; status?: string }> }",
+    "area": "Autenticação"
+  },
+  {
+    "name": "CheckEmailPage",
+    "file": "src/app/(auth)/register/check-email/page.tsx",
+    "line": 10,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ searchParams, }: { searchParams: Promise<{ email?: string }>; }",
+    "area": "Autenticação"
+  },
+  {
+    "name": "RegisterPage",
+    "file": "src/app/(auth)/register/page.tsx",
+    "line": 12,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ searchParams, }: { searchParams: Promise<{ error?: string }>; }",
+    "area": "Autenticação"
+  },
+  {
+    "name": "UpdatePasswordPage",
+    "file": "src/app/(auth)/update-password/page.tsx",
+    "line": 12,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Autenticação"
+  },
+  {
+    "name": "login",
+    "file": "src/features/auth/actions/login.ts",
+    "line": 9,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "_previousState: LoginState, formData: FormData,",
+    "area": "Autenticação"
+  },
+  {
+    "name": "logout",
+    "file": "src/features/auth/actions/logout.ts",
+    "line": 7,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Autenticação"
+  },
+  {
+    "name": "requestPasswordReset",
+    "file": "src/features/auth/actions/password.ts",
+    "line": 14,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "_previousState: ForgotPasswordState, formData: FormData,",
+    "area": "Autenticação"
+  },
+  {
+    "name": "updatePassword",
+    "file": "src/features/auth/actions/password.ts",
+    "line": 57,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "_previousState: UpdatePasswordState, formData: FormData,",
+    "area": "Autenticação"
+  },
+  {
+    "name": "register",
+    "file": "src/features/auth/actions/register.ts",
+    "line": 9,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "_previousState: RegisterState, formData: FormData,",
+    "area": "Autenticação"
+  },
+  {
+    "name": "AccountContent",
+    "file": "src/features/auth/components/account-panel.tsx",
+    "line": 17,
+    "kind": "função",
+    "exported": false,
+    "params": "{ displayName, email, penName, writingFocus }: Omit<AccountPanelProps, 'mobile'>",
+    "area": "Autenticação"
+  },
+  {
+    "name": "AccountPanel",
+    "file": "src/features/auth/components/account-panel.tsx",
+    "line": 48,
+    "kind": "função",
+    "exported": true,
+    "params": "{ mobile = false, ...props }: AccountPanelProps",
+    "area": "Autenticação"
+  },
+  {
+    "name": "AuthBrand",
+    "file": "src/features/auth/components/auth-brand.tsx",
+    "line": 7,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Autenticação"
+  },
+  {
+    "name": "SubmitButton",
+    "file": "src/features/auth/components/forgot-password-form.tsx",
+    "line": 13,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Autenticação"
+  },
+  {
+    "name": "ForgotPasswordForm",
+    "file": "src/features/auth/components/forgot-password-form.tsx",
+    "line": 22,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Autenticação"
+  },
+  {
+    "name": "LegalConsentDrawer",
+    "file": "src/features/auth/components/legal-consent-drawer.tsx",
+    "line": 47,
+    "kind": "função",
+    "exported": true,
+    "params": "{ document }: { document: LegalDocumentKey }",
+    "area": "Autenticação"
+  },
+  {
+    "name": "LegalDrawerContent",
+    "file": "src/features/auth/components/legal-consent-drawer.tsx",
+    "line": 88,
+    "kind": "função",
+    "exported": false,
+    "params": "{ document, children, nested = false, }: { document: (typeof legalDocuments",
+    "area": "Autenticação"
+  },
+  {
+    "name": "ContextContent",
+    "file": "src/features/auth/components/login-context.tsx",
+    "line": 13,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Autenticação"
+  },
+  {
+    "name": "LoginContext",
+    "file": "src/features/auth/components/login-context.tsx",
+    "line": 37,
+    "kind": "função",
+    "exported": true,
+    "params": "{ mobile = false }: { mobile?: boolean }",
+    "area": "Autenticação"
+  },
+  {
+    "name": "SubmitButton",
+    "file": "src/features/auth/components/login-form.tsx",
+    "line": 15,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Autenticação"
+  },
+  {
+    "name": "LoginForm",
+    "file": "src/features/auth/components/login-form.tsx",
+    "line": 27,
+    "kind": "função",
+    "exported": true,
+    "params": "{ next }: { next?: string }",
+    "area": "Autenticação"
+  },
+  {
+    "name": "PasswordField",
+    "file": "src/features/auth/components/password-field.tsx",
+    "line": 17,
+    "kind": "função",
+    "exported": true,
+    "params": "{ id, name = id, label, autoComplete, error, hint }: PasswordFieldProps",
+    "area": "Autenticação"
+  },
+  {
+    "name": "RegisterContext",
+    "file": "src/features/auth/components/register-context.tsx",
+    "line": 21,
+    "kind": "função",
+    "exported": true,
+    "params": "{ mobile = false }: { mobile?: boolean }",
+    "area": "Autenticação"
+  },
+  {
+    "name": "content",
+    "file": "src/features/auth/components/register-context.tsx",
+    "line": 22,
+    "kind": "arrow",
+    "exported": false,
+    "params": "<div className=\"space-y-8\"> <div> <p className=\"text-meta text-muted\">Folha de abertura · 01</p> <h2 className=\"mt-4 max-w-sm font-serif text-3xl font-semibold leading-tight text-ink\"> Um lugar para a história inteira fa",
+    "area": "Autenticação"
+  },
+  {
+    "name": "SubmitButton",
+    "file": "src/features/auth/components/register-form.tsx",
+    "line": 33,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Autenticação"
+  },
+  {
+    "name": "FieldMessage",
+    "file": "src/features/auth/components/register-form.tsx",
+    "line": 42,
+    "kind": "função",
+    "exported": false,
+    "params": "{ message, id }: { message?: string; id: string }",
+    "area": "Autenticação"
+  },
+  {
+    "name": "RegisterForm",
+    "file": "src/features/auth/components/register-form.tsx",
+    "line": 46,
+    "kind": "função",
+    "exported": true,
+    "params": "{ confirmationError = false }: { confirmationError?: boolean }",
+    "area": "Autenticação"
+  },
+  {
+    "name": "validateCurrentStep",
+    "file": "src/features/auth/components/register-form.tsx",
+    "line": 65,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Autenticação"
+  },
+  {
+    "name": "nextStep",
+    "file": "src/features/auth/components/register-form.tsx",
+    "line": 86,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Autenticação"
+  },
+  {
+    "name": "previousStep",
+    "file": "src/features/auth/components/register-form.tsx",
+    "line": 92,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Autenticação"
+  },
+  {
+    "name": "serverError",
+    "file": "src/features/auth/components/register-form.tsx",
+    "line": 98,
+    "kind": "arrow",
+    "exported": false,
+    "params": "field: RegisterField",
+    "area": "Autenticação"
+  },
+  {
+    "name": "errorFor",
+    "file": "src/features/auth/components/register-form.tsx",
+    "line": 99,
+    "kind": "arrow",
+    "exported": false,
+    "params": "field: RegisterField",
+    "area": "Autenticação"
+  },
+  {
+    "name": "PasswordRule",
+    "file": "src/features/auth/components/register-form.tsx",
+    "line": 200,
+    "kind": "função",
+    "exported": false,
+    "params": "{ met, children }: { met: boolean; children: string }",
+    "area": "Autenticação"
+  },
+  {
+    "name": "Consent",
+    "file": "src/features/auth/components/register-form.tsx",
+    "line": 204,
+    "kind": "função",
+    "exported": false,
+    "params": "{ id, checked, onChange, children, required = false }: { id: string; checked: boolean; onChange: (checked: boolean",
+    "area": "Autenticação"
+  },
+  {
+    "name": "Summary",
+    "file": "src/features/auth/components/register-form.tsx",
+    "line": 213,
+    "kind": "função",
+    "exported": false,
+    "params": "{ label, value }: { label: string; value: string }",
+    "area": "Autenticação"
+  },
+  {
+    "name": "SubmitButton",
+    "file": "src/features/auth/components/update-password-form.tsx",
+    "line": 14,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Autenticação"
+  },
+  {
+    "name": "UpdatePasswordForm",
+    "file": "src/features/auth/components/update-password-form.tsx",
+    "line": 23,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Autenticação"
+  },
+  {
+    "name": "getSafeAuthDestination",
+    "file": "src/features/auth/redirects.ts",
+    "line": 22,
+    "kind": "função",
+    "exported": true,
+    "params": "value: string | null | undefined, fallback: string",
+    "area": "Autenticação"
+  },
+  {
+    "name": "createAdminClient",
+    "file": "src/lib/supabase/admin.ts",
+    "line": 8,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Autenticação"
+  },
+  {
+    "name": "createClient",
+    "file": "src/lib/supabase/client.ts",
+    "line": 6,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Autenticação"
+  },
+  {
+    "name": "refreshSession",
+    "file": "src/lib/supabase/proxy.ts",
+    "line": 7,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "request: NextRequest",
+    "area": "Autenticação"
+  },
+  {
+    "name": "createClient",
+    "file": "src/lib/supabase/server.ts",
+    "line": 7,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Autenticação"
+  },
+  {
+    "name": "proxy",
+    "file": "src/proxy.ts",
+    "line": 6,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "request: NextRequest",
+    "area": "Banco e infraestrutura"
+  },
+  {
+    "name": "LibraryViewPage",
+    "file": "src/app/(workspace)/library/[view]/page.tsx",
+    "line": 9,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ params, searchParams }: { params: Promise<{ view: string }>; searchParams: Promise<{ q?: string; sort?: string }> }",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "CatalogPage",
+    "file": "src/app/(workspace)/library/catalogs/[catalogId]/page.tsx",
+    "line": 7,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ params, searchParams }: { params: Promise<{ catalogId: string }>; searchParams: Promise<{ q?: string; sort?: string }> }",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "CatalogsPage",
+    "file": "src/app/(workspace)/library/catalogs/page.tsx",
+    "line": 7,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ searchParams }: { searchParams: Promise<{ q?: string; sort?: string }> }",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "LibraryIndexPage",
+    "file": "src/app/(workspace)/library/page.tsx",
+    "line": 3,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "value",
+    "file": "src/features/library/actions.ts",
+    "line": 12,
+    "kind": "função",
+    "exported": false,
+    "params": "formData: FormData, name: string, max: number",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "safeReturnTo",
+    "file": "src/features/library/actions.ts",
+    "line": 16,
+    "kind": "função",
+    "exported": false,
+    "params": "formData: FormData",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "authenticatedClient",
+    "file": "src/features/library/actions.ts",
+    "line": 21,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "createWork",
+    "file": "src/features/library/actions.ts",
+    "line": 29,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "createCatalog",
+    "file": "src/features/library/actions.ts",
+    "line": 53,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "toggleFavorite",
+    "file": "src/features/library/actions.ts",
+    "line": 69,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "setWorkStatus",
+    "file": "src/features/library/actions.ts",
+    "line": 79,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "setArchived",
+    "file": "src/features/library/actions.ts",
+    "line": 89,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "setCatalogMembership",
+    "file": "src/features/library/actions.ts",
+    "line": 106,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "deleteCatalog",
+    "file": "src/features/library/actions.ts",
+    "line": 119,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "NewWorkDialog",
+    "file": "src/features/library/components/library-create-dialogs.tsx",
+    "line": 14,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "NewCatalogDialog",
+    "file": "src/features/library/components/library-create-dialogs.tsx",
+    "line": 37,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "formatNumber",
+    "file": "src/features/library/components/library-page.tsx",
+    "line": 25,
+    "kind": "função",
+    "exported": false,
+    "params": "value: number",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "formatDate",
+    "file": "src/features/library/components/library-page.tsx",
+    "line": 26,
+    "kind": "função",
+    "exported": false,
+    "params": "value: string",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "HiddenActionFields",
+    "file": "src/features/library/components/library-page.tsx",
+    "line": 28,
+    "kind": "função",
+    "exported": false,
+    "params": "{ workId, returnTo }: { workId: string; returnTo: string }",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "WorkActions",
+    "file": "src/features/library/components/library-page.tsx",
+    "line": 32,
+    "kind": "função",
+    "exported": false,
+    "params": "{ work, catalogs, returnTo }: { work: LibraryWork; catalogs: LibraryCatalog[]; returnTo: string }",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "WorkCard",
+    "file": "src/features/library/components/library-page.tsx",
+    "line": 49,
+    "kind": "função",
+    "exported": false,
+    "params": "{ work, catalogs, returnTo }: { work: LibraryWork; catalogs: LibraryCatalog[]; returnTo: string }",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "LibraryPage",
+    "file": "src/features/library/components/library-page.tsx",
+    "line": 74,
+    "kind": "função",
+    "exported": true,
+    "params": "{ view, works, catalogs, stats, query = '', sort = 'updated', catalogId }: { view: LibraryView; works: LibraryWork[]; catalogs: LibraryCatalog[]; stats: { active: number; favorites: number; archived: number; words: numbe",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "renderLibrary",
+    "file": "src/features/library/render-library.tsx",
+    "line": 8,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "view: LibraryView, query: { q?: string; sort?: string }, catalogId?: string",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "countWords",
+    "file": "src/features/library/server.ts",
+    "line": 8,
+    "kind": "função",
+    "exported": false,
+    "params": "html: string",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "loadLibrary",
+    "file": "src/features/library/server.ts",
+    "line": 13,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "supabase: SupabaseClient<Database>, userId: string, view: LibraryView, options: { query?: string; sort?: string; catalogId?: string } = {},",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "isLibraryView",
+    "file": "src/features/library/types.ts",
+    "line": 35,
+    "kind": "função",
+    "exported": true,
+    "params": "value: string",
+    "area": "Biblioteca"
+  },
+  {
+    "name": "AccountComingSoonPage",
+    "file": "src/app/(workspace)/account/[section]/page.tsx",
+    "line": 6,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ params }: { params: Promise<{ section: string }> }",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "rolloutBucket",
+    "file": "src/app/(workspace)/account/extensions/page.tsx",
+    "line": 15,
+    "kind": "função",
+    "exported": false,
+    "params": "userId: string, flag: string",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "ExtensionsPage",
+    "file": "src/app/(workspace)/account/extensions/page.tsx",
+    "line": 19,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "AccountLayout",
+    "file": "src/app/(workspace)/account/layout.tsx",
+    "line": 8,
+    "kind": "função",
+    "exported": true,
+    "params": "{ children }: { children: React.ReactNode }",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "AccountLoading",
+    "file": "src/app/(workspace)/account/loading.tsx",
+    "line": 3,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "AccountLoginPage",
+    "file": "src/app/(workspace)/account/login/page.tsx",
+    "line": 9,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ searchParams }: { searchParams: Promise<{ email?: string }> }",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "formatDate",
+    "file": "src/app/(workspace)/account/page.tsx",
+    "line": 8,
+    "kind": "função",
+    "exported": false,
+    "params": "value: string",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "AccountOverviewPage",
+    "file": "src/app/(workspace)/account/page.tsx",
+    "line": 10,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "AccountPreferencesPage",
+    "file": "src/app/(workspace)/account/preferences/page.tsx",
+    "line": 7,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ searchParams }: { searchParams: Promise<{ saved?: string; reset?: string }> }",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "AccountProfilePage",
+    "file": "src/app/(workspace)/account/profile/page.tsx",
+    "line": 10,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ searchParams }: AccountProfilePageProps",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "authenticatedClient",
+    "file": "src/features/account/actions/avatar.ts",
+    "line": 19,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "uploadProfileAvatar",
+    "file": "src/features/account/actions/avatar.ts",
+    "line": 26,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "removeProfileAvatar",
+    "file": "src/features/account/actions/avatar.ts",
+    "line": 65,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "updateLoginEmail",
+    "file": "src/features/account/actions/update-login-email.ts",
+    "line": 9,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "_previousState: LoginEmailState, formData: FormData",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "checked",
+    "file": "src/features/account/actions/update-preferences.ts",
+    "line": 9,
+    "kind": "função",
+    "exported": false,
+    "params": "formData: FormData, name: string",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "numeric",
+    "file": "src/features/account/actions/update-preferences.ts",
+    "line": 11,
+    "kind": "função",
+    "exported": false,
+    "params": "formData: FormData, name: string, fallback: number, min: number, max: number",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "updateAccountPreferences",
+    "file": "src/features/account/actions/update-preferences.ts",
+    "line": 13,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "resetAccountPreferences",
+    "file": "src/features/account/actions/update-preferences.ts",
+    "line": 35,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "getAuthenticatedProfileClient",
+    "file": "src/features/account/actions/update-profile.ts",
+    "line": 14,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "refreshProfile",
+    "file": "src/features/account/actions/update-profile.ts",
+    "line": 22,
+    "kind": "função",
+    "exported": false,
+    "params": "savedSection: 'identity' | 'writing' | 'region'",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "updateIdentityProfile",
+    "file": "src/features/account/actions/update-profile.ts",
+    "line": 28,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "_previousState: AccountProfileState, formData: FormData",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "updateWritingProfile",
+    "file": "src/features/account/actions/update-profile.ts",
+    "line": 55,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "_previousState: AccountProfileState, formData: FormData",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "updateRegionProfile",
+    "file": "src/features/account/actions/update-profile.ts",
+    "line": 74,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "_previousState: AccountProfileState, formData: FormData",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "AccountNavigation",
+    "file": "src/features/account/components/account-navigation.tsx",
+    "line": 17,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "clampPan",
+    "file": "src/features/account/components/avatar-editor.tsx",
+    "line": 16,
+    "kind": "função",
+    "exported": false,
+    "params": "point: Point, size: ImageSize, zoom: number, viewportSize: number",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "AvatarEditor",
+    "file": "src/features/account/components/avatar-editor.tsx",
+    "line": 23,
+    "kind": "função",
+    "exported": true,
+    "params": "{ initialUrl, initials }: { initialUrl?: string; initials: string }",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "resetEditor",
+    "file": "src/features/account/components/avatar-editor.tsx",
+    "line": 50,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "chooseFile",
+    "file": "src/features/account/components/avatar-editor.tsx",
+    "line": 59,
+    "kind": "função",
+    "exported": false,
+    "params": "file?: File",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "changeZoom",
+    "file": "src/features/account/components/avatar-editor.tsx",
+    "line": 78,
+    "kind": "função",
+    "exported": false,
+    "params": "nextZoom: number",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "handlePointerDown",
+    "file": "src/features/account/components/avatar-editor.tsx",
+    "line": 84,
+    "kind": "função",
+    "exported": false,
+    "params": "event: React.PointerEvent<HTMLDivElement>",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "handlePointerMove",
+    "file": "src/features/account/components/avatar-editor.tsx",
+    "line": 90,
+    "kind": "função",
+    "exported": false,
+    "params": "event: React.PointerEvent<HTMLDivElement>",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "handlePointerUp",
+    "file": "src/features/account/components/avatar-editor.tsx",
+    "line": 99,
+    "kind": "função",
+    "exported": false,
+    "params": "event: React.PointerEvent<HTMLDivElement>",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "saveCrop",
+    "file": "src/features/account/components/avatar-editor.tsx",
+    "line": 104,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "removeAvatar",
+    "file": "src/features/account/components/avatar-editor.tsx",
+    "line": 145,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "Toggle",
+    "file": "src/features/account/components/extensions-settings.tsx",
+    "line": 14,
+    "kind": "função",
+    "exported": false,
+    "params": "{ checked, disabled, onChange }: { checked: boolean; disabled: boolean; onChange: (checked: boolean",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "ExtensionsSettings",
+    "file": "src/features/account/components/extensions-settings.tsx",
+    "line": 18,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "updateSettings",
+    "file": "src/features/account/components/extensions-settings.tsx",
+    "line": 30,
+    "kind": "função",
+    "exported": false,
+    "params": "changes: Partial<MentionExtensionSettings>",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "SubmitButton",
+    "file": "src/features/account/components/login-email-settings.tsx",
+    "line": 13,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "formatDate",
+    "file": "src/features/account/components/login-email-settings.tsx",
+    "line": 18,
+    "kind": "função",
+    "exported": false,
+    "params": "value?: string",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "LoginEmailSettings",
+    "file": "src/features/account/components/login-email-settings.tsx",
+    "line": 23,
+    "kind": "função",
+    "exported": true,
+    "params": "{ email, confirmedAt, lastSignInAt, provider, notice }: { email: string; confirmedAt?: string; lastSignInAt?: string; provider: string; notice?: 'requested' | 'confirmed' | 'error' }",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "PreferenceHydrator",
+    "file": "src/features/account/components/preference-hydrator.tsx",
+    "line": 9,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "hydrate",
+    "file": "src/features/account/components/preference-hydrator.tsx",
+    "line": 13,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "SubmitButton",
+    "file": "src/features/account/components/preferences-form.tsx",
+    "line": 23,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "Switch",
+    "file": "src/features/account/components/preferences-form.tsx",
+    "line": 28,
+    "kind": "função",
+    "exported": false,
+    "params": "{ name, checked, onChange, title, description, required }: { name: string; checked: boolean; onChange: (checked: boolean",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "SectionHeader",
+    "file": "src/features/account/components/preferences-form.tsx",
+    "line": 32,
+    "kind": "função",
+    "exported": false,
+    "params": "{ eyebrow, title, description }: { eyebrow: string; title: string; description: string }",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "PreferencesForm",
+    "file": "src/features/account/components/preferences-form.tsx",
+    "line": 36,
+    "kind": "função",
+    "exported": true,
+    "params": "{ initial, saved, reset }: { initial: AccountPreferences; saved?: boolean; reset?: boolean }",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "applyAppearance",
+    "file": "src/features/account/components/preferences-form.tsx",
+    "line": 41,
+    "kind": "função",
+    "exported": false,
+    "params": "next: AccountPreferences['appearance']",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "labelFor",
+    "file": "src/features/account/components/profile-form.tsx",
+    "line": 40,
+    "kind": "função",
+    "exported": false,
+    "params": "options: ReadonlyArray<{ value: string; label: string }>, value: string",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "FieldError",
+    "file": "src/features/account/components/profile-form.tsx",
+    "line": 44,
+    "kind": "função",
+    "exported": false,
+    "params": "{ error, id }: { error?: string; id: string }",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "FormError",
+    "file": "src/features/account/components/profile-form.tsx",
+    "line": 48,
+    "kind": "função",
+    "exported": false,
+    "params": "{ state }: { state: AccountProfileState }",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "DisplayField",
+    "file": "src/features/account/components/profile-form.tsx",
+    "line": 52,
+    "kind": "função",
+    "exported": false,
+    "params": "{ label, value, wide = false }: { label: string; value?: string | number | null; wide?: boolean }",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "EditButton",
+    "file": "src/features/account/components/profile-form.tsx",
+    "line": 57,
+    "kind": "função",
+    "exported": false,
+    "params": "{ label, onClick }: { label: string; onClick: (",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "FormActions",
+    "file": "src/features/account/components/profile-form.tsx",
+    "line": 61,
+    "kind": "função",
+    "exported": false,
+    "params": "{ onDiscard }: { onDiscard: (",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "SectionHeader",
+    "file": "src/features/account/components/profile-form.tsx",
+    "line": 71,
+    "kind": "função",
+    "exported": false,
+    "params": "{ id, title, description, editing, onEdit }: { id: string; title: string; description: string; editing: boolean; onEdit: (",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "IdentitySection",
+    "file": "src/features/account/components/profile-form.tsx",
+    "line": 75,
+    "kind": "função",
+    "exported": false,
+    "params": "{ values }: { values: ProfileValues }",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "WritingSection",
+    "file": "src/features/account/components/profile-form.tsx",
+    "line": 109,
+    "kind": "função",
+    "exported": false,
+    "params": "{ values }: { values: ProfileValues }",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "RegionSection",
+    "file": "src/features/account/components/profile-form.tsx",
+    "line": 138,
+    "kind": "função",
+    "exported": false,
+    "params": "{ values }: { values: ProfileValues }",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "ProfileForm",
+    "file": "src/features/account/components/profile-form.tsx",
+    "line": 166,
+    "kind": "função",
+    "exported": true,
+    "params": "{ values, saved, avatarUrl }: { values: ProfileValues; saved?: SavedSection; avatarUrl?: string }",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "getAccountSection",
+    "file": "src/features/account/navigation.ts",
+    "line": 17,
+    "kind": "função",
+    "exported": true,
+    "params": "slug: string",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "object",
+    "file": "src/features/account/preferences.ts",
+    "line": 23,
+    "kind": "função",
+    "exported": false,
+    "params": "value: Json | null | undefined",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "bool",
+    "file": "src/features/account/preferences.ts",
+    "line": 27,
+    "kind": "função",
+    "exported": false,
+    "params": "value: Json | undefined, fallback: boolean",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "number",
+    "file": "src/features/account/preferences.ts",
+    "line": 29,
+    "kind": "função",
+    "exported": false,
+    "params": "value: Json | undefined, fallback: number, min: number, max: number",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "parseAccountPreferences",
+    "file": "src/features/account/preferences.ts",
+    "line": 31,
+    "kind": "função",
+    "exported": true,
+    "params": "row?: Partial<Record<keyof AccountPreferences, Json>> | null",
+    "area": "Conta e preferências"
+  },
+  {
+    "name": "parseExtensionRuntime",
+    "file": "src/features/extensions/catalog.ts",
+    "line": 59,
+    "kind": "função",
+    "exported": true,
+    "params": "value: string | null",
+    "area": "Extensões"
+  },
+  {
+    "name": "priceLabel",
+    "file": "src/features/extensions/components/marketplace.tsx",
+    "line": 29,
+    "kind": "função",
+    "exported": false,
+    "params": "priceModel: string, priceCents: number, currency: string",
+    "area": "Extensões"
+  },
+  {
+    "name": "ManuscriptPreview",
+    "file": "src/features/extensions/components/marketplace.tsx",
+    "line": 35,
+    "kind": "função",
+    "exported": false,
+    "params": "{ extensionId }: { extensionId: ExtensionId }",
+    "area": "Extensões"
+  },
+  {
+    "name": "MotionPreview",
+    "file": "src/features/extensions/components/marketplace.tsx",
+    "line": 44,
+    "kind": "função",
+    "exported": false,
+    "params": "{ mediaType, mediaUrl, title }: { mediaType: string; mediaUrl: string; title: string }",
+    "area": "Extensões"
+  },
+  {
+    "name": "Marketplace",
+    "file": "src/features/extensions/components/marketplace.tsx",
+    "line": 49,
+    "kind": "função",
+    "exported": true,
+    "params": "{ controls, installationState, initialMentionSettings, catalogBacked = false }: { controls?: MarketplaceControl[]; installationState?: Partial<ExtensionRuntimeState>; initialMentionSettings?: MentionExtensionSettings; ca",
+    "area": "Extensões"
+  },
+  {
+    "name": "onKeyDown",
+    "file": "src/features/extensions/components/marketplace.tsx",
+    "line": 86,
+    "kind": "arrow",
+    "exported": false,
+    "params": "event: KeyboardEvent",
+    "area": "Extensões"
+  },
+  {
+    "name": "openDetails",
+    "file": "src/features/extensions/components/marketplace.tsx",
+    "line": 109,
+    "kind": "função",
+    "exported": false,
+    "params": "id: ExtensionId",
+    "area": "Extensões"
+  },
+  {
+    "name": "setInstalled",
+    "file": "src/features/extensions/components/marketplace.tsx",
+    "line": 115,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "id: ExtensionId, installed: boolean",
+    "area": "Extensões"
+  },
+  {
+    "name": "installFeaturedCollection",
+    "file": "src/features/extensions/components/marketplace.tsx",
+    "line": 141,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "",
+    "area": "Extensões"
+  },
+  {
+    "name": "updateMentionSettings",
+    "file": "src/features/extensions/components/marketplace.tsx",
+    "line": 162,
+    "kind": "função",
+    "exported": false,
+    "params": "changes: Partial<typeof mentionSettings>",
+    "area": "Extensões"
+  },
+  {
+    "name": "actionLabel",
+    "file": "src/features/extensions/components/marketplace.tsx",
+    "line": 169,
+    "kind": "função",
+    "exported": false,
+    "params": "id: ExtensionId",
+    "area": "Extensões"
+  },
+  {
+    "name": "activeEntitlementIds",
+    "file": "src/features/extensions/entitlements.ts",
+    "line": 8,
+    "kind": "função",
+    "exported": true,
+    "params": "rows: ExtensionEntitlementWindow[]",
+    "area": "Extensões"
+  },
+  {
+    "name": "parseMentionExtensionSettings",
+    "file": "src/features/extensions/mention-settings.ts",
+    "line": 38,
+    "kind": "função",
+    "exported": true,
+    "params": "value: string | null",
+    "area": "Extensões"
+  },
+  {
+    "name": "routeMatches",
+    "file": "src/features/guidance/product-guidance.tsx",
+    "line": 19,
+    "kind": "função",
+    "exported": false,
+    "params": "pattern: string, pathname: string",
+    "area": "Guias do produto"
+  },
+  {
+    "name": "stableBucket",
+    "file": "src/features/guidance/product-guidance.tsx",
+    "line": 24,
+    "kind": "função",
+    "exported": false,
+    "params": "value: string",
+    "area": "Guias do produto"
+  },
+  {
+    "name": "intersects",
+    "file": "src/features/guidance/product-guidance.tsx",
+    "line": 30,
+    "kind": "função",
+    "exported": false,
+    "params": "required: string[], actual: string[]",
+    "area": "Guias do produto"
+  },
+  {
+    "name": "guideSettings",
+    "file": "src/features/guidance/product-guidance.tsx",
+    "line": 34,
+    "kind": "função",
+    "exported": false,
+    "params": "guide: Guide",
+    "area": "Guias do produto"
+  },
+  {
+    "name": "templateDocument",
+    "file": "src/features/guidance/product-guidance.tsx",
+    "line": 39,
+    "kind": "função",
+    "exported": false,
+    "params": "step: GuideStep",
+    "area": "Guias do produto"
+  },
+  {
+    "name": "cardPosition",
+    "file": "src/features/guidance/product-guidance.tsx",
+    "line": 47,
+    "kind": "função",
+    "exported": false,
+    "params": "rect: TargetRect | null, placement: string",
+    "area": "Guias do produto"
+  },
+  {
+    "name": "ProductGuidance",
+    "file": "src/features/guidance/product-guidance.tsx",
+    "line": 58,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Guias do produto"
+  },
+  {
+    "name": "load",
+    "file": "src/features/guidance/product-guidance.tsx",
+    "line": 73,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "",
+    "area": "Guias do produto"
+  },
+  {
+    "name": "locate",
+    "file": "src/features/guidance/product-guidance.tsx",
+    "line": 121,
+    "kind": "arrow",
+    "exported": false,
+    "params": "",
+    "area": "Guias do produto"
+  },
+  {
+    "name": "update",
+    "file": "src/features/guidance/product-guidance.tsx",
+    "line": 135,
+    "kind": "arrow",
+    "exported": false,
+    "params": "",
+    "area": "Guias do produto"
+  },
+  {
+    "name": "goNext",
+    "file": "src/features/guidance/product-guidance.tsx",
+    "line": 163,
+    "kind": "arrow",
+    "exported": false,
+    "params": "",
+    "area": "Guias do produto"
+  },
+  {
+    "name": "Avatar",
+    "file": "src/components/ui/avatar.tsx",
+    "line": 8,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Root>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "AvatarImage",
+    "file": "src/components/ui/avatar.tsx",
+    "line": 12,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Image>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "AvatarFallback",
+    "file": "src/components/ui/avatar.tsx",
+    "line": 16,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Fallback>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "AvatarBadge",
+    "file": "src/components/ui/avatar.tsx",
+    "line": 20,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<'span'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "AvatarStatus",
+    "file": "src/components/ui/avatar.tsx",
+    "line": 24,
+    "kind": "função",
+    "exported": false,
+    "params": "{ online = false }: { online?: boolean }",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "AvatarGroup",
+    "file": "src/components/ui/avatar.tsx",
+    "line": 28,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<'div'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "AvatarGroupCount",
+    "file": "src/components/ui/avatar.tsx",
+    "line": 32,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<'span'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "Badge",
+    "file": "src/components/ui/badge.tsx",
+    "line": 7,
+    "kind": "função",
+    "exported": true,
+    "params": "{ className, ...props }: BadgeProps",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "Breadcrumb",
+    "file": "src/components/ui/breadcrumb.tsx",
+    "line": 6,
+    "kind": "função",
+    "exported": false,
+    "params": "props: React.ComponentProps<'nav'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "BreadcrumbList",
+    "file": "src/components/ui/breadcrumb.tsx",
+    "line": 7,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<'ol'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "BreadcrumbItem",
+    "file": "src/components/ui/breadcrumb.tsx",
+    "line": 8,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<'li'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "BreadcrumbLink",
+    "file": "src/components/ui/breadcrumb.tsx",
+    "line": 9,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<'a'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "BreadcrumbPage",
+    "file": "src/components/ui/breadcrumb.tsx",
+    "line": 10,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<'span'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "BreadcrumbSeparator",
+    "file": "src/components/ui/breadcrumb.tsx",
+    "line": 11,
+    "kind": "função",
+    "exported": false,
+    "params": "{ children, className, ...props }: React.ComponentProps<'li'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "BreadcrumbEllipsis",
+    "file": "src/components/ui/breadcrumb.tsx",
+    "line": 12,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<'span'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "Button",
+    "file": "src/components/ui/button.tsx",
+    "line": 36,
+    "kind": "função",
+    "exported": true,
+    "params": "{ className, variant, size, type = 'button', ...props }: ButtonProps",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "Card",
+    "file": "src/components/ui/card.tsx",
+    "line": 5,
+    "kind": "função",
+    "exported": true,
+    "params": "{ className, ...props }: ComponentProps<'section'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "CardHeader",
+    "file": "src/components/ui/card.tsx",
+    "line": 14,
+    "kind": "função",
+    "exported": true,
+    "params": "{ className, ...props }: ComponentProps<'div'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "CardTitle",
+    "file": "src/components/ui/card.tsx",
+    "line": 18,
+    "kind": "função",
+    "exported": true,
+    "params": "{ className, ...props }: ComponentProps<'h2'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "CardDescription",
+    "file": "src/components/ui/card.tsx",
+    "line": 22,
+    "kind": "função",
+    "exported": true,
+    "params": "{ className, ...props }: ComponentProps<'p'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "CardContent",
+    "file": "src/components/ui/card.tsx",
+    "line": 26,
+    "kind": "função",
+    "exported": true,
+    "params": "{ className, ...props }: ComponentProps<'div'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "Checkbox",
+    "file": "src/components/ui/checkbox.tsx",
+    "line": 9,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof CheckboxPrimitive.Root>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "Command",
+    "file": "src/components/ui/command.tsx",
+    "line": 10,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof CommandPrimitive>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "CommandDialog",
+    "file": "src/components/ui/command.tsx",
+    "line": 14,
+    "kind": "função",
+    "exported": false,
+    "params": "{ title = 'Comandos', description = 'Busque uma página ou ação.', children, className, ...props }: React.ComponentProps<typeof Dialog> & { title?: string; description?: string; className?: string }",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "CommandInput",
+    "file": "src/components/ui/command.tsx",
+    "line": 23,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof CommandPrimitive.Input>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "CommandList",
+    "file": "src/components/ui/command.tsx",
+    "line": 32,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof CommandPrimitive.List>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "CommandEmpty",
+    "file": "src/components/ui/command.tsx",
+    "line": 36,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof CommandPrimitive.Empty>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "CommandGroup",
+    "file": "src/components/ui/command.tsx",
+    "line": 40,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof CommandPrimitive.Group>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "CommandSeparator",
+    "file": "src/components/ui/command.tsx",
+    "line": 44,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof CommandPrimitive.Separator>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "CommandItem",
+    "file": "src/components/ui/command.tsx",
+    "line": 48,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof CommandPrimitive.Item>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "CommandShortcut",
+    "file": "src/components/ui/command.tsx",
+    "line": 52,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<'span'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "Dialog",
+    "file": "src/components/ui/dialog.tsx",
+    "line": 10,
+    "kind": "função",
+    "exported": false,
+    "params": "props: React.ComponentProps<typeof DialogPrimitive.Root>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DialogTrigger",
+    "file": "src/components/ui/dialog.tsx",
+    "line": 14,
+    "kind": "função",
+    "exported": false,
+    "params": "props: React.ComponentProps<typeof DialogPrimitive.Trigger>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DialogPortal",
+    "file": "src/components/ui/dialog.tsx",
+    "line": 18,
+    "kind": "função",
+    "exported": false,
+    "params": "props: React.ComponentProps<typeof DialogPrimitive.Portal>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DialogClose",
+    "file": "src/components/ui/dialog.tsx",
+    "line": 22,
+    "kind": "função",
+    "exported": false,
+    "params": "props: React.ComponentProps<typeof DialogPrimitive.Close>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DialogOverlay",
+    "file": "src/components/ui/dialog.tsx",
+    "line": 26,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Overlay>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DialogContent",
+    "file": "src/components/ui/dialog.tsx",
+    "line": 35,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, children, showCloseButton = true, ...props }: React.ComponentProps<typeof DialogPrimitive.Content> & { showCloseButton?: boolean }",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DialogHeader",
+    "file": "src/components/ui/dialog.tsx",
+    "line": 56,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<'div'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DialogFooter",
+    "file": "src/components/ui/dialog.tsx",
+    "line": 60,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<'div'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DialogTitle",
+    "file": "src/components/ui/dialog.tsx",
+    "line": 64,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DialogDescription",
+    "file": "src/components/ui/dialog.tsx",
+    "line": 68,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Description>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "useDrawer",
+    "file": "src/components/ui/drawer.tsx",
+    "line": 16,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "Drawer",
+    "file": "src/components/ui/drawer.tsx",
+    "line": 26,
+    "kind": "função",
+    "exported": false,
+    "params": "{ modal = true, showSwipeHandle = false, snapPoints, swipeDirection = \"down\", ...props }: DrawerPrimitive.Root.Props & { showSwipeHandle?: boolean }",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DrawerTrigger",
+    "file": "src/components/ui/drawer.tsx",
+    "line": 54,
+    "kind": "função",
+    "exported": false,
+    "params": "{ ...props }: DrawerPrimitive.Trigger.Props",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DrawerPortal",
+    "file": "src/components/ui/drawer.tsx",
+    "line": 58,
+    "kind": "função",
+    "exported": false,
+    "params": "{ ...props }: DrawerPrimitive.Portal.Props",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DrawerClose",
+    "file": "src/components/ui/drawer.tsx",
+    "line": 62,
+    "kind": "função",
+    "exported": false,
+    "params": "{ ...props }: DrawerPrimitive.Close.Props",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DrawerOverlay",
+    "file": "src/components/ui/drawer.tsx",
+    "line": 66,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: DrawerPrimitive.Backdrop.Props",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DrawerSwipeHandle",
+    "file": "src/components/ui/drawer.tsx",
+    "line": 82,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<\"div\">",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DrawerContent",
+    "file": "src/components/ui/drawer.tsx",
+    "line": 99,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, children, ...props }: DrawerPrimitive.Popup.Props",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DrawerHeader",
+    "file": "src/components/ui/drawer.tsx",
+    "line": 166,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<\"div\">",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DrawerFooter",
+    "file": "src/components/ui/drawer.tsx",
+    "line": 179,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<\"div\">",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DrawerTitle",
+    "file": "src/components/ui/drawer.tsx",
+    "line": 189,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: DrawerPrimitive.Title.Props",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DrawerDescription",
+    "file": "src/components/ui/drawer.tsx",
+    "line": 202,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: DrawerPrimitive.Description.Props",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DropdownMenuContent",
+    "file": "src/components/ui/dropdown-menu.tsx",
+    "line": 16,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, sideOffset = 6, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Content>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DropdownMenuItem",
+    "file": "src/components/ui/dropdown-menu.tsx",
+    "line": 24,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, inset, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Item> & { inset?: boolean }",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DropdownMenuLabel",
+    "file": "src/components/ui/dropdown-menu.tsx",
+    "line": 28,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, inset, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Label> & { inset?: boolean }",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DropdownMenuSeparator",
+    "file": "src/components/ui/dropdown-menu.tsx",
+    "line": 32,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Separator>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DropdownMenuSubTrigger",
+    "file": "src/components/ui/dropdown-menu.tsx",
+    "line": 36,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, children, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.SubTrigger>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DropdownMenuSubContent",
+    "file": "src/components/ui/dropdown-menu.tsx",
+    "line": 40,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.SubContent>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DropdownMenuCheckboxItem",
+    "file": "src/components/ui/dropdown-menu.tsx",
+    "line": 44,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, children, checked, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "DropdownMenuRadioItem",
+    "file": "src/components/ui/dropdown-menu.tsx",
+    "line": 48,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, children, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.RadioItem>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "InputGroup",
+    "file": "src/components/ui/input-group.tsx",
+    "line": 11,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<\"div\">",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "InputGroupAddon",
+    "file": "src/components/ui/input-group.tsx",
+    "line": 46,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, align = \"inline-start\", ...props }: React.ComponentProps<\"div\"> & VariantProps<typeof inputGroupAddonVariants>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "InputGroupButton",
+    "file": "src/components/ui/input-group.tsx",
+    "line": 86,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, type = \"button\", variant = \"ghost\", size = \"xs\", ...props }: Omit<React.ComponentProps<typeof Button>, \"size\"> & VariantProps<typeof inputGroupButtonVariants>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "InputGroupText",
+    "file": "src/components/ui/input-group.tsx",
+    "line": 105,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<\"span\">",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "InputGroupInput",
+    "file": "src/components/ui/input-group.tsx",
+    "line": 117,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<\"input\">",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "InputGroupTextarea",
+    "file": "src/components/ui/input-group.tsx",
+    "line": 133,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<\"textarea\">",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "Input",
+    "file": "src/components/ui/input.tsx",
+    "line": 7,
+    "kind": "função",
+    "exported": true,
+    "params": "{ className, type = 'text', ...props }: InputProps",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "Label",
+    "file": "src/components/ui/label.tsx",
+    "line": 7,
+    "kind": "função",
+    "exported": true,
+    "params": "{ className, ...props }: LabelProps",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "Menubar",
+    "file": "src/components/ui/menubar.tsx",
+    "line": 8,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof MenubarPrimitive.Root>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "MenubarMenu",
+    "file": "src/components/ui/menubar.tsx",
+    "line": 24,
+    "kind": "função",
+    "exported": false,
+    "params": "{ ...props }: React.ComponentProps<typeof MenubarPrimitive.Menu>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "MenubarGroup",
+    "file": "src/components/ui/menubar.tsx",
+    "line": 30,
+    "kind": "função",
+    "exported": false,
+    "params": "{ ...props }: React.ComponentProps<typeof MenubarPrimitive.Group>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "MenubarPortal",
+    "file": "src/components/ui/menubar.tsx",
+    "line": 36,
+    "kind": "função",
+    "exported": false,
+    "params": "{ ...props }: React.ComponentProps<typeof MenubarPrimitive.Portal>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "MenubarRadioGroup",
+    "file": "src/components/ui/menubar.tsx",
+    "line": 42,
+    "kind": "função",
+    "exported": false,
+    "params": "{ ...props }: React.ComponentProps<typeof MenubarPrimitive.RadioGroup>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "MenubarTrigger",
+    "file": "src/components/ui/menubar.tsx",
+    "line": 50,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof MenubarPrimitive.Trigger>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "MenubarContent",
+    "file": "src/components/ui/menubar.tsx",
+    "line": 66,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, align = \"start\", alignOffset = -4, sideOffset = 8, ...props }: React.ComponentProps<typeof MenubarPrimitive.Content>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "MenubarItem",
+    "file": "src/components/ui/menubar.tsx",
+    "line": 87,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, inset, variant = \"default\", ...props }: React.ComponentProps<typeof MenubarPrimitive.Item> & { inset?: boolean variant?: \"default\" | \"destructive\" }",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "MenubarCheckboxItem",
+    "file": "src/components/ui/menubar.tsx",
+    "line": 110,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, children, checked, inset, ...props }: React.ComponentProps<typeof MenubarPrimitive.CheckboxItem> & { inset?: boolean }",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "MenubarRadioItem",
+    "file": "src/components/ui/menubar.tsx",
+    "line": 141,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, children, inset, ...props }: React.ComponentProps<typeof MenubarPrimitive.RadioItem> & { inset?: boolean }",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "MenubarLabel",
+    "file": "src/components/ui/menubar.tsx",
+    "line": 170,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, inset, ...props }: React.ComponentProps<typeof MenubarPrimitive.Label> & { inset?: boolean }",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "MenubarSeparator",
+    "file": "src/components/ui/menubar.tsx",
+    "line": 190,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof MenubarPrimitive.Separator>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "MenubarShortcut",
+    "file": "src/components/ui/menubar.tsx",
+    "line": 203,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<\"span\">",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "MenubarSub",
+    "file": "src/components/ui/menubar.tsx",
+    "line": 219,
+    "kind": "função",
+    "exported": false,
+    "params": "{ ...props }: React.ComponentProps<typeof MenubarPrimitive.Sub>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "MenubarSubTrigger",
+    "file": "src/components/ui/menubar.tsx",
+    "line": 225,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, inset, children, ...props }: React.ComponentProps<typeof MenubarPrimitive.SubTrigger> & { inset?: boolean }",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "MenubarSubContent",
+    "file": "src/components/ui/menubar.tsx",
+    "line": 249,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof MenubarPrimitive.SubContent>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "PendingSubmitButton",
+    "file": "src/components/ui/pending-submit-button.tsx",
+    "line": 8,
+    "kind": "função",
+    "exported": true,
+    "params": "{ children, pendingLabel = 'Processando…', className, disabled, ...props }: React.ComponentProps<'button'> & { pendingLabel?: string }",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "SelectTrigger",
+    "file": "src/components/ui/select.tsx",
+    "line": 13,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, children, ...props }: React.ComponentProps<typeof SelectPrimitive.Trigger>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "SelectContent",
+    "file": "src/components/ui/select.tsx",
+    "line": 21,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, children, position = 'popper', ...props }: React.ComponentProps<typeof SelectPrimitive.Content>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "SelectLabel",
+    "file": "src/components/ui/select.tsx",
+    "line": 33,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof SelectPrimitive.Label>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "SelectItem",
+    "file": "src/components/ui/select.tsx",
+    "line": 37,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, children, ...props }: React.ComponentProps<typeof SelectPrimitive.Item>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "SelectSeparator",
+    "file": "src/components/ui/select.tsx",
+    "line": 46,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<typeof SelectPrimitive.Separator>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "Skeleton",
+    "file": "src/components/ui/skeleton.tsx",
+    "line": 3,
+    "kind": "função",
+    "exported": true,
+    "params": "{ className, ...props }: React.ComponentProps<'div'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "PageSkeleton",
+    "file": "src/components/ui/skeleton.tsx",
+    "line": 7,
+    "kind": "função",
+    "exported": true,
+    "params": "{ variant = 'workspace' }: { variant?: 'workspace' | 'writing' | 'admin' | 'legal' | 'root' }",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "StepFlow",
+    "file": "src/components/ui/step-flow.tsx",
+    "line": 27,
+    "kind": "função",
+    "exported": true,
+    "params": "{ currentStep, totalSteps, title, description, direction = 'forward', children, className, }: StepFlowProps",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "BookInsideCover",
+    "file": "src/components/ui/step-flow.tsx",
+    "line": 56,
+    "kind": "função",
+    "exported": false,
+    "params": "{ currentStep, totalSteps }: { currentStep: number; totalSteps: number }",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "TurningSheet",
+    "file": "src/components/ui/step-flow.tsx",
+    "line": 139,
+    "kind": "função",
+    "exported": false,
+    "params": "{ content, direction, ariaHidden, onAnimationEnd, }: { content: StepContent; direction: Direction; ariaHidden: boolean; onAnimationEnd: (",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "StepPage",
+    "file": "src/components/ui/step-flow.tsx",
+    "line": 165,
+    "kind": "função",
+    "exported": false,
+    "params": "{ content, ariaHidden = false }: { content: StepContent; ariaHidden?: boolean }",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "Table",
+    "file": "src/components/ui/table.tsx",
+    "line": 6,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<'table'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "TableHeader",
+    "file": "src/components/ui/table.tsx",
+    "line": 7,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<'thead'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "TableBody",
+    "file": "src/components/ui/table.tsx",
+    "line": 8,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<'tbody'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "TableFooter",
+    "file": "src/components/ui/table.tsx",
+    "line": 9,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<'tfoot'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "TableRow",
+    "file": "src/components/ui/table.tsx",
+    "line": 10,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<'tr'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "TableHead",
+    "file": "src/components/ui/table.tsx",
+    "line": 11,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<'th'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "TableCell",
+    "file": "src/components/ui/table.tsx",
+    "line": 12,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<'td'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "TableCaption",
+    "file": "src/components/ui/table.tsx",
+    "line": 13,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<'caption'>",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "Textarea",
+    "file": "src/components/ui/textarea.tsx",
+    "line": 4,
+    "kind": "função",
+    "exported": false,
+    "params": "{ className, ...props }: React.ComponentProps<\"textarea\">",
+    "area": "Interface compartilhada"
+  },
+  {
+    "name": "generateStaticParams",
+    "file": "src/app/legal/[slug]/page.tsx",
+    "line": 17,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Legal"
+  },
+  {
+    "name": "generateMetadata",
+    "file": "src/app/legal/[slug]/page.tsx",
+    "line": 21,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ params }: { params: Promise<{ slug: string }> }",
+    "area": "Legal"
+  },
+  {
+    "name": "LegalDocumentPage",
+    "file": "src/app/legal/[slug]/page.tsx",
+    "line": 31,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ params }: { params: Promise<{ slug: string }> }",
+    "area": "Legal"
+  },
+  {
+    "name": "LegalLayout",
+    "file": "src/app/legal/layout.tsx",
+    "line": 4,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ children }: { children: React.ReactNode }",
+    "area": "Legal"
+  },
+  {
+    "name": "LegalLoading",
+    "file": "src/app/legal/loading.tsx",
+    "line": 3,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Legal"
+  },
+  {
+    "name": "LegalIndexPage",
+    "file": "src/app/legal/page.tsx",
+    "line": 11,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Legal"
+  },
+  {
+    "name": "AuthorCard",
+    "file": "src/components/legal/AuthorCard.tsx",
+    "line": 1,
+    "kind": "função",
+    "exported": true,
+    "params": "{ department, updatedAtLabel, }: { department: string; updatedAtLabel: string; }",
+    "area": "Legal"
+  },
+  {
+    "name": "DownloadPdfButton",
+    "file": "src/components/legal/DownloadPdfButton.tsx",
+    "line": 1,
+    "kind": "função",
+    "exported": true,
+    "params": "{ href, title }: { href: string; title: string }",
+    "area": "Legal"
+  },
+  {
+    "name": "LegalContactSection",
+    "file": "src/components/legal/LegalContactSection.tsx",
+    "line": 1,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Legal"
+  },
+  {
+    "name": "LegalSidebar",
+    "file": "src/components/legal/LegalSidebar.tsx",
+    "line": 6,
+    "kind": "função",
+    "exported": true,
+    "params": "{ documents }: { documents: Array<{ slug: string; title: string }> }",
+    "area": "Legal"
+  },
+  {
+    "name": "RelatedFeatures",
+    "file": "src/components/legal/RelatedFeatures.tsx",
+    "line": 1,
+    "kind": "função",
+    "exported": true,
+    "params": "{ features }: { features: string[] }",
+    "area": "Legal"
+  },
+  {
+    "name": "TableOfContents",
+    "file": "src/components/legal/TableOfContents.tsx",
+    "line": 3,
+    "kind": "função",
+    "exported": true,
+    "params": "{ sections }: { sections: LegalSection[] }",
+    "area": "Legal"
+  },
+  {
+    "name": "getLegalDocument",
+    "file": "src/lib/legal/documents.ts",
+    "line": 512,
+    "kind": "função",
+    "exported": true,
+    "params": "slug: string",
+    "area": "Legal"
+  },
+  {
+    "name": "formatUpdatedAt",
+    "file": "src/lib/legal/documents.ts",
+    "line": 516,
+    "kind": "função",
+    "exported": true,
+    "params": "iso: string",
+    "area": "Legal"
+  },
+  {
+    "name": "slugifyHeading",
+    "file": "src/lib/legal/documents.ts",
+    "line": 521,
+    "kind": "função",
+    "exported": true,
+    "params": "heading: string",
+    "area": "Legal"
+  },
+  {
+    "name": "validSections",
+    "file": "src/lib/legal/server.ts",
+    "line": 6,
+    "kind": "função",
+    "exported": false,
+    "params": "value: unknown",
+    "area": "Legal"
+  },
+  {
+    "name": "mapDocument",
+    "file": "src/lib/legal/server.ts",
+    "line": 14,
+    "kind": "função",
+    "exported": false,
+    "params": "row: { slug: string; title: string; short_description: string; department: string; effective_at: string; sections: unknown; related_features: string[]; pdf_href: string }",
+    "area": "Legal"
+  },
+  {
+    "name": "loadLegalDocuments",
+    "file": "src/lib/legal/server.ts",
+    "line": 19,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Legal"
+  },
+  {
+    "name": "loadLegalDocument",
+    "file": "src/lib/legal/server.ts",
+    "line": 27,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "slug: string",
+    "area": "Legal"
+  },
+  {
+    "name": "PublicCatalogPage",
+    "file": "src/features/omnipublish/public-pages.tsx",
+    "line": 10,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ channel }: { channel: CommunicationChannel }",
+    "area": "OmniPublish e publicação"
+  },
+  {
+    "name": "PublicPublicationPage",
+    "file": "src/features/omnipublish/public-pages.tsx",
+    "line": 16,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ channel, slug }: { channel: CommunicationChannel; slug: string }",
+    "area": "OmniPublish e publicação"
+  },
+  {
+    "name": "formatDate",
+    "file": "src/features/omnipublish/public-pages.tsx",
+    "line": 30,
+    "kind": "função",
+    "exported": false,
+    "params": "value: string | null",
+    "area": "OmniPublish e publicação"
+  },
+  {
+    "name": "detailSections",
+    "file": "src/features/omnipublish/public-pages.tsx",
+    "line": 35,
+    "kind": "função",
+    "exported": false,
+    "params": "fields: Record<string, string | boolean>",
+    "area": "OmniPublish e publicação"
+  },
+  {
+    "name": "loadPublicCatalog",
+    "file": "src/features/omnipublish/publications.ts",
+    "line": 6,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "channel: CommunicationChannel",
+    "area": "OmniPublish e publicação"
+  },
+  {
+    "name": "loadPublicPublication",
+    "file": "src/features/omnipublish/publications.ts",
+    "line": 15,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "channel: CommunicationChannel, slugOrId: string",
+    "area": "OmniPublish e publicação"
+  },
+  {
+    "name": "writeFile",
+    "file": "scaffold-legal-pages.js",
+    "line": 27,
+    "kind": "função",
+    "exported": false,
+    "params": "relPath, content",
+    "area": "Outros"
+  },
+  {
+    "name": "getLegalDocument",
+    "file": "scaffold-legal-pages.js",
+    "line": 223,
+    "kind": "função",
+    "exported": true,
+    "params": "slug: string",
+    "area": "Outros"
+  },
+  {
+    "name": "formatUpdatedAt",
+    "file": "scaffold-legal-pages.js",
+    "line": 227,
+    "kind": "função",
+    "exported": true,
+    "params": "iso: string",
+    "area": "Outros"
+  },
+  {
+    "name": "slugifyHeading",
+    "file": "scaffold-legal-pages.js",
+    "line": 232,
+    "kind": "função",
+    "exported": true,
+    "params": "heading: string",
+    "area": "Outros"
+  },
+  {
+    "name": "LegalSidebar",
+    "file": "scaffold-legal-pages.js",
+    "line": 254,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "TableOfContents",
+    "file": "scaffold-legal-pages.js",
+    "line": 296,
+    "kind": "função",
+    "exported": true,
+    "params": "{ sections }: { sections: LegalSection[] }",
+    "area": "Outros"
+  },
+  {
+    "name": "AuthorCard",
+    "file": "scaffold-legal-pages.js",
+    "line": 324,
+    "kind": "função",
+    "exported": true,
+    "params": "{ department, updatedAtLabel, }: { department: string; updatedAtLabel: string; }",
+    "area": "Outros"
+  },
+  {
+    "name": "RelatedFeatures",
+    "file": "scaffold-legal-pages.js",
+    "line": 353,
+    "kind": "função",
+    "exported": true,
+    "params": "{ features }: { features: string[] }",
+    "area": "Outros"
+  },
+  {
+    "name": "DownloadPdfButton",
+    "file": "scaffold-legal-pages.js",
+    "line": 378,
+    "kind": "função",
+    "exported": true,
+    "params": "{ href, title }: { href: string; title: string }",
+    "area": "Outros"
+  },
+  {
+    "name": "LegalContactSection",
+    "file": "scaffold-legal-pages.js",
+    "line": 395,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "LegalLayout",
+    "file": "scaffold-legal-pages.js",
+    "line": 424,
+    "kind": "função",
+    "exported": true,
+    "params": "{ children }: { children: React.ReactNode }",
+    "area": "Outros"
+  },
+  {
+    "name": "LegalIndexPage",
+    "file": "scaffold-legal-pages.js",
+    "line": 455,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "generateStaticParams",
+    "file": "scaffold-legal-pages.js",
+    "line": 496,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "generateMetadata",
+    "file": "scaffold-legal-pages.js",
+    "line": 500,
+    "kind": "função",
+    "exported": true,
+    "params": "{ params }: { params: { slug: string } }",
+    "area": "Outros"
+  },
+  {
+    "name": "LegalDocumentPage",
+    "file": "scaffold-legal-pages.js",
+    "line": 509,
+    "kind": "função",
+    "exported": true,
+    "params": "{ params }: { params: { slug: string } }",
+    "area": "Outros"
+  },
+  {
+    "name": "OnboardingPage",
+    "file": "src/app/(onboarding)/onboarding/page.tsx",
+    "line": 10,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "QuickAction",
+    "file": "src/app/(workspace)/dashboard/page.tsx",
+    "line": 35,
+    "kind": "função",
+    "exported": false,
+    "params": "{ label, description, icon: Icon }: (typeof quickActions",
+    "area": "Outros"
+  },
+  {
+    "name": "DashboardPage",
+    "file": "src/app/(workspace)/dashboard/page.tsx",
+    "line": 54,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ searchParams }: { searchParams: Promise<{ status?: string }> }",
+    "area": "Outros"
+  },
+  {
+    "name": "WorkspaceLayout",
+    "file": "src/app/(workspace)/layout.tsx",
+    "line": 8,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ children }: { children: React.ReactNode }",
+    "area": "Outros"
+  },
+  {
+    "name": "WorkspaceLoading",
+    "file": "src/app/(workspace)/loading.tsx",
+    "line": 3,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "LegacySoundPage",
+    "file": "src/app/(workspace)/sound/page.tsx",
+    "line": 3,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "KnowledgeArticlePage",
+    "file": "src/app/ajuda/[slug]/page.tsx",
+    "line": 2,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ params }: { params: Promise<{ slug: string }> }",
+    "area": "Outros"
+  },
+  {
+    "name": "KnowledgePage",
+    "file": "src/app/ajuda/page.tsx",
+    "line": 3,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "GET",
+    "file": "src/app/auth/callback/route.ts",
+    "line": 7,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "request: Request",
+    "area": "Outros"
+  },
+  {
+    "name": "BlogArticlePage",
+    "file": "src/app/blog/[slug]/page.tsx",
+    "line": 2,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ params }: { params: Promise<{ slug: string }> }",
+    "area": "Outros"
+  },
+  {
+    "name": "BlogPage",
+    "file": "src/app/blog/page.tsx",
+    "line": 3,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "AnnouncementPage",
+    "file": "src/app/comunicados/[slug]/page.tsx",
+    "line": 2,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ params }: { params: Promise<{ slug: string }> }",
+    "area": "Outros"
+  },
+  {
+    "name": "AnnouncementsPage",
+    "file": "src/app/comunicados/page.tsx",
+    "line": 3,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "RootLayout",
+    "file": "src/app/layout.tsx",
+    "line": 24,
+    "kind": "função",
+    "exported": true,
+    "params": "{ children }: Readonly<{ children: React.ReactNode }>",
+    "area": "Outros"
+  },
+  {
+    "name": "RootLoading",
+    "file": "src/app/loading.tsx",
+    "line": 3,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "NewsletterPage",
+    "file": "src/app/newsletters/[slug]/page.tsx",
+    "line": 2,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ params }: { params: Promise<{ slug: string }> }",
+    "area": "Outros"
+  },
+  {
+    "name": "NewslettersPage",
+    "file": "src/app/newsletters/page.tsx",
+    "line": 3,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "Home",
+    "file": "src/app/page.tsx",
+    "line": 9,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "PublicationsHubPage",
+    "file": "src/app/publicacoes/page.tsx",
+    "line": 8,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "IncidentPage",
+    "file": "src/app/status/[slug]/page.tsx",
+    "line": 2,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ params }: { params: Promise<{ slug: string }> }",
+    "area": "Outros"
+  },
+  {
+    "name": "StatusPage",
+    "file": "src/app/status/page.tsx",
+    "line": 3,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "UpdatePage",
+    "file": "src/app/updates/[id]/page.tsx",
+    "line": 3,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ params }: { params: Promise<{ id: string }> }",
+    "area": "Outros"
+  },
+  {
+    "name": "UpdatesPage",
+    "file": "src/app/updates/page.tsx",
+    "line": 4,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "NavigationProgress",
+    "file": "src/components/navigation-progress.tsx",
+    "line": 6,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "begin",
+    "file": "src/components/navigation-progress.tsx",
+    "line": 22,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "finish",
+    "file": "src/components/navigation-progress.tsx",
+    "line": 28,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "onClick",
+    "file": "src/components/navigation-progress.tsx",
+    "line": 32,
+    "kind": "função",
+    "exported": false,
+    "params": "event: MouseEvent",
+    "area": "Outros"
+  },
+  {
+    "name": "getSupabaseEnv",
+    "file": "src/config/env.ts",
+    "line": 14,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "getSiteUrl",
+    "file": "src/config/env.ts",
+    "line": 42,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "completeProfile",
+    "file": "src/features/onboarding/actions/complete-profile.ts",
+    "line": 11,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "_previousState: OnboardingState, formData: FormData,",
+    "area": "Outros"
+  },
+  {
+    "name": "SubmitButton",
+    "file": "src/features/onboarding/components/profile-form.tsx",
+    "line": 19,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "ProfileForm",
+    "file": "src/features/onboarding/components/profile-form.tsx",
+    "line": 28,
+    "kind": "função",
+    "exported": true,
+    "params": "{ defaultPenName = '', defaultWritingFocus = '', defaultExperienceLevel = '' }: ProfileFormProps",
+    "area": "Outros"
+  },
+  {
+    "name": "nextStep",
+    "file": "src/features/onboarding/components/profile-form.tsx",
+    "line": 37,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "previousStep",
+    "file": "src/features/onboarding/components/profile-form.tsx",
+    "line": 51,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "OperationalTagBadge",
+    "file": "src/features/workspace/components/operational-tag.tsx",
+    "line": 6,
+    "kind": "função",
+    "exported": true,
+    "params": "{ tag, compact = false }: { tag: OperationalTag; compact?: boolean }",
+    "area": "Outros"
+  },
+  {
+    "name": "initials",
+    "file": "src/features/workspace/components/workspace-header.tsx",
+    "line": 39,
+    "kind": "função",
+    "exported": false,
+    "params": "name: string",
+    "area": "Outros"
+  },
+  {
+    "name": "ResponsiveBreadcrumb",
+    "file": "src/features/workspace/components/workspace-header.tsx",
+    "line": 43,
+    "kind": "função",
+    "exported": false,
+    "params": "",
+    "area": "Outros"
+  },
+  {
+    "name": "WorkspaceAvatarGroup",
+    "file": "src/features/workspace/components/workspace-header.tsx",
+    "line": 71,
+    "kind": "função",
+    "exported": true,
+    "params": "{ names }: { names: string[] }",
+    "area": "Outros"
+  },
+  {
+    "name": "WorkspaceHeader",
+    "file": "src/features/workspace/components/workspace-header.tsx",
+    "line": 82,
+    "kind": "função",
+    "exported": true,
+    "params": "{ displayName, email, penName, avatarUrl, showWorkspaceMenu = true }: WorkspaceHeaderProps",
+    "area": "Outros"
+  },
+  {
+    "name": "WorkspaceShell",
+    "file": "src/features/workspace/components/workspace-shell.tsx",
+    "line": 24,
+    "kind": "função",
+    "exported": true,
+    "params": "{ children, profile, soundEnabled = false, soundTracks = [] }: WorkspaceShellProps",
+    "area": "Outros"
+  },
+  {
+    "name": "ContextSelector",
+    "file": "src/features/workspace/components/workspace-sidebar.tsx",
+    "line": 16,
+    "kind": "função",
+    "exported": false,
+    "params": "{ collapsed = false }: { collapsed?: boolean }",
+    "area": "Outros"
+  },
+  {
+    "name": "WorkItem",
+    "file": "src/features/workspace/components/workspace-sidebar.tsx",
+    "line": 35,
+    "kind": "função",
+    "exported": false,
+    "params": "{ item, collapsed = false }: { item: (typeof workNavigation",
+    "area": "Outros"
+  },
+  {
+    "name": "withCurrentWork",
+    "file": "src/features/workspace/components/workspace-sidebar.tsx",
+    "line": 41,
+    "kind": "arrow",
+    "exported": false,
+    "params": "href: string",
+    "area": "Outros"
+  },
+  {
+    "name": "SidebarContent",
+    "file": "src/features/workspace/components/workspace-sidebar.tsx",
+    "line": 96,
+    "kind": "função",
+    "exported": false,
+    "params": "{ mobile = false, collapsed = false, onCollapsedChange }: { mobile?: boolean; collapsed?: boolean; onCollapsedChange?: (collapsed: boolean",
+    "area": "Outros"
+  },
+  {
+    "name": "WorkspaceSidebar",
+    "file": "src/features/workspace/components/workspace-sidebar.tsx",
+    "line": 132,
+    "kind": "função",
+    "exported": true,
+    "params": "{ mobile = false, collapsed = false, onCollapsedChange }: { mobile?: boolean; collapsed?: boolean; onCollapsedChange?: (collapsed: boolean",
+    "area": "Outros"
+  },
+  {
+    "name": "cn",
+    "file": "src/lib/cn.ts",
+    "line": 4,
+    "kind": "função",
+    "exported": true,
+    "params": "...inputs: ClassValue[]",
+    "area": "Outros"
+  },
+  {
+    "name": "clock",
+    "file": "src/features/sound/components/audio-review-drawer.tsx",
+    "line": 16,
+    "kind": "função",
+    "exported": false,
+    "params": "ms: number",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "AudioReviewDrawer",
+    "file": "src/features/sound/components/audio-review-drawer.tsx",
+    "line": 18,
+    "kind": "função",
+    "exported": true,
+    "params": "{ track, onClose }: { track: SoundTrack | null; onClose: (",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "toggle",
+    "file": "src/features/sound/components/audio-review-drawer.tsx",
+    "line": 33,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "addMarker",
+    "file": "src/features/sound/components/audio-review-drawer.tsx",
+    "line": 38,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "SoundBinderFooter",
+    "file": "src/features/sound/components/sound-binder-footer.tsx",
+    "line": 6,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "openSound",
+    "file": "src/features/sound/components/sound-binder-footer.tsx",
+    "line": 9,
+    "kind": "arrow",
+    "exported": false,
+    "params": "",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "time",
+    "file": "src/features/sound/components/sound-dock.tsx",
+    "line": 8,
+    "kind": "função",
+    "exported": false,
+    "params": "value: number",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "SoundDock",
+    "file": "src/features/sound/components/sound-dock.tsx",
+    "line": 14,
+    "kind": "função",
+    "exported": true,
+    "params": "{ enabled }: { enabled: boolean }",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "channelIcon",
+    "file": "src/features/sound/components/sound-mega-menu.tsx",
+    "line": 21,
+    "kind": "função",
+    "exported": false,
+    "params": "id: MixerChannelId",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "formatDuration",
+    "file": "src/features/sound/components/sound-mega-menu.tsx",
+    "line": 22,
+    "kind": "função",
+    "exported": false,
+    "params": "seconds: number",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "SoundMegaMenu",
+    "file": "src/features/sound/components/sound-mega-menu.tsx",
+    "line": 24,
+    "kind": "função",
+    "exported": true,
+    "params": "{ open, onClose, tracks }: { open: boolean; onClose: (",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "close",
+    "file": "src/features/sound/components/sound-mega-menu.tsx",
+    "line": 35,
+    "kind": "arrow",
+    "exported": false,
+    "params": "event: KeyboardEvent",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "applyPreset",
+    "file": "src/features/sound/components/sound-mega-menu.tsx",
+    "line": 38,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "preset: SoundPreset",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "handleTrack",
+    "file": "src/features/sound/components/sound-mega-menu.tsx",
+    "line": 39,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "track: SoundTrack",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "SoundPlaylistsPanel",
+    "file": "src/features/sound/components/sound-playlists-panel.tsx",
+    "line": 19,
+    "kind": "função",
+    "exported": true,
+    "params": "{ tracks }: { tracks: SoundTrack[] }",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "createPlaylist",
+    "file": "src/features/sound/components/sound-playlists-panel.tsx",
+    "line": 44,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "addPreset",
+    "file": "src/features/sound/components/sound-playlists-panel.tsx",
+    "line": 51,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "preset: SoundPreset",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "addTrack",
+    "file": "src/features/sound/components/sound-playlists-panel.tsx",
+    "line": 59,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "track: SoundTrack",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "removeItem",
+    "file": "src/features/sound/components/sound-playlists-panel.tsx",
+    "line": 66,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "id: string",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "deletePlaylist",
+    "file": "src/features/sound/components/sound-playlists-panel.tsx",
+    "line": 67,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "id: string",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "playPreset",
+    "file": "src/features/sound/components/sound-playlists-panel.tsx",
+    "line": 68,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "preset: SoundPreset",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "clock",
+    "file": "src/features/sound/components/sound-pomodoro-panel.tsx",
+    "line": 7,
+    "kind": "função",
+    "exported": false,
+    "params": "seconds: number",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "SoundPomodoroPanel",
+    "file": "src/features/sound/components/sound-pomodoro-panel.tsx",
+    "line": 9,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "SoundSettingsPanel",
+    "file": "src/features/sound/components/sound-settings-panel.tsx",
+    "line": 12,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "saveSettings",
+    "file": "src/features/sound/components/sound-settings-panel.tsx",
+    "line": 44,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "saveMix",
+    "file": "src/features/sound/components/sound-settings-panel.tsx",
+    "line": 51,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "applyMix",
+    "file": "src/features/sound/components/sound-settings-panel.tsx",
+    "line": 57,
+    "kind": "função",
+    "exported": false,
+    "params": "mix: MixRow",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "deleteMix",
+    "file": "src/features/sound/components/sound-settings-panel.tsx",
+    "line": 68,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "id: string",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "loadSoundLibrary",
+    "file": "src/features/sound/server.ts",
+    "line": 8,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "supabase: SupabaseClient<Database>",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "SoundProvider",
+    "file": "src/features/sound/sound-provider.tsx",
+    "line": 63,
+    "kind": "função",
+    "exported": true,
+    "params": "{ children }: { children: React.ReactNode }",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "registerTyping",
+    "file": "src/features/sound/sound-provider.tsx",
+    "line": 193,
+    "kind": "arrow",
+    "exported": false,
+    "params": "event: KeyboardEvent",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "click",
+    "file": "src/features/sound/sound-provider.tsx",
+    "line": 248,
+    "kind": "assíncrona arrow",
+    "exported": false,
+    "params": "event: KeyboardEvent",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "useSound",
+    "file": "src/features/sound/sound-provider.tsx",
+    "line": 303,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Som e mídia"
+  },
+  {
+    "name": "OverviewViewPage",
+    "file": "src/app/(workspace)/overview/[view]/page.tsx",
+    "line": 9,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "{ params, searchParams }: { params: Promise<{ view: string }>; searchParams: Promise<{ work?: string }> }",
+    "area": "Visão geral"
+  },
+  {
+    "name": "OverviewIndexPage",
+    "file": "src/app/(workspace)/overview/page.tsx",
+    "line": 3,
+    "kind": "função",
+    "exported": true,
+    "params": "",
+    "area": "Visão geral"
+  },
+  {
+    "name": "text",
+    "file": "src/features/overview/actions.ts",
+    "line": 10,
+    "kind": "função",
+    "exported": false,
+    "params": "formData: FormData, key: string, max = 120",
+    "area": "Visão geral"
+  },
+  {
+    "name": "returnTo",
+    "file": "src/features/overview/actions.ts",
+    "line": 11,
+    "kind": "função",
+    "exported": false,
+    "params": "workId: string",
+    "area": "Visão geral"
+  },
+  {
+    "name": "auth",
+    "file": "src/features/overview/actions.ts",
+    "line": 13,
+    "kind": "assíncrona função",
+    "exported": false,
+    "params": "",
+    "area": "Visão geral"
+  },
+  {
+    "name": "createWritingGoal",
+    "file": "src/features/overview/actions.ts",
+    "line": 21,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Visão geral"
+  },
+  {
+    "name": "toggleWritingGoal",
+    "file": "src/features/overview/actions.ts",
+    "line": 35,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Visão geral"
+  },
+  {
+    "name": "deleteWritingGoal",
+    "file": "src/features/overview/actions.ts",
+    "line": 45,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "formData: FormData",
+    "area": "Visão geral"
+  },
+  {
+    "name": "NewGoalDialog",
+    "file": "src/features/overview/components/new-goal-dialog.tsx",
+    "line": 9,
+    "kind": "função",
+    "exported": true,
+    "params": "{ workId }: { workId: string }",
+    "area": "Visão geral"
+  },
+  {
+    "name": "number",
+    "file": "src/features/overview/components/overview-page.tsx",
+    "line": 18,
+    "kind": "função",
+    "exported": false,
+    "params": "value: number",
+    "area": "Visão geral"
+  },
+  {
+    "name": "date",
+    "file": "src/features/overview/components/overview-page.tsx",
+    "line": 19,
+    "kind": "função",
+    "exported": false,
+    "params": "value: string",
+    "area": "Visão geral"
+  },
+  {
+    "name": "relativeDate",
+    "file": "src/features/overview/components/overview-page.tsx",
+    "line": 20,
+    "kind": "função",
+    "exported": false,
+    "params": "value: string",
+    "area": "Visão geral"
+  },
+  {
+    "name": "WorkSelector",
+    "file": "src/features/overview/components/overview-page.tsx",
+    "line": 28,
+    "kind": "função",
+    "exported": false,
+    "params": "{ works, selectedWork, view }: { works: OverviewWork[]; selectedWork: OverviewWork; view: OverviewView }",
+    "area": "Visão geral"
+  },
+  {
+    "name": "Metric",
+    "file": "src/features/overview/components/overview-page.tsx",
+    "line": 32,
+    "kind": "função",
+    "exported": false,
+    "params": "{ icon: Icon, value, label }: { icon: typeof BookOpen; value: string; label: string }",
+    "area": "Visão geral"
+  },
+  {
+    "name": "RecentDocuments",
+    "file": "src/features/overview/components/overview-page.tsx",
+    "line": 36,
+    "kind": "função",
+    "exported": false,
+    "params": "{ documents, workId }: { documents: OverviewDocument[]; workId: string }",
+    "area": "Visão geral"
+  },
+  {
+    "name": "GoalCard",
+    "file": "src/features/overview/components/overview-page.tsx",
+    "line": 40,
+    "kind": "função",
+    "exported": false,
+    "params": "{ goal, workId }: { goal: OverviewGoal; workId: string }",
+    "area": "Visão geral"
+  },
+  {
+    "name": "OverviewPage",
+    "file": "src/features/overview/components/overview-page.tsx",
+    "line": 50,
+    "kind": "função",
+    "exported": true,
+    "params": "{ view, works, selectedWork, documents, goals, metrics }: { view: OverviewView; works: OverviewWork[]; selectedWork: OverviewWork | null; documents: OverviewDocument[]; goals: OverviewGoal[]; metrics: { words: number; ch",
+    "area": "Visão geral"
+  },
+  {
+    "name": "renderOverview",
+    "file": "src/features/overview/render-overview.tsx",
+    "line": 8,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "view: OverviewView, workId?: string",
+    "area": "Visão geral"
+  },
+  {
+    "name": "countWords",
+    "file": "src/features/overview/server.ts",
+    "line": 8,
+    "kind": "função",
+    "exported": false,
+    "params": "html: string",
+    "area": "Visão geral"
+  },
+  {
+    "name": "loadOverview",
+    "file": "src/features/overview/server.ts",
+    "line": 13,
+    "kind": "assíncrona função",
+    "exported": true,
+    "params": "supabase: SupabaseClient<Database>, userId: string, requestedWorkId?: string",
+    "area": "Visão geral"
+  },
+  {
+    "name": "isOverviewView",
+    "file": "src/features/overview/types.ts",
+    "line": 38,
+    "kind": "função",
+    "exported": true,
+    "params": "value: string",
+    "area": "Visão geral"
+  }
+]

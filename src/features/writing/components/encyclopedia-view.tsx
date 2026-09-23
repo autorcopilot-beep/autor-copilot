@@ -1,9 +1,9 @@
 'use client';
 
 import {
-  ArrowDownAZ, BookOpenText, Building2, CalendarRange, Check, Compass, Gem,
-  Lightbulb, List, LayoutGrid, Layers3, Menu, Plus, Search, ShieldCheck, Sparkles, Star, X,
-  Trash2, UserRound,
+  ArrowDownAZ, ArrowLeft, ArrowRight, BookOpenText, Building2, CalendarRange, Check, Compass, Gem,
+  Lightbulb, List, LayoutGrid, Menu, Plus, RotateCcw, Search, ShieldCheck, Sparkles, Star, X,
+  Trash2, UserRound, WandSparkles,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
@@ -17,10 +17,11 @@ import {
   type WorldbuildingProfile,
 } from '@/features/writing/types';
 import {
-  genreModules, loreArchitecture, methodologyOptions, miceOptions, povDistances,
+  foundationAssetLabels, foundationPresets, genreModules, loreArchitecture, methodologyOptions, miceOptions, povDistances,
   templateById, templatesForType, type WorldbuildingQuestion, type WorldbuildingSection,
 } from '@/features/writing/worldbuilding-schema';
 import { cn } from '@/lib/cn';
+import { UniverseArchitecture } from '@/features/writing/components/universe-architecture';
 
 const entryTypes: EncyclopediaEntryType[] = ['character', 'location', 'organization', 'object', 'concept', 'event'];
 const typeIcons = {
@@ -135,10 +136,75 @@ function SchemaSections({ namespace, sections, answers, onChange }: {
   </details>)}</div>;
 }
 
+type FoundationJourneyStep =
+  | { id: string; kind: 'depth' | 'preset' | 'methodology' | 'mice' | 'genres' | 'pov' | 'distance' | 'incluing'; title: string; description: string; example: string }
+  | { id: string; kind: 'question'; title: string; description: string; example: string; namespace: 'genre' | 'lore'; section: WorldbuildingSection; question: WorldbuildingQuestion };
+
+function foundationSteps(profile: WorldbuildingProfile): FoundationJourneyStep[] {
+  const core: FoundationJourneyStep[] = [
+    { id: 'depth', kind: 'depth', title: 'Quanto você quer personalizar agora?', description: 'Escolha o tempo e o nível de detalhe. Você pode aprofundar depois sem perder respostas.', example: 'Leve prepara o essencial; Média cria uma bússola editorial; Profunda documenta sistemas, gêneros e cânone.' },
+    { id: 'preset', kind: 'preset', title: 'Qual ponto de partida combina com esta obra?', description: 'Um preset prepara perguntas, fichas e assets úteis. Tudo continua editável.', example: 'Se a história nasceu de uma protagonista, “Personagem primeiro” reduz decisões abstratas no começo.' },
+    { id: 'methodology', kind: 'methodology', title: 'De onde você prefere construir?', description: 'A abordagem muda a ordem das perguntas, sem limitar o resultado.', example: 'Começar por uma cidade concreta e expandir suas consequências é uma construção de baixo para cima.' },
+    { id: 'mice', kind: 'mice', title: 'O que move a experiência central?', description: 'O quociente MICE identifica a força que abre e fecha o arco principal.', example: 'Uma investigação começa com uma pergunta e termina quando a resposta muda o que se sabia.' },
+    { id: 'genres', kind: 'genres', title: 'Quais sistemas de gênero esta obra combina?', description: 'Escolha um ou mais módulos. Cada escolha acrescenta perguntas próprias à jornada.', example: 'Romantasia pode combinar tensão íntima, regras mágicas e escala política.' },
+    { id: 'pov', kind: 'pov', title: 'Quem controla o olhar do leitor?', description: 'O ponto de vista define quais fatos podem aparecer e como o universo é interpretado.', example: 'Em terceira limitada, o leitor conhece o mundo pelos vieses e lacunas de uma consciência.' },
+    { id: 'distance', kind: 'distance', title: 'Quão perto da consciência fica a prosa?', description: 'A distância psíquica regula intimidade, vocabulário e acesso ao pensamento.', example: 'No nível 4, a escolha das palavras já pertence ao personagem, mesmo sem “ela pensou”.' },
+    { id: 'incluing', kind: 'incluing', title: 'Como o mundo será revelado?', description: 'Incluing apresenta contexto por ação, consequência e vocabulário antes da explicação direta.', example: 'Uma moeda recusada na fronteira revela política e economia sem um parágrafo de exposição.' },
+  ];
+  const selectedGenreQuestions = genreModules.filter((section) => profile.genres.includes(section.id)).flatMap((section) => section.questions.map((question) => ({ id: `genre.${section.id}.${question.id}`, kind: 'question' as const, title: question.label, description: section.description, example: question.hint || `Exemplo: responda com um efeito concreto que possa aparecer em cena.`, namespace: 'genre' as const, section, question })));
+  const loreQuestions = loreArchitecture.flatMap((section) => section.questions.map((question) => ({ id: `lore.${section.id}.${question.id}`, kind: 'question' as const, title: question.label, description: section.description, example: question.hint || `Exemplo: registre apenas o necessário para orientar decisões futuras da obra.`, namespace: 'lore' as const, section, question })));
+  if (profile.foundationDepth === 'light') return core.filter((step) => ['depth', 'preset', 'genres', 'pov'].includes(step.id));
+  if (profile.foundationDepth === 'balanced') {
+    const genreEssentials = genreModules.filter((section) => profile.genres.includes(section.id)).flatMap((section) => section.questions.slice(0, 1).map((question) => ({ id: `genre.${section.id}.${question.id}`, kind: 'question' as const, title: question.label, description: section.description, example: question.hint || 'Registre uma decisão concreta.', namespace: 'genre' as const, section, question })));
+    const loreEssentials = loreArchitecture.flatMap((section) => section.questions.slice(0, 1).map((question) => ({ id: `lore.${section.id}.${question.id}`, kind: 'question' as const, title: question.label, description: section.description, example: question.hint || 'Registre uma decisão concreta.', namespace: 'lore' as const, section, question })));
+    return [...core, ...genreEssentials, ...loreEssentials];
+  }
+  return [...core, ...selectedGenreQuestions, ...loreQuestions];
+}
+
+function FoundationJourney({ profile, onChange, onSave, saving, error }: { profile: WorldbuildingProfile; onChange: (profile: WorldbuildingProfile) => void; onSave: (profile: WorldbuildingProfile) => Promise<void>; saving: boolean; error: string }) {
+  const steps = foundationSteps(profile);
+  const index = Math.min(profile.foundationStep, Math.max(steps.length - 1, 0));
+  const step = steps[index];
+  const progress = Math.round(((index + Number(Boolean(profile.foundationCompletedAt))) / Math.max(steps.length, 1)) * 100);
+
+  async function move(nextIndex: number, completed = false) {
+    const next = { ...profile, foundationStep: Math.max(0, Math.min(nextIndex, steps.length - 1)), foundationCompletedAt: completed ? new Date().toISOString() : null };
+    onChange(next);
+    await onSave(next);
+  }
+
+  function applyPreset(presetId: string) {
+    const preset = foundationPresets.find((item) => item.id === presetId);
+    if (!preset) return;
+    onChange({ ...profile, foundationPreset: preset.id, methodology: preset.methodology, miceFocus: preset.miceFocus, genres: [...preset.genres], povMode: preset.povMode, foundationAssets: [...preset.assets], foundationCompletedAt: null });
+  }
+
+  const answerSet = step?.kind === 'question' ? (step.namespace === 'genre' ? profile.genreAnswers : profile.loreAnswers) : null;
+  return <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_19rem]" data-tour="foundation-journey">
+    <section className="overflow-hidden rounded-[1.75rem] border border-line bg-surface shadow-soft"><div className="border-b border-line bg-surface-muted/45 px-5 py-4 sm:px-8"><div className="flex items-center justify-between gap-4"><div><p className="text-[10px] font-bold uppercase tracking-[.18em] text-accent">Jornada dos fundamentos</p><p className="mt-1 text-xs text-muted">Passo {index + 1} de {steps.length}</p></div><strong className="font-serif text-2xl text-ink">{progress}%</strong></div><div className="mt-3 h-1.5 overflow-hidden rounded-full bg-line"><span className="block h-full rounded-full bg-accent transition-[width]" style={{ width: `${progress}%` }} /></div></div>
+      {profile.foundationCompletedAt ? <div className="flex min-h-[32rem] flex-col items-center justify-center p-7 text-center"><span className="flex size-14 items-center justify-center rounded-2xl bg-success-subtle text-success"><Check className="size-6" /></span><p className="mt-6 text-[10px] font-bold uppercase tracking-[.18em] text-accent">Fundação registrada</p><h2 className="mt-2 max-w-xl font-serif text-3xl font-semibold">Sua obra já tem uma bússola editorial.</h2><p className="mt-3 max-w-lg text-sm leading-7 text-muted">O editor agora prioriza este ponto de vista e estes gêneros; a Enciclopédia recomenda fichas compatíveis; o @ usa esse contexto; e Relações preserva os vínculos do cânone. Você pode revisar tudo quando a obra mudar.</p><div className="mt-7 flex flex-wrap justify-center gap-2"><button type="button" onClick={() => void move(0)} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-5 text-sm font-semibold text-on-accent"><RotateCcw className="size-4" />Revisar jornada</button><button type="button" onClick={() => void move(Math.max(0, steps.length - 1))} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line px-5 text-sm font-semibold">Editar última resposta</button></div></div> : <div className="min-h-[32rem] p-6 sm:p-10"><div className="mx-auto max-w-3xl"><span className="flex size-11 items-center justify-center rounded-xl bg-accent-subtle text-accent"><WandSparkles className="size-5" /></span><p className="mt-7 text-[10px] font-bold uppercase tracking-[.18em] text-accent">{step.kind === 'question' ? step.section.title : 'Decisão estrutural'}</p><h2 className="mt-2 font-serif text-3xl font-semibold text-ink sm:text-4xl">{step.title}</h2><p className="mt-4 max-w-2xl text-sm leading-7 text-muted">{step.description}</p><div className="mt-4 rounded-xl border-l-2 border-accent bg-accent-subtle px-4 py-3 text-xs leading-6 text-muted"><strong className="text-accent">Na prática: </strong>{step.example}</div><div className="mt-8">
+        {step.kind === 'depth' && <div className="grid gap-3 sm:grid-cols-3">{([['light','Leve','4–6 min','Direção, gênero e ponto de vista para começar.'],['balanced','Média','10–15 min','Bússola editorial e decisões essenciais do universo.'],['deep','Profunda','25–35 min','Sistemas, cânone e worldbuilding completos.']] as const).map(([value,label,time,benefit]) => <button key={value} type="button" onClick={() => onChange({ ...profile, foundationDepth: value, foundationStep: 0, foundationCompletedAt: null })} className={cn('rounded-2xl border p-4 text-left', profile.foundationDepth === value ? 'border-accent bg-accent-subtle' : 'border-line bg-editor hover:border-accent')}><span className="text-[10px] font-bold uppercase tracking-wider text-accent">{time}</span><strong className="mt-2 block font-serif text-lg">{label}</strong><span className="mt-2 block text-xs leading-5 text-muted">{benefit}</span></button>)}</div>}
+        {step.kind === 'preset' && <div className="grid gap-3 sm:grid-cols-2">{foundationPresets.map((preset) => <button key={preset.id} type="button" onClick={() => applyPreset(preset.id)} className={cn('rounded-2xl border p-4 text-left', profile.foundationPreset === preset.id ? 'border-accent bg-accent-subtle' : 'border-line bg-editor hover:border-accent')}><span className="text-[10px] font-bold uppercase tracking-[.14em] text-accent">{preset.accent}</span><strong className="mt-2 block font-serif text-lg">{preset.label}</strong><span className="mt-2 block text-xs leading-5 text-muted">{preset.description}</span></button>)}</div>}
+        {step.kind === 'methodology' && <div className="grid gap-3 sm:grid-cols-3">{methodologyOptions.map((option) => <button key={option.id} type="button" onClick={() => onChange({ ...profile, methodology: option.id })} className={cn('rounded-2xl border p-4 text-left', profile.methodology === option.id ? 'border-accent bg-accent-subtle' : 'border-line bg-editor')}><strong className="text-sm">{option.label}</strong><span className="mt-2 block text-xs leading-5 text-muted">{option.description}</span></button>)}</div>}
+        {step.kind === 'mice' && <div className="grid gap-3 sm:grid-cols-2">{miceOptions.map((option) => <button key={option.id} type="button" onClick={() => onChange({ ...profile, miceFocus: option.id })} className={cn('rounded-2xl border p-4 text-left', profile.miceFocus === option.id ? 'border-accent bg-accent-subtle' : 'border-line bg-editor')}><strong className="text-sm">{option.label}</strong><span className="mt-2 block text-xs leading-5 text-muted">{option.description}</span></button>)}</div>}
+        {step.kind === 'genres' && <div className="grid gap-3 sm:grid-cols-2">{genreModules.map((module) => { const selected = profile.genres.includes(module.id); return <button key={module.id} type="button" onClick={() => onChange({ ...profile, genres: selected ? profile.genres.filter((id) => id !== module.id) : [...profile.genres, module.id] })} className={cn('rounded-2xl border p-4 text-left', selected ? 'border-accent bg-accent-subtle' : 'border-line bg-editor')}><span className="flex items-center justify-between gap-3"><strong className="text-sm">{module.title}</strong>{selected && <Check className="size-4 text-accent" />}</span><span className="mt-2 block text-xs leading-5 text-muted">{module.description}</span></button>; })}</div>}
+        {step.kind === 'pov' && <div className="grid gap-3 sm:grid-cols-2">{([['first','Primeira pessoa'],['third_limited','Terceira limitada'],['third_omniscient','Terceira onisciente'],['multiple','Múltiplos pontos de vista']] as const).map(([value,label]) => <button key={value} type="button" onClick={() => onChange({ ...profile, povMode: value })} className={cn('rounded-2xl border p-4 text-left text-sm font-semibold', profile.povMode === value ? 'border-accent bg-accent-subtle text-accent' : 'border-line bg-editor')}>{label}</button>)}</div>}
+        {step.kind === 'distance' && <div><input type="range" min={1} max={5} value={profile.psychicDistance} onChange={(event) => onChange({ ...profile, psychicDistance: Number(event.target.value) })} className="w-full accent-accent" /><div className="mt-4 rounded-2xl border border-line bg-editor p-5"><strong className="font-serif text-xl">{povDistances[profile.psychicDistance - 1]?.label}</strong><p className="mt-2 text-sm leading-6 text-muted">{povDistances[profile.psychicDistance - 1]?.example}</p></div></div>}
+        {step.kind === 'incluing' && <button type="button" onClick={() => onChange({ ...profile, incluingEnabled: !profile.incluingEnabled })} className={cn('flex w-full items-start gap-4 rounded-2xl border p-5 text-left', profile.incluingEnabled ? 'border-accent bg-accent-subtle' : 'border-line bg-editor')}><span className={cn('mt-0.5 flex size-6 items-center justify-center rounded-full border', profile.incluingEnabled ? 'border-accent bg-accent text-on-accent' : 'border-line')}>{profile.incluingEnabled && <Check className="size-3.5" />}</span><span><strong className="text-sm">Priorizar incluing</strong><span className="mt-1 block text-xs leading-6 text-muted">Revelar regras e contexto por ação antes de explicar diretamente.</span></span></button>}
+        {step.kind === 'question' && answerSet && <QuestionField namespace={`${step.namespace}.${step.section.id}`} question={step.question} answers={answerSet} onChange={(answers) => onChange(step.namespace === 'genre' ? { ...profile, genreAnswers: answers } : { ...profile, loreAnswers: answers })} />}
+      </div><div className="mt-10 flex items-center justify-between gap-3 border-t border-line pt-5"><button type="button" onClick={() => void move(index - 1)} disabled={index === 0 || saving} className="inline-flex min-h-10 items-center gap-2 rounded-full px-3 text-sm font-semibold text-muted disabled:opacity-30"><ArrowLeft className="size-4" />Voltar</button><button type="button" onClick={() => void move(index + 1, index === steps.length - 1)} disabled={saving} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-5 text-sm font-semibold text-on-accent disabled:opacity-60">{saving ? 'Salvando…' : index === steps.length - 1 ? 'Concluir fundamentos' : 'Salvar e continuar'}<ArrowRight className="size-4" /></button></div>{error && <p className="mt-4 rounded-xl bg-danger-subtle p-3 text-xs text-danger">{error}</p>}</div></div>}
+    </section>
+    <aside className="space-y-4 xl:sticky xl:top-24"><article className="rounded-2xl border border-line bg-surface p-5"><p className="text-[10px] font-bold uppercase tracking-[.16em] text-accent">Mapa da jornada</p><div className="mt-4 max-h-[28rem] space-y-1 overflow-y-auto pr-1">{steps.map((item, itemIndex) => <button key={item.id} type="button" onClick={() => void move(itemIndex)} className={cn('flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-xs', itemIndex === index ? 'bg-accent-subtle font-semibold text-accent' : itemIndex < index ? 'text-ink' : 'text-muted hover:bg-editor')}><span className={cn('flex size-5 shrink-0 items-center justify-center rounded-full border text-[9px]', itemIndex < index ? 'border-accent bg-accent text-on-accent' : 'border-line')}>{itemIndex < index ? <Check className="size-3" /> : itemIndex + 1}</span><span className="truncate">{item.title}</span></button>)}</div></article>{profile.foundationAssets.length > 0 && <article className="rounded-2xl border border-line bg-surface p-5"><p className="text-[10px] font-bold uppercase tracking-[.16em] text-accent">Kit preparado</p><div className="mt-3 flex flex-wrap gap-2">{profile.foundationAssets.map((asset) => <span key={asset} className="rounded-full border border-line bg-editor px-3 py-1.5 text-[10px] text-ink">{foundationAssetLabels[asset] ?? asset}</span>)}</div></article>}</aside>
+  </div>;
+}
+
 export function EncyclopediaView({
-  entries, workTitle, persistence, worldbuildingProfile, onSave, onDelete, onSaveWorldbuilding,
+  entries, workId, ownerId, workTitle, persistence, worldbuildingProfile, onSave, onDelete, onSaveWorldbuilding,
 }: {
   entries: EncyclopediaEntry[];
+  workId: string;
+  ownerId: string;
   workTitle: string;
   persistence: 'cloud' | 'local';
   worldbuildingProfile: WorldbuildingProfile;
@@ -146,7 +212,7 @@ export function EncyclopediaView({
   onDelete: (entryId: string) => Promise<void>;
   onSaveWorldbuilding: (profile: WorldbuildingProfile) => Promise<void>;
 }) {
-  const [section, setSection] = useState<'library' | 'foundation' | 'guide'>('library');
+  const [section, setSection] = useState<'library' | 'foundation' | 'universe' | 'guide'>('library');
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<EncyclopediaEntryType | 'all'>('all');
   const [statusFilter, setStatusFilter] = useState<EncyclopediaStatus | 'all'>('all');
@@ -231,9 +297,9 @@ export function EncyclopediaView({
     catch { setError('Não foi possível apagar a ficha agora.'); }
     finally { setSaving(false); }
   }
-  async function saveWorldbuilding() {
+  async function saveWorldbuilding(profile = worldDraft) {
     setWorldSaving(true); setError(''); setNotice('');
-    try { await onSaveWorldbuilding(worldDraft); setNotice('Fundamentos da obra salvos.'); }
+    try { await onSaveWorldbuilding(profile); setNotice(profile.foundationCompletedAt ? 'Jornada concluída e salva.' : 'Progresso dos fundamentos salvo.'); }
     catch (cause) { setError(cause instanceof Error ? cause.message : 'Não foi possível salvar os fundamentos.'); }
     finally { setWorldSaving(false); }
   }
@@ -248,7 +314,7 @@ export function EncyclopediaView({
           <h1 className="mt-2 font-serif text-4xl font-semibold text-ink sm:text-5xl">Enciclopédia</h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">A memória viva da sua obra. Organize o mundo, mantenha detalhes coerentes e cite qualquer ficha no manuscrito com <kbd className="rounded border border-line bg-surface px-1.5 py-0.5 text-xs text-ink">@</kbd>.</p>
         </div>
-        <button type="button" onClick={() => startCreating()} className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full bg-accent px-5 text-sm font-semibold text-on-accent hover:bg-accent-hover"><Plus className="size-4" />Criar ficha</button>
+        <button type="button" data-tour="encyclopedia-create" onClick={() => startCreating()} className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-full bg-accent px-5 text-sm font-semibold text-on-accent hover:bg-accent-hover"><Plus className="size-4" />Criar ficha</button>
       </div>
     </header>
 
@@ -260,35 +326,13 @@ export function EncyclopediaView({
 
     <nav className="creative-page-tabs mt-6" aria-label="Seções da Enciclopédia">
       <button type="button" onClick={() => setSection('library')} aria-current={section === 'library' ? 'page' : undefined} className={cn('creative-page-tab', section === 'library' && 'creative-page-tab-active')}>Acervo</button>
-      <button type="button" onClick={() => setSection('foundation')} aria-current={section === 'foundation' ? 'page' : undefined} className={cn('creative-page-tab', section === 'foundation' && 'creative-page-tab-active')}>Fundamentos da obra</button>
+      <button type="button" data-tour="encyclopedia-foundation" onClick={() => setSection('foundation')} aria-current={section === 'foundation' ? 'page' : undefined} className={cn('creative-page-tab', section === 'foundation' && 'creative-page-tab-active')}>Fundamentos da obra</button>
+      <button type="button" onClick={() => setSection('universe')} aria-current={section === 'universe' ? 'page' : undefined} className={cn('creative-page-tab', section === 'universe' && 'creative-page-tab-active')}>Projetos e universos</button>
       <button type="button" onClick={() => setSection('guide')} aria-current={section === 'guide' ? 'page' : undefined} className={cn('creative-page-tab', section === 'guide' && 'creative-page-tab-active')}>Guia e exemplos</button>
     </nav>
     {notice && !drawerOpen && <p className="mt-4 rounded-xl border border-success/20 bg-success-subtle px-4 py-3 text-xs text-success" role="status">{notice}</p>}
 
-    {section === 'foundation' ? <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_22rem]">
-      <section className="space-y-5">
-        <article className="rounded-2xl border border-line bg-surface p-6 sm:p-8">
-          <div className="flex items-start gap-3"><span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent-subtle text-accent"><Layers3 className="size-5" /></span><div><p className="text-[10px] font-bold uppercase tracking-[.18em] text-accent">Direção estrutural</p><h2 className="mt-1 font-serif text-2xl font-semibold text-ink">Como este mundo é construído</h2><p className="mt-2 text-sm leading-relaxed text-muted">Estas escolhas orientam o que aparece primeiro nas fichas e quais perguntas merecem mais atenção.</p></div></div>
-          <fieldset className="mt-7"><legend className="text-xs font-bold uppercase tracking-[.14em] text-muted">Abordagem</legend><div className="mt-3 grid gap-3 md:grid-cols-3">{methodologyOptions.map((option) => <label key={option.id} className={cn('cursor-pointer rounded-2xl border p-4', worldDraft.methodology === option.id ? 'border-accent bg-accent-subtle' : 'border-line bg-editor')}><input type="radio" name="methodology" className="sr-only" checked={worldDraft.methodology === option.id} onChange={() => setWorldDraft({ ...worldDraft, methodology: option.id })} /><span className="text-sm font-semibold text-ink">{option.label}</span><span className="mt-2 block text-xs leading-relaxed text-muted">{option.description}</span></label>)}</div></fieldset>
-          <fieldset className="mt-7"><legend className="text-xs font-bold uppercase tracking-[.14em] text-muted">Quociente MICE</legend><div className="mt-3 grid gap-3 sm:grid-cols-2">{miceOptions.map((option) => <label key={option.id} className={cn('cursor-pointer rounded-2xl border p-4', worldDraft.miceFocus === option.id ? 'border-accent bg-accent-subtle' : 'border-line bg-editor')}><input type="radio" name="mice" className="sr-only" checked={worldDraft.miceFocus === option.id} onChange={() => setWorldDraft({ ...worldDraft, miceFocus: option.id })} /><span className="text-sm font-semibold text-ink">{option.label}</span><span className="mt-1 block text-xs leading-relaxed text-muted">{option.description}</span></label>)}</div></fieldset>
-        </article>
-
-        <article className="rounded-2xl border border-line bg-surface p-6 sm:p-8">
-          <p className="text-[10px] font-bold uppercase tracking-[.18em] text-accent">Gênero como sistema</p><h2 className="mt-1 font-serif text-2xl font-semibold text-ink">Checklists de gênero</h2><p className="mt-2 text-sm text-muted">Escolha quantos módulos forem necessários. Obras híbridas mantêm todos os checklists lado a lado.</p>
-          <div className="mt-5 grid gap-2 sm:grid-cols-2">{genreModules.map((module) => { const selected = worldDraft.genres.includes(module.id); return <button key={module.id} type="button" onClick={() => setWorldDraft({ ...worldDraft, genres: selected ? worldDraft.genres.filter((id) => id !== module.id) : [...worldDraft.genres, module.id] })} className={cn('flex items-center justify-between gap-3 rounded-xl border px-4 py-3 text-left text-sm font-semibold', selected ? 'border-accent bg-accent-subtle text-accent' : 'border-line bg-editor text-ink')}><span>{module.title}</span>{selected && <Check className="size-4" />}</button>; })}</div>
-          <div className="mt-5">{worldDraft.genres.length ? <SchemaSections namespace="genre" sections={genreModules.filter((module) => worldDraft.genres.includes(module.id))} answers={worldDraft.genreAnswers} onChange={(genreAnswers) => setWorldDraft({ ...worldDraft, genreAnswers })} /> : <p className="rounded-xl border border-dashed border-line px-4 py-6 text-center text-xs text-muted">Selecione um gênero para abrir suas perguntas específicas.</p>}</div>
-        </article>
-
-        <article className="rounded-2xl border border-line bg-surface p-6 sm:p-8">
-          <p className="text-[10px] font-bold uppercase tracking-[.18em] text-accent">Bíblia de lore</p><h2 className="mt-1 font-serif text-2xl font-semibold text-ink">Arquitetura do universo</h2><p className="mt-2 text-sm text-muted">Da visão editorial às linhas do tempo, estas camadas sustentam o acervo.</p><div className="mt-5"><SchemaSections namespace="lore" sections={loreArchitecture} answers={worldDraft.loreAnswers} onChange={(loreAnswers) => setWorldDraft({ ...worldDraft, loreAnswers })} /></div>
-        </article>
-      </section>
-      <aside className="space-y-4 xl:sticky xl:top-24">
-        <article className="rounded-2xl border border-line bg-surface p-5"><p className="text-[10px] font-bold uppercase tracking-[.16em] text-accent">Ponto de vista</p><label className="mt-4 block text-xs font-semibold text-ink">Modo narrativo<select value={worldDraft.povMode} onChange={(event) => setWorldDraft({ ...worldDraft, povMode: event.target.value as WorldbuildingProfile['povMode'] })} className="mt-1.5 w-full rounded-xl border border-line bg-editor p-2.5 text-sm"><option value="first">Primeira pessoa</option><option value="third_limited">Terceira limitada</option><option value="third_omniscient">Terceira onisciente</option><option value="multiple">Múltiplos pontos de vista</option></select></label><label className="mt-5 block text-xs font-semibold text-ink">Distância psíquica · {worldDraft.psychicDistance}<input type="range" min={1} max={5} value={worldDraft.psychicDistance} onChange={(event) => setWorldDraft({ ...worldDraft, psychicDistance: Number(event.target.value) })} className="mt-3 w-full accent-accent" /></label><div className="mt-3 rounded-xl bg-editor p-3"><p className="text-xs font-semibold text-ink">{povDistances[worldDraft.psychicDistance - 1]?.label}</p><p className="mt-1 text-xs leading-relaxed text-muted">{povDistances[worldDraft.psychicDistance - 1]?.example}</p></div><label className="mt-4 flex items-start gap-3 rounded-xl border border-line p-3 text-xs leading-relaxed text-ink"><input type="checkbox" checked={worldDraft.incluingEnabled} onChange={(event) => setWorldDraft({ ...worldDraft, incluingEnabled: event.target.checked })} className="mt-0.5 size-4 accent-accent" /><span><strong className="block">Priorizar incluing</strong><span className="text-muted">Revelar o mundo por ação, contexto e vocabulário antes de recorrer a blocos explicativos.</span></span></label></article>
-        <button type="button" onClick={() => void saveWorldbuilding()} disabled={worldSaving} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-accent px-5 text-sm font-semibold text-on-accent disabled:opacity-60"><Check className="size-4" />{worldSaving ? 'Salvando…' : 'Salvar fundamentos'}</button>
-        {error && <p className="rounded-xl border border-danger/20 bg-danger-subtle p-3 text-xs text-danger">{error}</p>}
-      </aside>
-    </div> : section === 'guide' ? <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_21rem]">
+    {section === 'foundation' ? <FoundationJourney profile={worldDraft} onChange={setWorldDraft} onSave={saveWorldbuilding} saving={worldSaving} error={error} /> : section === 'universe' ? <UniverseArchitecture ownerId={ownerId} workId={workId} workTitle={workTitle} entries={entries} /> : section === 'guide' ? <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_21rem]">
       <section className="rounded-2xl border border-line bg-surface p-6 sm:p-8">
         <p className="text-[11px] font-bold uppercase tracking-[.18em] text-accent">Guia oficial</p>
         <h2 className="mt-2 font-serif text-3xl font-semibold text-ink">Um universo que se mantém coerente</h2>

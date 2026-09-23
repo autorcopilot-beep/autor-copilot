@@ -2,13 +2,14 @@ import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
 import { WritingStudio } from '@/features/writing/components/writing-studio';
+import { parseMentionExtensionSettings } from '@/features/extensions/mention-settings';
 import { loadExtensionRuntimeAccess, loadWritingProject } from '@/features/writing/server';
 import { isWritingView } from '@/features/writing/types';
 import { createClient } from '@/lib/supabase/server';
 
 export const metadata: Metadata = {
   title: 'Ambiente de escrita',
-  description: 'Editor, capítulos, cenas, notas e Enciclopédia da obra.',
+  description: 'Editor, capítulos, cenas, notas, Enciclopédia e relações da obra.',
 };
 
 export default async function WritingViewPage({
@@ -32,10 +33,11 @@ export default async function WritingViewPage({
     redirect(`/login?next=${encodeURIComponent(next)}`);
   }
 
-  const [project, extensionAccess] = await Promise.all([
+  const [project, extensionAccess, mentionInstallation] = await Promise.all([
     loadWritingProject(supabase, userId, query.document, query.work),
     loadExtensionRuntimeAccess(supabase, userId),
+    supabase.from('user_extension_installations').select('settings').eq('user_id', userId).eq('extension_id', 'lab.context-mentions').maybeSingle(),
   ]);
 
-  return <WritingStudio userId={userId} initialProject={project} initialView={view} extensionAccess={extensionAccess} />;
+  return <WritingStudio userId={userId} initialProject={project} initialView={view} extensionAccess={extensionAccess} initialMentionSettings={parseMentionExtensionSettings(JSON.stringify(mentionInstallation.data?.settings ?? null))} />;
 }

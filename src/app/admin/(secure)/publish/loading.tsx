@@ -1,0 +1,3 @@
+export default function OmniPublishLoading() {
+  return <div className="animate-pulse" role="status" aria-label="Carregando OmniPublish"><div className="h-64 rounded-[1.75rem] border border-line bg-surface shadow-soft"><span className="m-8 block size-11 rounded-xl bg-surface-muted" /><span className="mx-8 mt-12 block h-8 max-w-2xl rounded-xl bg-surface-muted" /><span className="mx-8 mt-3 block h-4 max-w-xl rounded-full bg-surface-muted" /></div><div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{Array.from({ length: 4 }, (_, index) => <div key={index} className="h-36 rounded-2xl border border-line bg-surface" />)}</div><span className="sr-only">Carregando…</span></div>;
+}

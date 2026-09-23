@@ -1,65 +1,36 @@
-import { CalendarDays, CheckCircle2, CircleDollarSign, Clock3, MailCheck, PenLine, ShieldCheck, UserRound } from 'lucide-react';
+import { ArrowRight, CalendarDays, Check, Compass, Feather, MailCheck, Settings2, ShieldCheck, Sparkles, UserRound } from 'lucide-react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui';
 import { createClient } from '@/lib/supabase/server';
 
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long' }).format(new Date(value));
-}
+function formatDate(value: string) { return new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long' }).format(new Date(value)); }
 
 export default async function AccountOverviewPage() {
   const supabase = await createClient();
-  const { data: claimsData } = await supabase.auth.getClaims();
-  const userId = claimsData?.claims?.sub;
+  const { data: claims } = await supabase.auth.getClaims();
+  const userId = claims?.claims?.sub;
   if (!userId) redirect('/login?next=/account');
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('display_name, full_name, nickname, pen_name, writing_focus, experience_level, created_at, updated_at')
-    .eq('id', userId)
-    .single();
+  const [{ data: profile }, { data: authorProfile }] = await Promise.all([
+    supabase.from('profiles').select('display_name,full_name,nickname,pen_name,username,avatar_path,created_at,writing_focus,experience_level').eq('id', userId).single(),
+    supabase.from('user_author_profiles').select('archetype_id,public_code,stage_score,stable_since,last_explanation').eq('user_id', userId).maybeSingle(),
+  ]);
   if (!profile) redirect('/onboarding');
+  const { data: archetype } = authorProfile?.archetype_id ? await supabase.from('author_archetypes').select('name,tagline,description,advancement_text,benefits,accent_color,image_url').eq('id', authorProfile.archetype_id).maybeSingle() : { data: null };
+  const { data: avatar } = profile.avatar_path ? await supabase.storage.from('profile-avatars').createSignedUrl(profile.avatar_path, 3600) : { data: null };
+  const name = profile.pen_name || profile.nickname || profile.display_name;
+  const initials = name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toUpperCase();
+  const benefits = Array.isArray(archetype?.benefits) ? archetype.benefits.filter((item): item is string => typeof item === 'string') : [];
+  const accent = archetype?.accent_color || '#4F7D6B';
+  const stage = authorProfile?.stage_score ?? 5;
+  const email = typeof claims.claims.email === 'string' ? claims.claims.email : 'E-mail indisponível';
 
-  const email = typeof claimsData.claims.email === 'string' ? claimsData.claims.email : 'E-mail indisponível';
-  const emailVerified = claimsData.claims.email_verified === true;
-  const publicName = profile.pen_name || profile.nickname || profile.display_name;
-  const initials = publicName.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toUpperCase();
-  const { data: profileExtras } = await supabase.from('profiles').select('username, avatar_path').eq('id', userId).maybeSingle();
-  const username = profileExtras?.username || `usuario_${userId.replaceAll('-', '').slice(0, 10)}`;
-  const { data: avatarData } = profileExtras?.avatar_path
-    ? await supabase.storage.from('profile-avatars').createSignedUrl(profileExtras.avatar_path, 60 * 60)
-    : { data: null };
-  const cards = [
-    { label: 'E-mail', value: email, note: emailVerified ? 'Endereço confirmado' : 'Confirmação pendente', icon: MailCheck },
-    { label: 'Plano atual', value: 'Plano inicial', note: 'Gerenciamento em breve', icon: CircleDollarSign },
-    { label: 'Conta criada em', value: formatDate(profile.created_at), note: 'Membro do Autor Copilot', icon: CalendarDays },
-    { label: 'Última atualização', value: formatDate(profile.updated_at), note: 'Dados do perfil', icon: Clock3 },
-  ];
+  return <div className="space-y-6">
+    <section className="overflow-hidden rounded-[2rem] border border-line bg-surface shadow-soft"><div className="relative grid gap-6 p-6 sm:p-8 lg:grid-cols-[auto_minmax(0,1fr)_18rem] lg:items-center">{archetype?.image_url && <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-2/5 bg-cover bg-center opacity-[0.08] lg:block" style={{ backgroundImage: `url(${JSON.stringify(archetype.image_url)})` }} aria-hidden="true" />}<div className="absolute inset-x-0 top-0 h-1.5" style={{ background: accent }} /><div className="relative mx-auto sm:mx-0"><div className="absolute -inset-2 rounded-full opacity-25 blur-sm" style={{ background: accent }} /><Avatar className="relative size-24 border-4 border-surface shadow-floating" style={{ outline: `3px solid ${accent}` }}>{avatar?.signedUrl && <AvatarImage src={avatar.signedUrl} alt="" />}<AvatarFallback className="font-serif text-2xl">{initials}</AvatarFallback></Avatar><span className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full border-2 border-surface text-white shadow-soft" style={{ background: accent }}><Feather className="size-4" /></span></div><div className="min-w-0 text-center sm:text-left"><p className="text-[10px] font-bold uppercase tracking-[.2em]" style={{ color: accent }}>Perfil do autor · {authorProfile?.public_code ?? 'NOV-C05-TRI'}</p><h2 className="mt-2 truncate font-serif text-3xl font-semibold text-ink">{name}</h2><p className="mt-1 text-sm text-muted">@{profile.username} · {archetype?.name ?? 'Explorador'}</p><p className="mt-4 max-w-2xl text-sm leading-6 text-muted">{archetype?.tagline ?? 'Você está descobrindo o ritmo que sustenta sua escrita.'}</p><div className="mt-5 flex flex-wrap justify-center gap-2 sm:justify-start"><Link href="/account/profile" className="inline-flex min-h-10 items-center gap-2 rounded-full bg-accent px-4 text-xs font-semibold text-on-accent"><UserRound className="size-3.5" />Editar perfil</Link><Link href="/account/preferences" className="inline-flex min-h-10 items-center gap-2 rounded-full border border-line px-4 text-xs font-semibold text-ink hover:bg-surface-muted"><Settings2 className="size-3.5" />Preferências</Link></div></div><div className="rounded-2xl border border-line bg-editor p-5"><div className="flex items-center justify-between text-xs"><span className="font-semibold text-ink">Estágio atual</span><strong style={{ color: accent }}>{stage}/100</strong></div><div className="mt-3 h-2 overflow-hidden rounded-full bg-line"><span className="block h-full rounded-full" style={{ width: `${stage}%`, background: accent }} /></div><p className="mt-4 text-xs leading-5 text-muted">{authorProfile?.last_explanation ?? 'Perfil inicial baseado nas preferências do onboarding.'}</p><p className="mt-3 text-[10px] text-muted">Estável desde {formatDate(authorProfile?.stable_since ?? profile.created_at)}</p></div></div></section>
 
-  return (
-    <div className="space-y-6">
-      <section className="border-b border-line pb-6">
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-          <Avatar className="size-16 ring-1 ring-line">{avatarData?.signedUrl && <AvatarImage src={avatarData.signedUrl} alt="" />}<AvatarFallback className="text-xl">{initials}</AvatarFallback></Avatar>
-          <div className="min-w-0 flex-1"><p className="text-sm text-muted">Perfil do autor</p><h2 className="mt-1 truncate font-serif text-2xl font-semibold text-ink">{publicName}</h2><p className="mt-1 truncate text-sm text-muted">@{username} · {profile.full_name || profile.display_name}</p></div>
-          <Link href="/account/profile" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-control border border-accent bg-accent px-4 text-sm font-medium text-on-accent hover:bg-accent-hover"><UserRound className="size-4" />Editar perfil</Link>
-        </div>
-      </section>
+    <div className="grid gap-5 lg:grid-cols-[minmax(0,1.2fr)_.8fr]"><section className="rounded-[1.75rem] border border-line bg-surface p-6 sm:p-8"><p className="text-[10px] font-bold uppercase tracking-[.18em] text-accent">Seu arquétipo</p><h2 className="mt-2 font-serif text-2xl font-semibold text-ink">{archetype?.name ?? 'Explorador'}</h2><p className="mt-3 text-sm leading-7 text-muted">{archetype?.description ?? 'Um perfil inicial para autores que ainda estão formando rotina, repertório de ferramentas e uma maneira própria de organizar a obra.'}</p><div className="mt-6 grid gap-3 sm:grid-cols-3">{benefits.slice(0, 3).map((benefit) => <div key={benefit} className="rounded-2xl border border-line bg-editor p-4"><Check className="size-4" style={{ color: accent }} /><p className="mt-3 text-xs font-medium leading-5 text-ink">{benefit}</p></div>)}</div><div className="mt-6 border-t border-line pt-5"><p className="text-xs font-semibold text-ink">Como avançar</p><p className="mt-2 text-xs leading-6 text-muted">{archetype?.advancement_text ?? 'Conclua sessões reais e explore recursos no seu ritmo. O perfil evolui pelo uso consistente.'}</p></div></section><aside className="space-y-4"><article className="rounded-2xl border border-line bg-surface p-5"><Sparkles className="size-5 text-accent" /><h3 className="mt-3 font-serif text-xl font-semibold text-ink">Perfil que emerge do uso</h3><p className="mt-2 text-xs leading-6 text-muted">Você não escolhe um arquétipo para ganhar status. Mudanças exigem duas recomputações consistentes, evitando um perfil que “pisca” após uma semana atípica.</p></article><article className="rounded-2xl border border-line bg-surface p-5"><ShieldCheck className="size-5 text-accent" /><h3 className="mt-3 font-serif text-xl font-semibold text-ink">Sem leitura escondida</h3><p className="mt-2 text-xs leading-6 text-muted">O perfil padrão usa metadados estruturais. Analisar estilo da prosa exige uma autorização separada em Preferências.</p><Link href="/account/preferences" className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-accent">Revisar privacidade<ArrowRight className="size-3.5" /></Link></article></aside></div>
 
-      <section className="grid border-b border-line sm:grid-cols-2" aria-label="Resumo da conta">
-        {cards.map(({ label, value, note, icon: Icon }, index) => <article key={label} className={`border-b border-line py-5 last:border-b-0 sm:px-5 ${index % 2 === 0 ? 'sm:border-r sm:pl-0' : 'sm:pr-0'} ${index >= 2 ? 'sm:border-b-0' : ''}`}><Icon className="size-5 text-accent" /><p className="mt-4 text-xs font-semibold uppercase tracking-wider text-muted">{label}</p><p className="mt-1 break-words font-medium text-ink">{value}</p><p className="mt-1 text-xs text-muted">{note}</p></article>)}
-      </section>
-
-      <section className="border-b border-line pb-6" aria-labelledby="account-readiness-title">
-        <h2 id="account-readiness-title" className="font-serif text-xl font-semibold text-ink">Estado da conta</h2>
-        <div className="mt-5 grid gap-3 sm:grid-cols-3">
-          <div className="flex items-start gap-3 rounded-control bg-success-subtle p-4"><CheckCircle2 className="mt-0.5 size-4 text-success" /><div><p className="text-sm font-medium text-ink">Identidade</p><p className="mt-1 text-xs text-muted">Perfil criado e ativo.</p></div></div>
-          <div className="flex items-start gap-3 rounded-control bg-success-subtle p-4"><PenLine className="mt-0.5 size-4 text-success" /><div><p className="text-sm font-medium text-ink">Onboarding</p><p className="mt-1 text-xs text-muted">Preferências iniciais concluídas.</p></div></div>
-          <div className="flex items-start gap-3 rounded-control bg-success-subtle p-4"><ShieldCheck className="mt-0.5 size-4 text-success" /><div><p className="text-sm font-medium text-ink">Proteção</p><p className="mt-1 text-xs text-muted">Acesso protegido pelo Supabase.</p></div></div>
-        </div>
-      </section>
-    </div>
-  );
+    <section className="grid gap-3 sm:grid-cols-3"><article className="rounded-2xl border border-line bg-surface p-5"><MailCheck className="size-5 text-accent" /><p className="mt-4 text-xs font-bold uppercase tracking-wider text-muted">Acesso</p><p className="mt-1 truncate text-sm font-semibold text-ink">{email}</p><p className="mt-1 text-xs text-muted">E-mail principal da conta</p></article><article className="rounded-2xl border border-line bg-surface p-5"><CalendarDays className="size-5 text-accent" /><p className="mt-4 text-xs font-bold uppercase tracking-wider text-muted">Desde</p><p className="mt-1 text-sm font-semibold text-ink">{formatDate(profile.created_at)}</p><p className="mt-1 text-xs text-muted">Membro do Autor Copilot</p></article><article className="rounded-2xl border border-line bg-surface p-5"><Compass className="size-5 text-accent" /><p className="mt-4 text-xs font-bold uppercase tracking-wider text-muted">Foco atual</p><p className="mt-1 text-sm font-semibold capitalize text-ink">{profile.writing_focus ?? 'Ficção'}</p><p className="mt-1 text-xs text-muted">Experiência: {profile.experience_level ?? 'inicial'}</p></article></section>
+  </div>;
 }

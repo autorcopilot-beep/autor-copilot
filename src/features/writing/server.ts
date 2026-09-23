@@ -159,6 +159,12 @@ export async function loadWritingProject(
     incluingEnabled: worldbuildingRow.incluing_enabled,
     genreAnswers: parseProfileAnswers(worldbuildingRow.genre_answers),
     loreAnswers: parseProfileAnswers(worldbuildingRow.lore_answers),
+    foundationStep: worldbuildingRow.foundation_step ?? 0,
+    foundationDepth: ['light', 'balanced', 'deep'].includes(worldbuildingRow.foundation_depth)
+      ? worldbuildingRow.foundation_depth as WorldbuildingProfile['foundationDepth'] : defaultWorldbuildingProfile.foundationDepth,
+    foundationPreset: worldbuildingRow.foundation_preset ?? '',
+    foundationCompletedAt: worldbuildingRow.foundation_completed_at,
+    foundationAssets: Array.isArray(worldbuildingRow.foundation_assets) ? worldbuildingRow.foundation_assets.filter((item): item is string => typeof item === 'string') : [],
   } : defaultWorldbuildingProfile;
 
   const documents = existingDocuments ?? [];

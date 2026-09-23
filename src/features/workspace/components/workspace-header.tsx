@@ -109,7 +109,7 @@ export function WorkspaceHeader({ displayName, email, penName, avatarUrl, showWo
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild><Link href="/account/profile"><UserRound className="size-4" />Configurações de perfil</Link></DropdownMenuItem>
-            <DropdownMenuItem disabled><Settings className="size-4" />Preferências<span className="ml-auto"><OperationalTagBadge tag="Em breve" compact /></span></DropdownMenuItem>
+            <DropdownMenuItem asChild><Link href="/account/preferences"><Settings className="size-4" />Preferências</Link></DropdownMenuItem>
             <DropdownMenuItem disabled><SlidersHorizontal className="size-4" />Conta e plano<span className="ml-auto"><OperationalTagBadge tag="Em breve" compact /></span></DropdownMenuItem>
             <DropdownMenuItem disabled><Bell className="size-4" />Notificações<span className="ml-auto"><OperationalTagBadge tag="Em breve" compact /></span></DropdownMenuItem>
             <DropdownMenuSeparator />

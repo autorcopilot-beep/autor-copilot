@@ -19,7 +19,7 @@ const columns: ColumnDef<AuditEventRow>[] = [
   {
     accessorKey: 'occurred_at',
     header: ({ column }) => <DataTableColumnHeader column={column} title="Data" />,
-    cell: ({ row }) => <span className="text-white/55">{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(row.original.occurred_at))}</span>,
+    cell: ({ row }) => <span className="text-muted">{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(row.original.occurred_at))}</span>,
   },
   {
     id: 'actor_role',
@@ -30,18 +30,18 @@ const columns: ColumnDef<AuditEventRow>[] = [
   {
     accessorKey: 'action',
     header: ({ column }) => <DataTableColumnHeader column={column} title="Ação" />,
-    cell: ({ row }) => <span className="font-mono text-xs text-emerald-200">{row.original.action}</span>,
+    cell: ({ row }) => <span className="font-mono text-xs text-accent">{row.original.action}</span>,
   },
   {
     id: 'target',
     accessorFn: (event) => `${event.target_type} ${event.target_id ?? ''}`,
     header: ({ column }) => <DataTableColumnHeader column={column} title="Alvo" />,
-    cell: ({ row }) => <span className="text-white/55">{row.original.target_type}{row.original.target_id ? ` · ${row.original.target_id}` : ''}</span>,
+    cell: ({ row }) => <span className="text-muted">{row.original.target_type}{row.original.target_id ? ` · ${row.original.target_id}` : ''}</span>,
   },
   {
     accessorKey: 'ip_address',
     header: ({ column }) => <DataTableColumnHeader column={column} title="IP" />,
-    cell: ({ row }) => <span className="font-mono text-xs text-white/45">{row.original.ip_address ?? '—'}</span>,
+    cell: ({ row }) => <span className="font-mono text-xs text-muted">{row.original.ip_address ?? '—'}</span>,
   },
 ];
 

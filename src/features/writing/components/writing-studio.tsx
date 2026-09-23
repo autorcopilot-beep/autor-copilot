@@ -41,8 +41,6 @@ import {
   Undo2,
   X,
 } from 'lucide-react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
@@ -60,10 +58,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui';
 import { EncyclopediaView, type EncyclopediaEntryDraft } from '@/features/writing/components/encyclopedia-view';
+import { UniverseArchitecture } from '@/features/writing/components/universe-architecture';
 import {
   defaultMentionExtensionSettings,
   mentionExtensionStorageKey,
-  parseMentionExtensionSettings,
+  type MentionExtensionSettings,
 } from '@/features/extensions/mention-settings';
 import {
   encyclopediaTypeLabels,
@@ -82,6 +81,7 @@ import {
 import { cn } from '@/lib/cn';
 import { createClient } from '@/lib/supabase/client';
 import { SoundBinderFooter } from '@/features/sound/components/sound-binder-footer';
+import { navigateWritingView, writingHref, writingViewEvent, writingViewFromPathname } from '@/features/writing/spa-navigation';
 
 function plainTextFromHtml(html: string) {
   return html
@@ -313,7 +313,7 @@ function WritingCollection({
   onCreate,
   onOpen,
 }: {
-  view: Exclude<WritingView, 'editor' | 'encyclopedia'>;
+  view: Exclude<WritingView, 'editor' | 'encyclopedia' | 'relations'>;
   documents: WritingDocument[];
   onCreate: (kind: WritingDocumentKind) => void;
   onOpen: (id: string) => void;
@@ -365,13 +365,14 @@ export function WritingStudio({
   initialProject,
   initialView,
   extensionAccess,
+  initialMentionSettings,
 }: {
   userId: string;
   initialProject: WritingProject;
   initialView: WritingView;
   extensionAccess: typeof defaultExtensionRuntime;
+  initialMentionSettings: MentionExtensionSettings;
 }) {
-  const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const storageKey = `autor-copilot:writing-project:${userId}`;
   const snapshotKey = `${storageKey}:snapshots`;
@@ -384,6 +385,7 @@ export function WritingStudio({
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const migratingLocalDraftRef = useRef(false);
   const [project, setProject] = useState<WritingProject>(initialProject);
+  const [activeView, setActiveView] = useState<WritingView>(initialView);
   const [hydrated, setHydrated] = useState(false);
   const [saveState, setSaveState] = useState<'saved' | 'saving' | 'offline' | 'error'>('saved');
   const [showBinder, setShowBinder] = useState(true);
@@ -401,9 +403,31 @@ export function WritingStudio({
   const [mentionQuery, setMentionQuery] = useState<string | null>(null);
   const [mentionPosition, setMentionPosition] = useState({ left: 0, top: 0 });
   const [mentionIndex, setMentionIndex] = useState(0);
-  const [mentionSettings, setMentionSettings] = useState(defaultMentionExtensionSettings);
+  const [mentionSettings, setMentionSettings] = useState(initialMentionSettings ?? defaultMentionExtensionSettings);
   const [extensionRuntime, setExtensionRuntime] = useState(extensionAccess);
   const [selectedEntityId, setSelectedEntityId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const syncFromLocation = () => {
+      const view = writingViewFromPathname(window.location.pathname);
+      if (view) setActiveView(view);
+    };
+    const handleView = (event: Event) => {
+      const view = (event as CustomEvent<{ view?: WritingView }>).detail?.view;
+      if (view) setActiveView(view);
+    };
+    window.addEventListener('popstate', syncFromLocation);
+    window.addEventListener(writingViewEvent, handleView);
+    return () => {
+      window.removeEventListener('popstate', syncFromLocation);
+      window.removeEventListener(writingViewEvent, handleView);
+    };
+  }, []);
+
+  const openView = useCallback((view: WritingView, mode: 'push' | 'replace' = 'push', documentId?: string) => {
+    setActiveView(view);
+    navigateWritingView(view, writingHref(view, project.id, documentId), mode);
+  }, [project.id]);
 
   const activeDocument = useMemo(
     () => project.documents.find((item) => item.id === project.activeDocumentId) ?? project.documents[0],
@@ -548,12 +572,13 @@ export function WritingStudio({
 
   useEffect(() => {
     const extensionsTimer = window.setTimeout(() => {
-      setMentionSettings(parseMentionExtensionSettings(window.localStorage.getItem(mentionExtensionStorageKey)));
+      setMentionSettings(initialMentionSettings);
+      window.localStorage.setItem(mentionExtensionStorageKey, JSON.stringify(initialMentionSettings));
       setExtensionRuntime(extensionAccess);
       window.localStorage.setItem(extensionRuntimeStorageKey, JSON.stringify(extensionAccess));
     }, 0);
     return () => window.clearTimeout(extensionsTimer);
-  }, [extensionAccess]);
+  }, [extensionAccess, initialMentionSettings]);
 
   useEffect(() => {
     const narrowScreen = window.matchMedia('(max-width: 959px)').matches;
@@ -840,15 +865,15 @@ export function WritingStudio({
       activeDocumentId: id,
       documents: [...current.documents, nextDocument],
     }));
-    router.push(`/write/editor?work=${project.id}&document=${id}`);
-  }, [project.documents, project.id, router]);
+    openView('editor', 'push', id);
+  }, [openView, project.documents]);
 
   const selectDocument = useCallback((id: string) => {
     renderedDocumentRef.current = '';
     setFormatSelection(null);
     setProject((current) => ({ ...current, activeDocumentId: id }));
-    router.replace(`/write/editor?work=${project.id}&document=${id}`, { scroll: false });
-  }, [project.id, router]);
+    openView('editor', 'replace', id);
+  }, [openView]);
 
   const createSnapshot = useCallback(async (documentToSnapshot = activeDocument) => {
     try {
@@ -910,8 +935,8 @@ export function WritingStudio({
     const nextActiveId = documentId === project.activeDocumentId ? remaining[0].id : project.activeDocumentId;
     renderedDocumentRef.current = '';
     setProject((current) => ({ ...current, documents: remaining, activeDocumentId: nextActiveId }));
-    router.replace(`/write/editor?work=${project.id}&document=${nextActiveId}`);
-  }, [createSnapshot, project, router, supabase, userId]);
+    openView('editor', 'replace', nextActiveId);
+  }, [createSnapshot, openView, project, supabase, userId]);
 
   const saveEncyclopediaEntry = useCallback(async (draft: EncyclopediaEntryDraft, entryId?: string) => {
     const id = entryId ?? crypto.randomUUID();
@@ -983,6 +1008,11 @@ export function WritingStudio({
       incluing_enabled: profile.incluingEnabled,
       genre_answers: profile.genreAnswers,
       lore_answers: profile.loreAnswers,
+      foundation_step: profile.foundationStep,
+      foundation_depth: profile.foundationDepth,
+      foundation_preset: profile.foundationPreset,
+      foundation_completed_at: profile.foundationCompletedAt,
+      foundation_assets: profile.foundationAssets,
     }, { onConflict: 'work_id,owner_id' });
     if (error?.code === 'PGRST205' || error?.code === 'PGRST204' || error?.code === '42703') {
       throw new Error('Aplique a migration mais recente da Enciclopédia para salvar os fundamentos da obra.');
@@ -1059,7 +1089,7 @@ export function WritingStudio({
       )}
 
       <div className="relative flex min-h-0 flex-1">
-        {!distractionFree && showBinder && initialView !== 'encyclopedia' && (
+        {!distractionFree && showBinder && activeView !== 'encyclopedia' && (
           <aside className="writing-binder absolute inset-y-0 left-0 z-30 flex w-[14rem] shrink-0 flex-col border-r shadow-floating lg:static lg:shadow-none" aria-label="Estrutura da obra">
             <div className="border-b border-line px-3 pb-4 pt-20 xl:pt-6">
               <div className="flex items-center justify-between gap-2"><p className="text-[10px] font-bold uppercase tracking-[0.2em] text-accent">Obra em curso</p><button type="button" onClick={toggleBinder} className="flex size-7 items-center justify-center rounded-control text-muted hover:bg-surface-muted lg:hidden" aria-label="Fechar estrutura"><X className="size-4" /></button></div>
@@ -1109,7 +1139,7 @@ export function WritingStudio({
         )}
 
         <main className="writing-stage flex min-w-0 flex-1 flex-col">
-          {initialView === 'editor' ? <>
+          {activeView === 'editor' ? <>
           <div ref={scrollRef} onScroll={() => setFormatSelection(null)} className={cn('writing-stage-scroll min-h-0 flex-1 overflow-y-auto', typewriterMode && 'scroll-smooth')}>
             <div className={cn('mx-auto w-full px-3 pt-24 sm:px-8', distractionFree ? 'max-w-[76rem] pt-10' : 'max-w-[80rem]')}>
               <article
@@ -1159,6 +1189,7 @@ export function WritingStudio({
                 <div className="mb-8 h-px bg-gradient-to-r from-line via-line to-transparent" />
                 <div
                   ref={editorRef}
+                  data-tour="editor-canvas"
                   contentEditable
                   suppressContentEditableWarning
                   onInput={handleEditorInput}
@@ -1182,38 +1213,42 @@ export function WritingStudio({
                   {mentionMatches.length ? mentionMatches.map((entry, index) => <button key={entry.id} type="button" role="option" aria-selected={mentionIndex === index} onMouseDown={(event) => event.preventDefault()} onClick={() => insertEntityMention(entry)} onMouseEnter={() => setMentionIndex(index)} className={cn('flex w-full items-start gap-3 px-3 py-2.5 text-left', mentionIndex === index ? 'bg-accent-subtle' : 'hover:bg-surface-muted')}>
                     <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-surface-muted text-xs font-semibold text-accent">@</span>
                     <span className="min-w-0 flex-1"><span className="flex items-center gap-2"><span className="block truncate text-sm font-semibold text-ink">{entry.name}</span>{mentionSettings.showCanonStatus && <span className={cn('shrink-0 rounded-full px-1.5 py-0.5 text-[9px] font-semibold uppercase', entry.status === 'canon' ? 'bg-success-subtle text-success' : 'bg-surface-muted text-muted')}>{entry.status === 'canon' ? 'Cânone' : 'Rascunho'}</span>}{mentionSettings.warnSpoilers && entry.isSpoiler && <span className="shrink-0 rounded-full bg-warning-subtle px-1.5 py-0.5 text-[9px] font-semibold text-warning">Spoiler</span>}</span><span className="mt-0.5 block truncate text-[11px] text-muted">{encyclopediaTypeLabels[entry.type]}{mentionSettings.searchAliases && entry.aliases.length ? ` · ${entry.aliases.slice(0, 2).join(', ')}` : ''}</span>{mentionSettings.suggestionView === 'rich' && entry.summary && <span className="mt-1.5 block line-clamp-2 text-xs leading-relaxed text-muted">{entry.summary}</span>}</span>
-                  </button>) : <div className="px-4 py-5 text-center"><p className="text-sm font-medium text-ink">Nenhuma referência encontrada</p><Link href={`/write/encyclopedia?work=${project.id}`} className="mt-2 inline-flex text-xs font-medium text-accent hover:underline">Criar na Enciclopédia</Link></div>}
+                  </button>) : <div className="px-4 py-5 text-center"><p className="text-sm font-medium text-ink">Nenhuma referência encontrada</p><button type="button" onClick={() => openView('encyclopedia')} className="mt-2 inline-flex text-xs font-medium text-accent hover:underline">Criar na Enciclopédia</button></div>}
                   <div className="border-t border-line px-3 py-2 text-[10px] text-muted">↑↓ navegar · Enter inserir · Esc fechar</div>
                 </div>}
               </article>
             </div>
           </div>
 
-          </> : initialView === 'encyclopedia' ? (
+          </> : activeView === 'encyclopedia' ? (
             <div className="workspace-scrollbar min-h-0 flex-1 overflow-y-auto">
-              <EncyclopediaView entries={project.encyclopediaEntries} workTitle={project.title} persistence={project.encyclopediaPersistence} worldbuildingProfile={project.worldbuildingProfile} onSave={saveEncyclopediaEntry} onDelete={deleteEncyclopediaEntry} onSaveWorldbuilding={saveWorldbuildingProfile} />
+              <EncyclopediaView entries={project.encyclopediaEntries} workId={project.id} ownerId={userId} workTitle={project.title} persistence={project.encyclopediaPersistence} worldbuildingProfile={project.worldbuildingProfile} onSave={saveEncyclopediaEntry} onDelete={deleteEncyclopediaEntry} onSaveWorldbuilding={saveWorldbuildingProfile} />
+            </div>
+          ) : activeView === 'relations' ? (
+            <div className="workspace-scrollbar min-h-0 flex-1 overflow-y-auto px-4 pb-10 pt-20 sm:px-7">
+              <div className="mx-auto max-w-[94rem]"><UniverseArchitecture ownerId={userId} workId={project.id} workTitle={project.title} entries={project.encyclopediaEntries} standalone /></div>
             </div>
           ) : (
             <div className="workspace-scrollbar min-h-0 flex-1 overflow-y-auto">
-              <WritingCollection view={initialView} documents={project.documents} onCreate={createDocument} onOpen={selectDocument} />
+              <WritingCollection view={activeView} documents={project.documents} onCreate={createDocument} onOpen={selectDocument} />
             </div>
           )}
-          {!distractionFree && initialView !== 'encyclopedia' && <footer className="writing-dock" aria-label="Barra de ferramentas da escrita">
+          {!distractionFree && activeView !== 'encyclopedia' && activeView !== 'relations' && <footer className="writing-dock" aria-label="Barra de ferramentas da escrita">
             <div className="workspace-scrollbar flex min-h-12 items-center justify-center gap-1 overflow-x-auto px-2 sm:gap-2">
               <DropdownMenu>
-                <DropdownMenuTrigger className="flex min-h-9 shrink-0 items-center gap-1.5 rounded-control px-2 text-xs font-semibold text-ink hover:bg-surface-muted" aria-label="Abrir áreas de escrita"><LayoutList className="size-4 text-accent" /><span className="hidden sm:inline">{initialView === 'editor' ? 'Editor' : initialView === 'chapters' ? 'Capítulos' : initialView === 'scenes' ? 'Cenas' : initialView === 'notes' ? 'Notas' : 'Enciclopédia'}</span><ChevronDown className="size-3" /></DropdownMenuTrigger>
+                <DropdownMenuTrigger className="flex min-h-9 shrink-0 items-center gap-1.5 rounded-control px-2 text-xs font-semibold text-ink hover:bg-surface-muted" aria-label="Abrir áreas de escrita"><LayoutList className="size-4 text-accent" /><span className="hidden sm:inline">{activeView === 'editor' ? 'Editor' : activeView === 'chapters' ? 'Capítulos' : activeView === 'scenes' ? 'Cenas' : activeView === 'notes' ? 'Notas' : 'Enciclopédia'}</span><ChevronDown className="size-3" /></DropdownMenuTrigger>
                 <DropdownMenuContent align="start">
-                  {([['editor', 'Editor'], ['chapters', 'Capítulos'], ['scenes', 'Cenas'], ['notes', 'Notas'], ['encyclopedia', 'Enciclopédia']] as const).map(([view, label]) => <DropdownMenuItem key={view} asChild><Link href={`/write/${view}?work=${project.id}`} aria-current={initialView === view ? 'page' : undefined}>{label}{initialView === view && <Check className="ml-auto size-3.5 text-accent" />}</Link></DropdownMenuItem>)}
+                  {([['editor', 'Editor'], ['chapters', 'Capítulos'], ['scenes', 'Cenas'], ['notes', 'Notas'], ['encyclopedia', 'Enciclopédia']] as const).map(([view, label]) => <DropdownMenuItem key={view} onSelect={() => openView(view)} aria-current={activeView === view ? 'page' : undefined}>{label}{activeView === view && <Check className="ml-auto size-3.5 text-accent" />}</DropdownMenuItem>)}
                 </DropdownMenuContent>
               </DropdownMenu>
               <span className="mx-0.5 h-6 w-px shrink-0 bg-line" aria-hidden="true" />
               <ToolbarButton label="Novo capítulo" shortcut="Ctrl N" onClick={() => createDocument('chapter')}><FilePlus2 className="size-4" /></ToolbarButton>
               <ToolbarButton label="Salvar agora" shortcut="Ctrl S" onClick={saveNow}><Save className="size-4" /></ToolbarButton>
               <span className="mx-0.5 h-6 w-px shrink-0 bg-line" aria-hidden="true" />
-              {initialView === 'editor' && <ToolbarButton label={showBinder ? 'Ocultar estrutura' : 'Mostrar estrutura'} active={showBinder} onClick={toggleBinder}>{showBinder ? <PanelLeftClose className="size-4" /> : <PanelLeftOpen className="size-4" />}</ToolbarButton>}
-              {initialView === 'editor' && <ToolbarButton label={showInspector ? 'Ocultar inspetor' : 'Mostrar inspetor'} active={showInspector} onClick={toggleInspector}>{showInspector ? <PanelRightClose className="size-4" /> : <PanelRightOpen className="size-4" />}</ToolbarButton>}
-              {initialView === 'editor' && <DropdownMenu><DropdownMenuTrigger className="flex min-h-8 items-center gap-1 rounded-control px-2 text-xs text-muted hover:bg-accent-subtle hover:text-accent" aria-label="Visualização de páginas"><BookOpenText className="size-4" /><span className="hidden md:inline">{currentPagePreset.label}</span><ChevronDown className="size-3" /></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuRadioGroup value={pagePreset} onValueChange={(value) => setPagePreset(value as PagePreset)}>{(Object.entries(pagePresets) as Array<[PagePreset, { label: string }]>).map(([preset, option]) => <DropdownMenuRadioItem key={preset} value={preset}>{option.label}</DropdownMenuRadioItem>)}</DropdownMenuRadioGroup></DropdownMenuContent></DropdownMenu>}
-              {initialView === 'editor' && extensionRuntime['lab.immersive-focus'] && <ToolbarButton label="Modo foco" shortcut="Ctrl Shift F" onClick={() => setDistractionFree(true)}><Focus className="size-4" /></ToolbarButton>}
+              {activeView === 'editor' && <ToolbarButton label={showBinder ? 'Ocultar estrutura' : 'Mostrar estrutura'} active={showBinder} onClick={toggleBinder}>{showBinder ? <PanelLeftClose className="size-4" /> : <PanelLeftOpen className="size-4" />}</ToolbarButton>}
+              {activeView === 'editor' && <ToolbarButton label={showInspector ? 'Ocultar inspetor' : 'Mostrar inspetor'} active={showInspector} onClick={toggleInspector}>{showInspector ? <PanelRightClose className="size-4" /> : <PanelRightOpen className="size-4" />}</ToolbarButton>}
+              {activeView === 'editor' && <DropdownMenu><DropdownMenuTrigger className="flex min-h-8 items-center gap-1 rounded-control px-2 text-xs text-muted hover:bg-accent-subtle hover:text-accent" aria-label="Visualização de páginas"><BookOpenText className="size-4" /><span className="hidden md:inline">{currentPagePreset.label}</span><ChevronDown className="size-3" /></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuRadioGroup value={pagePreset} onValueChange={(value) => setPagePreset(value as PagePreset)}>{(Object.entries(pagePresets) as Array<[PagePreset, { label: string }]>).map(([preset, option]) => <DropdownMenuRadioItem key={preset} value={preset}>{option.label}</DropdownMenuRadioItem>)}</DropdownMenuRadioGroup></DropdownMenuContent></DropdownMenu>}
+              {activeView === 'editor' && extensionRuntime['lab.immersive-focus'] && <ToolbarButton label="Modo foco" shortcut="Ctrl Shift F" onClick={() => setDistractionFree(true)}><Focus className="size-4" /></ToolbarButton>}
               <DropdownMenu>
                 <DropdownMenuTrigger className="flex size-8 shrink-0 items-center justify-center rounded-control text-muted hover:bg-accent-subtle hover:text-accent" aria-label="Mais ações de escrita" title="Mais ações"><MoreHorizontal className="size-4" /></DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-64">
@@ -1230,7 +1265,7 @@ export function WritingStudio({
               <span className="mx-0.5 h-6 w-px shrink-0 bg-line" aria-hidden="true" />
               <span className={cn('flex shrink-0 items-center gap-1 px-1 text-[11px] text-muted', saveState === 'error' || saveState === 'offline' ? 'text-danger' : undefined)} role="status" title={saveLabel} aria-label={saveLabel}>{saveState === 'saving' ? <Cloud className="size-3.5 animate-pulse" /> : <Check className="size-3.5" />}<span className="hidden lg:inline">{saveState === 'saving' ? 'Salvando' : saveState === 'offline' ? 'Pendente' : saveState === 'error' ? 'Não salvo' : 'Salvo'}</span></span>
             </div>
-            {initialView === 'editor' && extensionRuntime['lab.manuscript-metrics'] && <div className="workspace-scrollbar flex min-h-8 items-center gap-3 overflow-x-auto border-t border-line px-3 text-[11px] text-muted sm:px-4">
+            {activeView === 'editor' && extensionRuntime['lab.manuscript-metrics'] && <div className="workspace-scrollbar flex min-h-8 items-center gap-3 overflow-x-auto border-t border-line px-3 text-[11px] text-muted sm:px-4">
               <span className="shrink-0 font-medium text-ink">{wordCount.toLocaleString('pt-BR')} palavras</span>
               <span className="hidden shrink-0 sm:inline">{characterCount.toLocaleString('pt-BR')} caracteres</span>
               {extensionRuntime['lab.context-mentions'] && mentionSettings.enabled && mentionSettings.showCounts && mentionStats.total > 0 && <span className="hidden shrink-0 md:inline">{mentionStats.total.toLocaleString('pt-BR')} {mentionStats.total === 1 ? 'referência' : 'referências'} · {mentionStats.unique.toLocaleString('pt-BR')} {mentionStats.unique === 1 ? 'entidade' : 'entidades'}</span>}
@@ -1241,7 +1276,7 @@ export function WritingStudio({
           </footer>}
         </main>
 
-        {!distractionFree && showInspector && initialView === 'editor' && (
+        {!distractionFree && showInspector && activeView === 'editor' && (
           <aside className="writing-inspector absolute inset-y-0 right-0 z-30 flex w-[18rem] shrink-0 flex-col border-l shadow-floating xl:static xl:shadow-none" aria-label="Inspetor do documento">
             <div className="border-b border-line px-5 pb-5 pt-20 xl:pt-7"><div className="flex items-center justify-between gap-2"><p className="text-[10px] font-bold uppercase tracking-[0.2em] text-accent">Ficha de escrita</p><button type="button" onClick={toggleInspector} className="flex size-7 items-center justify-center rounded-control text-muted hover:bg-surface-muted xl:hidden" aria-label="Fechar inspetor"><X className="size-4" /></button></div><h2 className="mt-2 truncate font-serif text-lg font-semibold text-ink">{activeDocument.title}</h2><p className="mt-1 text-[11px] text-muted">{statusLabels[activeDocument.status]} · {kindLabels[activeDocument.kind]}</p></div>
             <div className="workspace-scrollbar min-h-0 flex-1 overflow-y-auto px-3 pb-28 pt-4">
@@ -1259,7 +1294,7 @@ export function WritingStudio({
                   <p className={selectedEntity.aliases.length > 0 ? 'mt-1' : undefined}><span className="font-medium text-ink">Atualizada:</span> {new Intl.DateTimeFormat('pt-BR', { dateStyle: 'medium' }).format(new Date(selectedEntity.updatedAt))}</p>
                   <p className="mt-1"><span className="font-medium text-ink">ID:</span> <span className="font-mono">{selectedEntity.id.slice(0, 8)}</span></p>
                 </div>}
-                <Link href={`/write/encyclopedia?work=${project.id}`} className="mt-3 inline-flex text-xs font-medium text-accent hover:underline">Abrir na Enciclopédia</Link>
+                <button type="button" onClick={() => openView('encyclopedia')} className="mt-3 inline-flex text-xs font-medium text-accent hover:underline">Abrir na Enciclopédia</button>
               </section>}
               {extensionRuntime['lab.reference-guardian'] && mentionSettings.enabled && (mentionSettings.showCounts || mentionSettings.verifyReferences) && <section className="mb-3 rounded-card border border-line bg-surface p-4" aria-labelledby="mention-analysis-title">
                 <div className="flex items-center justify-between gap-3"><div><p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-accent">Extensão @</p><h3 id="mention-analysis-title" className="mt-0.5 text-sm font-semibold text-ink">Referências do capítulo</h3></div>{mentionSettings.verifyReferences && (mentionStats.broken > 0 ? <AlertTriangle className="size-4 text-warning" /> : <ShieldCheck className="size-4 text-success" />)}</div>
@@ -1277,7 +1312,7 @@ export function WritingStudio({
                 <div className="mt-3 grid gap-1">
                   <button type="button" onClick={() => void createSnapshot()} className="flex min-h-9 items-center gap-2 rounded-lg px-2 text-left text-xs text-ink hover:bg-surface-muted"><Camera className="size-3.5 text-accent" />Criar instantâneo</button>
                   <button type="button" onClick={exportMarkdown} className="flex min-h-9 items-center gap-2 rounded-lg px-2 text-left text-xs text-ink hover:bg-surface-muted"><Download className="size-3.5 text-accent" />Exportar Markdown</button>
-                  <Link href={`/write/encyclopedia?work=${project.id}`} className="flex min-h-9 items-center gap-2 rounded-lg px-2 text-left text-xs text-ink hover:bg-surface-muted"><BookOpenText className="size-3.5 text-accent" />Abrir Enciclopédia</Link>
+                  <button type="button" onClick={() => openView('encyclopedia')} className="flex min-h-9 items-center gap-2 rounded-lg px-2 text-left text-xs text-ink hover:bg-surface-muted"><BookOpenText className="size-3.5 text-accent" />Abrir Enciclopédia</button>
                 </div>
               </section>
               <details className="group mt-3 rounded-xl border border-line bg-surface p-4">

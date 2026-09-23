@@ -23,7 +23,7 @@ function SubmitButton() {
 export function AdminLoginForm() {
   const [state, formAction] = useActionState(adminLogin, initialState);
   return (
-    <form action={formAction} className="mt-8 space-y-5 [&_label]:text-white/70" noValidate>
+    <form action={formAction} className="mt-8 space-y-5" noValidate>
       {state.message && <div className="rounded-control border border-danger bg-danger-subtle px-4 py-3 text-sm text-ink" role="alert">{state.message}</div>}
       <div>
         <Label htmlFor="admin-email">E-mail administrativo</Label>

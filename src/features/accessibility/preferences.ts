@@ -1,4 +1,5 @@
 export const ACCESSIBILITY_STORAGE_KEY = 'autor-copilot:accessibility';
+export const ACCESSIBILITY_CHANGE_EVENT = 'autor-copilot:accessibility-change';
 
 export const themeOptions = ['system', 'light', 'dark'] as const;
 export const lineHeightOptions = [1.5, 1.65, 1.8] as const;
@@ -14,6 +15,7 @@ export type AccessibilityPreferences = {
   lineHeight: LineHeightPreference;
   textWidth: TextWidthPreference;
   reduceMotion: boolean;
+  highContrast: boolean;
 };
 
 export const defaultAccessibilityPreferences: AccessibilityPreferences = {
@@ -22,6 +24,7 @@ export const defaultAccessibilityPreferences: AccessibilityPreferences = {
   lineHeight: 1.65,
   textWidth: 68,
   reduceMotion: false,
+  highContrast: false,
 };
 
 function isIncluded<T extends readonly unknown[]>(
@@ -58,6 +61,10 @@ export function parseAccessibilityPreferences(
       typeof candidate.reduceMotion === 'boolean'
         ? candidate.reduceMotion
         : defaultAccessibilityPreferences.reduceMotion,
+    highContrast:
+      typeof candidate.highContrast === 'boolean'
+        ? candidate.highContrast
+        : defaultAccessibilityPreferences.highContrast,
   };
 }
 
@@ -77,6 +84,9 @@ export function applyAccessibilityPreferences(
   } else {
     delete root.dataset.reduceMotion;
   }
+
+  if (preferences.highContrast) root.dataset.highContrast = 'true';
+  else delete root.dataset.highContrast;
 
   root.style.setProperty('--editor-font-size', `${preferences.fontSize / 16}rem`);
   root.style.setProperty('--editor-line-height', String(preferences.lineHeight));
@@ -104,6 +114,7 @@ export function saveAccessibilityPreferences(
       ACCESSIBILITY_STORAGE_KEY,
       JSON.stringify(preferences),
     );
+    window.dispatchEvent(new CustomEvent(ACCESSIBILITY_CHANGE_EVENT, { detail: preferences }));
   } catch {
     // As preferências continuam válidas nesta aba quando o armazenamento está
     // indisponível (modo privado, política do navegador ou cota excedida).

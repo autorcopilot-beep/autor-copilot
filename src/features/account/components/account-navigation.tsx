@@ -9,9 +9,9 @@ import { accountSections } from '@/features/account/navigation';
 import { cn } from '@/lib/cn';
 
 const groups = [
-  { label: 'Conta', slugs: ['overview', 'profile', 'login', 'security', 'sessions'] },
-  { label: 'Preferências', slugs: ['writing', 'appearance', 'notifications', 'communications'] },
-  { label: 'Dados e serviços', slugs: ['privacy', 'ai', 'usage', 'storage', 'extensions', 'collaboration', 'team', 'danger'] },
+  { label: 'Seu espaço', slugs: ['overview', 'profile', 'preferences', 'extensions'] },
+  { label: 'Acesso e plano', slugs: ['login', 'security', 'usage'] },
+  { label: 'Conta', slugs: ['danger'] },
 ];
 
 export function AccountNavigation() {

@@ -1,6 +1,6 @@
 'use client';
 
-import { FileClock, FileText, Flag, Gauge, Headphones, Package, Search, ShieldCheck, UserPlus, Users } from 'lucide-react';
+import { Braces, Compass, FileClock, FileText, Flag, Gauge, Headphones, Megaphone, Package, Search, ShieldCheck, Sparkles, UserPlus, Users } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -10,7 +10,7 @@ export type AdminCommand = {
   href: string;
   label: string;
   keywords: string;
-  icon: 'dashboard' | 'admins' | 'new-admin' | 'audit' | 'users' | 'extensions' | 'sound' | 'flags' | 'legal';
+  icon: 'dashboard' | 'admins' | 'new-admin' | 'audit' | 'users' | 'extensions' | 'sound' | 'flags' | 'guidance' | 'archetypes' | 'legal' | 'publish' | 'api';
 };
 
 const icons = {
@@ -22,7 +22,11 @@ const icons = {
   extensions: Package,
   sound: Headphones,
   flags: Flag,
+  guidance: Compass,
+  archetypes: Sparkles,
   legal: FileText,
+  publish: Megaphone,
+  api: Braces,
 };
 
 export function AdminCommandPalette({ commands }: { commands: AdminCommand[] }) {
@@ -47,11 +51,11 @@ export function AdminCommandPalette({ commands }: { commands: AdminCommand[] }) 
 
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} className="hidden min-h-10 w-full max-w-xs items-center gap-2 rounded-control border border-white/10 bg-black/20 px-3 text-left text-sm text-white/45 transition-colors hover:border-white/20 hover:text-white/70 md:flex">
-        <Search className="size-4" aria-hidden="true" /><span className="flex-1">Buscar no God Mode</span><kbd className="rounded border border-white/10 bg-white/[0.04] px-1.5 py-0.5 text-[10px] text-white/40">Ctrl K</kbd>
+      <button type="button" onClick={() => setOpen(true)} className="hidden min-h-10 w-full max-w-xs items-center gap-2 rounded-control border border-line bg-surface px-3 text-left text-sm text-muted shadow-soft transition-colors hover:border-line-strong hover:text-ink md:flex">
+        <Search className="size-4" aria-hidden="true" /><span className="flex-1">Buscar no Admin</span><kbd className="rounded border border-line bg-surface-muted px-1.5 py-0.5 text-[10px] text-muted">Ctrl K</kbd>
       </button>
-      <button type="button" onClick={() => setOpen(true)} className="inline-flex size-10 items-center justify-center rounded-control border border-white/10 text-white/60 hover:bg-white/10 md:hidden" aria-label="Abrir busca global"><Search className="size-4" /></button>
-      <CommandDialog open={open} onOpenChange={setOpen} title="Navegação do God Mode">
+      <button type="button" onClick={() => setOpen(true)} className="inline-flex size-10 items-center justify-center rounded-control border border-line bg-surface text-muted hover:bg-surface-muted hover:text-ink md:hidden" aria-label="Abrir busca global"><Search className="size-4" /></button>
+      <CommandDialog open={open} onOpenChange={setOpen} title="Navegação da administração">
         <Command>
           <CommandInput placeholder="Digite uma página ou ação…" />
           <CommandList>

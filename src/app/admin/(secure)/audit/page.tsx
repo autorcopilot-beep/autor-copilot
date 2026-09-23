@@ -9,9 +9,9 @@ export default async function AuditPage() {
 
   return (
     <div>
-      <p className="text-xs uppercase tracking-[0.2em] text-emerald-300">Audit Trails V1</p>
+      <p className="text-xs uppercase tracking-[0.2em] text-accent">Audit Trails V1</p>
       <h1 className="mt-2 text-3xl font-semibold">Trilha de auditoria</h1>
-      <p className="mt-3 text-sm text-white/50">Os eventos são imutáveis e exibidos do mais recente para o mais antigo.</p>
+      <p className="mt-3 text-sm text-muted">Os eventos são imutáveis e exibidos do mais recente para o mais antigo.</p>
       <div className="mt-7"><AuditEventsTable events={(events ?? []) as AuditEventRow[]} /></div>
     </div>
   );

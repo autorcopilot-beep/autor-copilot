@@ -1,0 +1,50 @@
+# Banco de dados e migrations
+
+## Tabelas tipadas 0
+
+
+## Migrations 43
+
+- `supabase/migrations/20260920005423_create_profiles.sql`
+- `supabase/migrations/20260920030255_add_registration_profile_fields.sql`
+- `supabase/migrations/20260920152224_create_admin_vault.sql`
+- `supabase/migrations/20260920153534_add_registration_profile_fields.sql`
+- `supabase/migrations/20260920153716_create_admin_vault.sql`
+- `supabase/migrations/20260920170720_add_account_profile_fields.sql`
+- `supabase/migrations/20260920170939_add_account_profile_fields.sql`
+- `supabase/migrations/20260920180328_add_profile_username_and_avatar_storage.sql`
+- `supabase/migrations/20260920181745_add_profile_username_and_avatar_storage.sql`
+- `supabase/migrations/20260920191906_create_writing_core.sql`
+- `supabase/migrations/20260920192043_create_writing_core.sql`
+- `supabase/migrations/20260920194833_stabilize_writing_bootstrap.sql`
+- `supabase/migrations/20260920195016_ensure_initial_writing_documents.sql`
+- `supabase/migrations/20260920195954_create_library_hub.sql`
+- `supabase/migrations/20260920201611_create_writing_goals.sql`
+- `supabase/migrations/20260920203000_stabilize_writing_bootstrap.sql`
+- `supabase/migrations/20260920204000_ensure_initial_writing_documents.sql`
+- `supabase/migrations/20260920210000_create_library_hub.sql`
+- `supabase/migrations/20260920220000_create_writing_goals.sql`
+- `supabase/migrations/20260920230000_remove_editor_seed_placeholder.sql`
+- `supabase/migrations/20260920233000_create_encyclopedia_entries.sql`
+- `supabase/migrations/20260920234500_create_admin_product_controls.sql`
+- `supabase/migrations/20260920235500_enforce_extension_entitlements.sql`
+- `supabase/migrations/20260920235900_add_extension_marketplace_media.sql`
+- `supabase/migrations/20260921234429_enrich_encyclopedia.sql`
+- `supabase/migrations/20260921235946_encyclopedia_type_answers.sql`
+- `supabase/migrations/20260922003402_create_media_sound.sql`
+- `supabase/migrations/20260922012816_embed_media_sound_in_writing_workspace.sql`
+- `supabase/migrations/20260922014215_expand_media_sound_playlists_pomodoro.sql`
+- `supabase/migrations/20260922014609_allow_procedural_presets_in_playlists.sql`
+- `supabase/migrations/20260922021021_expand_worldbuilding_encyclopedia.sql`
+- `supabase/migrations/20260923005622_create_omnipublish_hub.sql`
+- `supabase/migrations/20260923011941_expand_omnipublish_creative_studio.sql`
+- `supabase/migrations/20260923014254_expand_omnipublish_catalogs_and_api.sql`
+- `supabase/migrations/20260923022314_harden_omnipublish_server_tables.sql`
+- `supabase/migrations/20260923023339_create_projects_universes_and_product_guidance.sql`
+- `supabase/migrations/20260923030217_refine_product_guide_targets.sql`
+- `supabase/migrations/20260923031000_index_projects_universes_and_guidance_foreign_keys.sql`
+- `supabase/migrations/20260923031117_create_account_preferences_and_author_profiles.sql`
+- `supabase/migrations/20260923033000_seed_account_preferences_guide.sql`
+- `supabase/migrations/20260923034000_explicitly_deny_client_behavior_profile_access.sql`
+- `supabase/migrations/20260923043000_guidance_studio_foundation_depth_and_subscriptions.sql`
+- `supabase/migrations/20260923044000_harden_guidance_catalog.sql`

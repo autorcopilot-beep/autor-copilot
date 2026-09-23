@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { legalDocuments } from "@/lib/legal/documents";
 
-export function LegalSidebar() {
+export function LegalSidebar({ documents }: { documents: Array<{ slug: string; title: string }> }) {
   const pathname = usePathname();
 
   return (
@@ -19,7 +18,7 @@ export function LegalSidebar() {
       >
         Visão geral
       </Link>
-      {legalDocuments.map((doc) => {
+      {documents.map((doc) => {
         const href = `/legal/${doc.slug}`;
         const active = pathname === href;
         return (

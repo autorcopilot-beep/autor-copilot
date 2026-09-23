@@ -4,7 +4,7 @@ export type WritingDocumentKind = Enums<'writing_document_kind'>;
 export type WritingDocumentStatus = Enums<'writing_document_status'>;
 export type EncyclopediaEntryType = Enums<'encyclopedia_entry_type'>;
 export type EncyclopediaStatus = 'draft' | 'canon' | 'archived';
-export type WritingView = 'editor' | 'chapters' | 'scenes' | 'notes' | 'encyclopedia';
+export type WritingView = 'editor' | 'chapters' | 'scenes' | 'notes' | 'encyclopedia' | 'relations';
 
 export type EncyclopediaEntry = {
   id: string;
@@ -37,11 +37,17 @@ export type WorldbuildingProfile = {
   incluingEnabled: boolean;
   genreAnswers: Record<string, string | string[] | boolean>;
   loreAnswers: Record<string, string | string[] | boolean>;
+  foundationStep: number;
+  foundationDepth: 'light' | 'balanced' | 'deep';
+  foundationPreset: string;
+  foundationCompletedAt: string | null;
+  foundationAssets: string[];
 };
 
 export const defaultWorldbuildingProfile: WorldbuildingProfile = {
   methodology: 'inside_out', miceFocus: 'character', genres: [], povMode: 'third_limited',
   psychicDistance: 3, incluingEnabled: true, genreAnswers: {}, loreAnswers: {},
+  foundationStep: 0, foundationDepth: 'balanced', foundationPreset: '', foundationCompletedAt: null, foundationAssets: [],
 };
 
 export function parseProfileAnswers(value: Json | undefined): EncyclopediaEntry['profileAnswers'] {
@@ -102,7 +108,7 @@ export type WritingProject = {
   updatedAt: string;
 };
 
-export const writingViews: WritingView[] = ['editor', 'chapters', 'scenes', 'notes', 'encyclopedia'];
+export const writingViews: WritingView[] = ['editor', 'chapters', 'scenes', 'notes', 'encyclopedia', 'relations'];
 
 export function isWritingView(value: string): value is WritingView {
   return writingViews.includes(value as WritingView);

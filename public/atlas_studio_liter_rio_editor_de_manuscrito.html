@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>Atlas · Studio Literário & Editor de Manuscrito</title>
+  
+  <!-- Tailwind CSS v3 with Forms Plugin -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  
+  <!-- Material Symbols Outlined -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  
+  <!-- Google Fonts: Public Sans, Literata & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;0,7..72,700;1,7..72,400&family=Inter:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  
+  <!-- Tailwind Configuration matching theme guidelines -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Public Sans"', '"Inter"', 'sans-serif'],
+            serif: ['"Literata"', 'Georgia', 'serif'],
+            editorial: ['"Literata"', 'Georgia', 'serif'],
+          },
+          colors: {
+            primary: {
+              DEFAULT: '#ec5b13',
+              hover: '#d94f0e',
+              light: '#ff7733',
+              dark: '#9e3707',
+            },
+            atlas: {
+              bg: '#141614',
+              surface: '#181b18',
+              card: '#1b1e1b',
+              border: '#252925',
+              borderLight: '#2f342f',
+              input: '#1a1d1a',
+              accent: '#82b992',
+              accentHover: '#95c6a3',
+              accentDark: '#1d2a20',
+              accentText: '#5cb87a',
+              textMuted: '#848d84',
+              textDim: '#555d55',
+            },
+            app: {
+              bg: '#141714',
+              sidebar: '#161a16',
+              surface: '#1c201c',
+              card: '#1e231e',
+              border: '#282f28',
+              'border-subtle': '#222822',
+              accent: '#387346',
+              'accent-hover': '#438753',
+              'accent-soft': '#223826',
+              highlight: '#78c288',
+              text: '#e1e7e0',
+              muted: '#7a887b',
+              faded: '#4b554c',
+              emeraldText: '#6ee7b7',
+              light: '#e1e5e2'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- React & Router dependencies (CDN v6.3.0 exact match) -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
+  <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+  <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+  <style>
+    /* Subtle dark scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #141614;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #252e25;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #394739;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body class="bg-atlas-bg text-[#e1e4e1] font-sans antialiased h-screen overflow-hidden select-none">
+  <div id="root" class="h-full"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+    const { createRoot } = ReactDOM;
+    const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
+
+    // --- SHARED COMPONENTS ---
+
+    function FloatingNavbar() {
+      const location = useLocation();
+
+      return (
+        <nav className="pointer-events-auto bg-[#1b201b]/95 backdrop-blur border border-app-border px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-2xl z-40">
+          <Link 
+            to="/" 
+            className="p-1.5 text-app-muted hover:text-white rounded-full hover:bg-white/5 transition-colors flex items-center justify-center" 
+            title="Abrir Livro"
+          >
+            <span className="material-symbols-outlined text-[18px]">auto_stories</span>
+          </Link>
+          <Link
+            to="/"
+            className={`px-2.5 py-1 text-xs flex items-center gap-1 rounded-full transition-colors ${
+              location.pathname === '/' ? 'text-white bg-[#253d29] font-medium border border-[#3b593f]' : 'text-gray-300 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <span className="material-symbols-outlined text-[15px] text-app-muted">edit_note</span>
+            Editor
+          </Link>
+          <Link
+            to="/encyclopedia"
+            className={`px-2.5 py-1 text-xs flex items-center gap-1 rounded-full transition-colors ${
+              location.pathname === '/encyclopedia' ? 'text-white bg-[#253d29] font-medium border border-[#3b593f]' : 'text-gray-300 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <span className="material-symbols-outlined text-[15px] text-app-muted">menu_book</span>
+            Enciclopédia
+          </Link>
+          <Link
+            to="/universe"
+            className={`px-2.5 py-1 text-xs flex items-center gap-1 rounded-full transition-colors ${
+              location.pathname === '/universe' ? 'text-white bg-[#253d29] font-medium border border-[#3b593f]' : 'text-gray-300 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <span className="material-symbols-outlined text-[15px] text-app-muted">hub</span>
+            Universo & Grafo
+          </Link>
+          <button 
+            onClick={() => alert('Controle de ambiência Sonora')} 
+            className="px-2.5 py-1 text-xs text-gray-300 hover:text-white flex items-center gap-1 rounded-full hover:bg-white/5 transition-colors"
+          >
+            <span className="material-symbols-outlined text-[15px] text-app-muted">graphic_eq</span>
+            Som
+          </button>
+          <span className="w-[1px] h-3.5 bg-app-border mx-1"></span>
+          <button 
+            onClick={() => alert('Alternador de tema escuro/claro')} 
+            className="p-1.5 text-app-muted hover:text-white rounded-full hover:bg-white/5 transition-colors" 
+            title="Tema"
+          >
+            <span className="material-symbols-outlined text-[16px]">light_mode</span>
+          </button>
+          <button 
+            onClick={() => alert('Configurações de visualização')} 
+            className="p-1.5 text-app-muted hover:text-white rounded-full hover:bg-white/5 transition-colors" 
+            title="Preferências"
+          >
+            <span className="material-symbols-outlined text-[16px]">tune</span>
+          </button>
+          <div className="w-6 h-6 rounded-full overflow-hidden border border-[#ec5b13] ml-1 cursor-pointer ring-1 ring-white/10" title="Perfil Literário">
+            <img 
+              alt="Avatar do Usuário" 
+              className="w-full h-full object-cover" 
+              src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" 
+            />
+          </div>
+        </nav>
+      );
+    }
+
+    function LeftChapterSidebar({ activeChapter = "Chegada", onSelectChapter }) {
+      const navigate = useNavigate();
+
+      return (
+        <aside className="w-64 shrink-0 bg-[#161a16] border-r border-app-border flex flex-col justify-between h-full z-20">
+          <div className="p-4 flex flex-col flex-1 overflow-y-auto">
+            {/* Cabeçalho da Obra */}
+            <div className="mb-6 pt-1">
+              <span className="text-[10px] tracking-widest font-semibold uppercase text-app-highlight block mb-1">
+                Obra em Curso
+              </span>
+              <h1 className="text-xl font-editorial font-bold text-white tracking-tight">
+                Meu primeiro livro
+              </h1>
+            </div>
+
+            {/* Seção Manuscrito */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-gray-200">Manuscrito</span>
+                  <span className="text-[11px] text-app-muted">2 documentos</span>
+                </div>
+                <button 
+                  onClick={() => alert('Criar novo capítulo no manuscrito')}
+                  className="w-6 h-6 rounded-full bg-[#202720] hover:bg-[#2b352b] text-gray-300 hover:text-white flex items-center justify-center transition-colors" 
+                  title="Novo capítulo"
+                >
+                  <span className="material-symbols-outlined text-[15px]">add</span>
+                </button>
+              </div>
+
+              {/* Lista de Capítulos */}
+              <nav aria-label="Capítulos do manuscrito" className="space-y-1">
+                {/* Item: Chegada */}
+                <div 
+                  onClick={() => { onSelectChapter && onSelectChapter('Chegada'); navigate('/'); }}
+                  className={`group flex items-center justify-between p-2.5 rounded-lg cursor-pointer text-left transition-colors ${
+                    activeChapter === 'Chegada' 
+                      ? 'bg-[#202b21] border border-[#2b3d2d]' 
+                      : 'hover:bg-[#1a201a]'
+                  }`}
+                >
+                  <div className="flex items-start gap-2.5 min-w-0">
+                    <span className={`material-symbols-outlined text-[16px] mt-0.5 shrink-0 ${activeChapter === 'Chegada' ? 'text-app-highlight' : 'text-app-muted'}`}>
+                      description
+                    </span>
+                    <div className="truncate">
+                      <p className={`text-xs font-medium truncate ${activeChapter === 'Chegada' ? 'text-white' : 'text-gray-400 group-hover:text-gray-200'}`}>
+                        Chegada
+                      </p>
+                      <p className="text-[10px] text-app-muted">17 palavras</p>
+                    </div>
+                  </div>
+                  <button className="opacity-70 group-hover:opacity-100 hover:text-white p-1 text-app-muted">
+                    <span className="material-symbols-outlined text-[14px]">more_horiz</span>
+                  </button>
+                </div>
+
+                {/* Item: Capítulo 2 */}
+                <div 
+                  onClick={() => { onSelectChapter && onSelectChapter('Capítulo 2'); navigate('/'); }}
+                  className={`group flex items-center justify-between p-2.5 rounded-lg cursor-pointer text-left transition-colors ${
+                    activeChapter === 'Capítulo 2' 
+                      ? 'bg-[#202b21] border border-[#2b3d2d]' 
+                      : 'hover:bg-[#1a201a]'
+                  }`}
+                >
+                  <div className="flex items-start gap-2.5 min-w-0">
+                    <span className={`material-symbols-outlined text-[16px] mt-0.5 shrink-0 ${activeChapter === 'Capítulo 2' ? 'text-app-highlight' : 'text-app-muted'}`}>
+                      description
+                    </span>
+                    <div className="truncate">
+                      <p className={`text-xs font-medium truncate ${activeChapter === 'Capítulo 2' ? 'text-white' : 'text-gray-400 group-hover:text-gray-200'}`}>
+                        Capítulo 2
+                      </p>
+                      <p className="text-[10px] text-app-muted">Ainda vazio</p>
+                    </div>
+                  </div>
+                  <button className="opacity-0 group-hover:opacity-100 hover:text-white p-1 text-app-muted transition-opacity">
+                    <span className="material-symbols-outlined text-[14px]">more_horiz</span>
+                  </button>
+                </div>
+              </nav>
+            </div>
+          </div>
+
+          {/* Rodapé: Som da Obra */}
+          <div className="p-3 border-t border-app-border">
+            <div className="bg-[#1b221b] border border-app-border rounded-xl p-3 flex flex-col gap-2.5 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-[#243024] flex items-center justify-center text-app-highlight shrink-0">
+                  <span className="material-symbols-outlined text-[18px]">headphones</span>
+                </div>
+                <div className="leading-tight min-w-0">
+                  <span className="text-[9px] tracking-wider uppercase font-bold text-app-highlight block">Som da Obra</span>
+                  <span className="text-[11px] text-gray-300 block truncate">Floresta & Chuva fina</span>
+                </div>
+              </div>
+              <button 
+                onClick={() => alert('Mixer de Áudio Ambiente Atlas aberto!')}
+                className="w-full py-1.5 px-3 bg-[#242b24] hover:bg-[#2d372d] border border-app-border rounded-md text-[11px] text-gray-300 hover:text-white flex items-center justify-center gap-1.5 transition-colors"
+              >
+                <span className="material-symbols-outlined text-[14px] text-app-muted">tune</span>
+                Abrir coleção e mixer
+              </button>
+            </div>
+          </div>
+        </aside>
+      );
+    }
+
+    // --- SCREEN 1: MANUSCRIPT EDITOR ---
+    function ManuscriptEditorScreen() {
+      const [chapterTitle, setChapterTitle] = useState('Chegada');
+      const [content, setContent] = useState('A vida ela carrega com si, diversos preceitos tão imprevisíveis quando a própria e cria existência do universo que nos cerca...');
+      const [isSaved, setIsSaved] = useState(true);
+
+      const wordsCount = content.trim() ? content.trim().split(/\s+/).length : 0;
+      const charsCount = content.length;
+      const progressPercent = Math.min(100, Math.round((wordsCount / 1800) * 100));
+
+      const handleTextChange = (e) => {
+        setContent(e.target.value);
+        setIsSaved(false);
+      };
+
+      const handleSave = () => {
+        setIsSaved(true);
+      };
+
+      return (
+        <div className="flex h-full w-full overflow-hidden">
+          <LeftChapterSidebar activeChapter={chapterTitle} onSelectChapter={setChapterTitle} />
+
+          {/* Área Principal de Escrita */}
+          <main className="flex-1 flex flex-col min-w-0 h-full relative overflow-hidden bg-[#131613]">
+            {/* Top Navigation Central */}
+            <header className="h-16 flex items-center justify-between px-6 z-30 pointer-events-none">
+              <div className="w-10 pointer-events-auto">
+                <Link to="/encyclopedia" className="text-xs text-app-muted hover:text-white flex items-center gap-1 bg-[#1b201b]/80 px-2 py-1 rounded border border-app-border" title="Ir para o Acervo">
+                  <span className="material-symbols-outlined text-[14px]">arrow_back</span>
+                  Atlas
+                </Link>
+              </div>
+
+              {/* Floating Navbar Pill */}
+              <FloatingNavbar />
+
+              {/* Botão Ferramentas */}
+              <div className="pointer-events-auto flex items-center gap-2">
+                <button 
+                  onClick={() => alert('Configurações do Manuscrito')}
+                  className="w-9 h-9 rounded-full bg-[#1e231e] border border-app-border text-gray-300 hover:text-white hover:bg-[#252c25] flex items-center justify-center shadow-lg transition-colors"
+                  title="Ajustes de Projeto"
+                >
+                  <span className="material-symbols-outlined text-[18px]">settings</span>
+                </button>
+              </div>
+            </header>
+
+            {/* Folha de Escrita com rolagem interna */}
+            <section className="flex-1 overflow-y-auto px-6 pt-6 pb-28 flex flex-col items-center">
+              <article className="w-full max-w-2xl text-left select-text">
+                {/* Metadados de cabeçalho do capítulo */}
+                <div className="flex items-center justify-between text-[11px] font-semibold tracking-widest uppercase text-app-muted mb-8">
+                  <span>RASCUNHO · 01</span>
+                  <span className="px-2 py-0.5 rounded bg-[#202720] border border-[#2b372b] text-app-highlight">EM REVISÃO</span>
+                </div>
+
+                {/* Título do Capítulo */}
+                <div className="mb-6">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-app-muted block mb-2">
+                    TÍTULO DO CAPÍTULO
+                  </span>
+                  <input
+                    type="text"
+                    value={chapterTitle}
+                    onChange={(e) => setChapterTitle(e.target.value)}
+                    className="w-full bg-transparent border-none p-0 text-4xl font-editorial font-bold text-white tracking-tight focus:ring-0 focus:outline-none"
+                  />
+                </div>
+
+                {/* Editor Textarea Real */}
+                <textarea
+                  value={content}
+                  onChange={handleTextChange}
+                  placeholder="Comece a digitar seu manuscrito... Use @ para referenciar fichas do universo."
+                  className="w-full h-[520px] bg-transparent border-none p-0 font-editorial text-lg text-gray-200 leading-relaxed focus:ring-0 focus:outline-none resize-none placeholder-app-muted/60"
+                />
+              </article>
+            </section>
+
+            {/* Floating Bottom Bar (Toolbar e Estatísticas) */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30">
+              <div className="bg-[#1b201b]/95 backdrop-blur-md border border-app-border rounded-xl px-4 py-2.5 shadow-2xl flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <button className="flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-gray-200 hover:text-white bg-[#242b24] border border-app-border rounded-lg transition-colors">
+                    <span className="material-symbols-outlined text-[14px] text-app-muted">edit_note</span>
+                    Editor
+                    <span className="material-symbols-outlined text-[12px] text-app-muted">expand_more</span>
+                  </button>
+
+                  <button 
+                    onClick={() => setContent('')} 
+                    className="p-1.5 text-app-muted hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+                    title="Limpar folha"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">content_copy</span>
+                  </button>
+
+                  <button 
+                    onClick={handleSave} 
+                    className="p-1.5 text-app-muted hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+                    title="Salvar agora"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">save</span>
+                  </button>
+
+                  <button className="p-1.5 text-app-highlight bg-[#223525] rounded-lg border border-[#2e4732] transition-colors" title="Alinhamento padrão">
+                    <span className="material-symbols-outlined text-[16px]">format_align_left</span>
+                  </button>
+
+                  <button className="p-1.5 text-app-highlight bg-[#223525] rounded-lg border border-[#2e4732] transition-colors" title="Alinhamento justificado">
+                    <span className="material-symbols-outlined text-[16px]">format_align_justify</span>
+                  </button>
+
+                  <button className="flex items-center gap-1 px-2.5 py-1 text-xs text-gray-300 hover:text-white bg-[#202620] border border-app-border rounded-lg transition-colors">
+                    <span className="material-symbols-outlined text-[14px] text-app-muted">book</span>
+                    Livro · 152 × 229 mm
+                    <span className="material-symbols-outlined text-[12px] text-app-muted">expand_more</span>
+                  </button>
+
+                  <button 
+                    onClick={() => {
+                      if (!document.fullscreenElement) {
+                        document.documentElement.requestFullscreen().catch(() => {});
+                      } else {
+                        document.exitFullscreen().catch(() => {});
+                      }
+                    }} 
+                    className="p-1.5 text-app-muted hover:text-white hover:bg-white/5 rounded-lg transition-colors" 
+                    title="Modo Foco / Tela Cheia"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">fullscreen</span>
+                  </button>
+
+                  {/* Status Salvo */}
+                  <div className="flex items-center gap-1 pl-2 text-xs text-app-muted border-l border-app-border">
+                    <span className={`material-symbols-outlined text-[15px] ${isSaved ? 'text-app-highlight' : 'text-primary'}`}>
+                      {isSaved ? 'check_circle' : 'pending'}
+                    </span>
+                    <span>{isSaved ? 'Salvo' : 'Não salvo'}</span>
+                  </div>
+                </div>
+
+                {/* Linha Inferior: Estatísticas do Capítulo */}
+                <div className="flex items-center justify-between text-[11px] text-app-muted pt-1 border-t border-app-border/40 gap-4">
+                  <div className="flex items-center gap-3">
+                    <span className="text-gray-200 font-medium">{wordsCount} palavras</span>
+                    <span>{charsCount} caracteres</span>
+                    <span>Meta: 1.800</span>
+                  </div>
+                  <div className="w-24 bg-[#232b23] h-1.5 rounded-full overflow-hidden">
+                    <div className="bg-app-accent h-full rounded-full transition-all duration-300" style={{ width: `${progressPercent}%` }}></div>
+                  </div>
+                  <span>1 página</span>
+                </div>
+              </div>
+            </div>
+          </main>
+
+          {/* Barra Lateral Direita: Ficha e Ritmo */}
+          <aside className="w-72 shrink-0 bg-[#161a16] border-l border-app-border flex flex-col justify-between h-full p-4 overflow-y-auto">
+            <div className="space-y-4">
+              <div className="pt-1">
+                <span className="text-[10px] tracking-widest font-semibold uppercase text-app-highlight block mb-1">
+                  Ficha de Escrita
+                </span>
+                <h3 className="text-xl font-editorial font-bold text-white">
+                  {chapterTitle}
+                </h3>
+                <p className="text-xs text-app-muted">Rascunho · Em construção</p>
+              </div>
+
+              {/* Card: Ritmo */}
+              <div className="bg-[#1b221b] border border-app-border rounded-xl p-3.5 space-y-3">
+                <span className="text-[10px] font-bold tracking-wider uppercase text-app-highlight block">
+                  Ritmo Deste Capítulo
+                </span>
+                <div>
+                  <div className="text-3xl font-black text-white tracking-tight">{progressPercent}%</div>
+                  <p className="text-[11px] text-app-muted">{wordsCount} de 1.800 palavras</p>
+                </div>
+                <div className="w-full bg-[#242e24] h-1.5 rounded-full overflow-hidden">
+                  <div className="bg-app-accent h-full rounded-full transition-all duration-300" style={{ width: `${progressPercent}%` }}></div>
+                </div>
+                <p className="text-[11px] text-app-muted leading-tight">
+                  A meta orienta o caminho. O texto encontra o próprio ritmo.
+                </p>
+              </div>
+
+              {/* Card: Extensão @ Referências */}
+              <div className="bg-[#1b221b] border border-app-border rounded-xl p-3.5 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-[9px] font-bold tracking-wider uppercase text-app-muted block">Extensão @</span>
+                    <h4 className="text-xs font-semibold text-gray-200">Referências do capítulo</h4>
+                  </div>
+                  <span className="material-symbols-outlined text-app-highlight text-[18px]">verified</span>
+                </div>
+                <div className="grid grid-cols-3 gap-2 text-center py-1">
+                  <div className="bg-[#161a16] p-2 rounded-lg border border-app-border/40">
+                    <span className="text-lg font-bold text-white block">1</span>
+                    <span className="text-[9px] text-app-muted uppercase">Citações</span>
+                  </div>
+                  <div className="bg-[#161a16] p-2 rounded-lg border border-app-border/40">
+                    <span className="text-lg font-bold text-white block">1</span>
+                    <span className="text-[9px] text-app-muted uppercase">Entidades</span>
+                  </div>
+                  <div className="bg-[#161a16] p-2 rounded-lg border border-app-border/40">
+                    <span className="text-lg font-bold text-white block">0</span>
+                    <span className="text-[9px] text-app-muted uppercase">Quebradas</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 p-2 bg-[#172419] border border-[#233b26] rounded-lg">
+                  <span className="material-symbols-outlined text-app-highlight text-[16px] shrink-0">check_circle</span>
+                  <span className="text-[10px] text-app-highlight leading-tight">
+                    Ficha @Casa citada com coerência no acervo.
+                  </span>
+                </div>
+              </div>
+
+              {/* Card: Visão Rápida */}
+              <div className="bg-[#1b221b] border border-app-border rounded-xl p-3.5 space-y-3">
+                <span className="text-[10px] font-bold tracking-wider uppercase text-app-muted block">
+                  Visão Rápida
+                </span>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="bg-[#161a16] p-2.5 rounded-lg border border-app-border/40">
+                    <span className="text-xl font-bold text-white block">{wordsCount}</span>
+                    <span className="text-[10px] text-app-muted">Palavras</span>
+                  </div>
+                  <div className="bg-[#161a16] p-2.5 rounded-lg border border-app-border/40">
+                    <span className="text-xl font-bold text-white block">1 min</span>
+                    <span className="text-[10px] text-app-muted">Leitura est.</span>
+                  </div>
+                </div>
+                <p className="text-[10px] text-app-muted truncate pt-1 border-t border-app-border/30">
+                  {charsCount} caracteres · Manuscrito ativo
+                </p>
+              </div>
+            </div>
+
+            <div className="flex justify-end pt-3">
+              <button 
+                onClick={() => alert('Ações rápidas de produtividade')}
+                className="w-9 h-9 rounded-full bg-[#1b221b] border border-app-border hover:border-app-highlight text-gray-300 hover:text-white flex items-center justify-center transition-colors shadow-lg" 
+                title="Ações Rápidas"
+              >
+                <span className="material-symbols-outlined text-[18px]">bolt</span>
+              </button>
+            </div>
+          </aside>
+        </div>
+      );
+    }
+
+    // --- SCREEN 2: ENCYCLOPEDIA (ACERVO & CRIAR FICHA) ---
+    function EncyclopediaScreen() {
+      const navigate = useNavigate();
+      const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+      const [searchQuery, setSearchQuery] = useState('');
+      const [selectedCategory, setSelectedCategory] = useState('Todas');
+      
+      const [cards, setCards] = useState([
+        { id: 1, name: 'Casa', category: 'Local', status: 'Em construção', summary: 'Residência ancestral localizada nos limites do bosque.' },
+        { id: 2, name: 'Igor', category: 'Personagem', status: 'Em construção', summary: 'Protagonista silencioso guiado por fragmentos de memórias.' }
+      ]);
+
+      const [newForm, setNewForm] = useState({
+        name: '',
+        category: 'Personagem',
+        status: 'Em construção',
+        aliases: '',
+        summary: ''
+      });
+
+      const handleCreateCard = (e) => {
+        e.preventDefault();
+        if (!newForm.name.trim()) {
+          alert('Por favor informe o nome da ficha.');
+          return;
+        }
+        const newCard = {
+          id: Date.now(),
+          name: newForm.name,
+          category: newForm.category,
+          status: newForm.status,
+          summary: newForm.summary || 'Sem resumo preliminar.'
+        };
+        setCards([newCard, ...cards]);
+        setNewForm({ name: '', category: 'Personagem', status: 'Em construção', aliases: '', summary: '' });
+        setIsDrawerOpen(false);
+      };
+
+      const filteredCards = cards.filter(card => {
+        const matchesCategory = selectedCategory === 'Todas' || card.category === selectedCategory;
+        const matchesSearch = card.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                              card.summary.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesCategory && matchesSearch;
+      });
+
+      return (
+        <div className="flex h-full w-full overflow-hidden relative">
+          <main className="flex-1 flex flex-col h-full overflow-y-auto px-10 py-6">
+            {/* Top Bar with Nav & Action Buttons */}
+            <div className="flex justify-between items-center mb-4">
+              <FloatingNavbar />
+              
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={() => setIsDrawerOpen(true)}
+                  className="px-3.5 py-1.5 rounded-full bg-[#9bc4a5] hover:bg-[#a9d0b3] text-[#141b15] font-semibold text-xs flex items-center gap-1.5 shadow-sm transition-colors"
+                >
+                  <span className="material-symbols-outlined text-[16px]">add</span>
+                  Nova ficha
+                </button>
+                <button 
+                  onClick={() => navigate('/')}
+                  className="w-10 h-10 rounded-full bg-atlas-card hover:bg-atlas-border border border-atlas-border flex items-center justify-center text-atlas-textMuted hover:text-white transition-colors" 
+                  title="Voltar ao Manuscrito"
+                >
+                  <span className="material-symbols-outlined text-[18px]">auto_stories</span>
+                </button>
+                <button 
+                  onClick={() => navigate('/universe')}
+                  className="w-10 h-10 rounded-full bg-atlas-card hover:bg-atlas-border border border-atlas-border flex items-center justify-center text-atlas-textMuted hover:text-white transition-colors" 
+                  title="Ver Grafo"
+                >
+                  <span className="material-symbols-outlined text-[18px]">hub</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Header Banner */}
+            <header className="bg-atlas-surface border border-atlas-border rounded-2xl p-7 mb-6">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-[11px] tracking-wider font-semibold text-atlas-textMuted uppercase">Atlas</span>
+                <span className="text-atlas-textDim text-xs">·</span>
+                <span className="text-[11px] tracking-wider font-semibold text-atlas-textMuted uppercase">Meu Primeiro Livro</span>
+              </div>
+              <h1 className="text-4xl font-serif font-bold text-white tracking-tight mb-2.5">Enciclopédia</h1>
+              <p className="text-sm text-atlas-textMuted max-w-2xl leading-relaxed">
+                A memória viva da sua obra. Organize o mundo, mantenha detalhes coerentes e cite qualquer ficha no manuscrito com <span className="bg-[#242924] px-1.5 py-0.5 rounded text-white font-mono text-xs">@</span> .
+              </p>
+            </header>
+
+            {/* Metric Counters */}
+            <section className="grid grid-cols-2 gap-4 mb-6">
+              <article className="bg-atlas-surface border border-atlas-border rounded-xl p-5">
+                <div className="text-atlas-textMuted mb-2">
+                  <span className="material-symbols-outlined text-[20px] opacity-70">auto_stories</span>
+                </div>
+                <div className="text-2xl font-bold text-white mb-0.5">{cards.length}</div>
+                <div className="text-xs text-atlas-textMuted">fichas neste universo</div>
+              </article>
+              
+              <article className="bg-atlas-surface border border-atlas-border rounded-xl p-5">
+                <div className="text-atlas-textMuted mb-2">
+                  <span className="material-symbols-outlined text-[20px] opacity-70">verified</span>
+                </div>
+                <div className="text-2xl font-bold text-white mb-0.5">
+                  {cards.filter(c => c.status === 'Cânone').length}
+                </div>
+                <div className="text-xs text-atlas-textMuted">marcadas como cânone</div>
+              </article>
+            </section>
+
+            {/* Sub-navigation tabs */}
+            <nav className="flex items-center gap-2 mb-6">
+              <button className="px-4 py-2 rounded-full text-xs font-medium bg-[#262c26] text-white border border-atlas-border">Acervo</button>
+              <button onClick={() => navigate('/universe')} className="px-4 py-2 rounded-full text-xs font-medium text-atlas-textMuted hover:text-white hover:bg-atlas-surface transition-colors">Fundamentos da obra</button>
+              <button onClick={() => navigate('/universe')} className="px-4 py-2 rounded-full text-xs font-medium text-atlas-textMuted hover:text-white hover:bg-atlas-surface transition-colors">Projetos e universos</button>
+              <button onClick={() => alert('Dica: Digite @ dentro do texto no editor para vincular personagens')} className="px-4 py-2 rounded-full text-xs font-medium text-atlas-textMuted hover:text-white hover:bg-atlas-surface transition-colors">Guia e exemplos</button>
+            </nav>
+
+            {/* Catalog Layout */}
+            <div className="grid grid-cols-12 gap-6 items-start pb-12">
+              {/* Left sidebar categories */}
+              <aside className="col-span-3 bg-atlas-surface border border-atlas-border rounded-xl p-4">
+                <h2 className="text-[11px] font-semibold tracking-wider text-atlas-textDim uppercase px-3 py-1 mb-2">Explorar</h2>
+                <nav className="space-y-1">
+                  {[
+                    { label: 'Todas', icon: 'apps', count: cards.length },
+                    { label: 'Personagem', icon: 'person', count: cards.filter(c => c.category === 'Personagem').length },
+                    { label: 'Local', icon: 'location_on', count: cards.filter(c => c.category === 'Local').length },
+                    { label: 'Organização', icon: 'corporate_fare', count: cards.filter(c => c.category === 'Organização').length },
+                    { label: 'Objeto', icon: 'inventory_2', count: cards.filter(c => c.category === 'Objeto').length },
+                  ].map(cat => (
+                    <button
+                      key={cat.label}
+                      onClick={() => setSelectedCategory(cat.label)}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors ${
+                        selectedCategory === cat.label
+                          ? 'bg-[#222822] text-emerald-400 font-medium'
+                          : 'text-atlas-textMuted hover:text-white hover:bg-atlas-card'
+                      }`}
+                    >
+                      <span className="flex items-center gap-2.5">
+                        <span className="material-symbols-outlined text-[15px]">{cat.icon}</span>
+                        {cat.label}
+                      </span>
+                      <span className="text-atlas-textDim text-xs">{cat.count}</span>
+                    </button>
+                  ))}
+                </nav>
+              </aside>
+
+              {/* Items Collection */}
+              <section className="col-span-9 space-y-4">
+                <div className="relative">
+                  <span className="material-symbols-outlined text-[18px] text-atlas-textMuted absolute left-4 top-1/2 -translate-y-1/2">search</span>
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Buscar nome, etiqueta, papel ou resumo..."
+                    className="w-full pl-11 pr-4 py-2.5 bg-atlas-surface border border-atlas-border rounded-xl text-xs text-white placeholder-atlas-textDim focus:outline-none focus:border-atlas-accent"
+                  />
+                </div>
+
+                <div className="text-[11px] text-atlas-textDim">
+                  {filteredCards.length} ficha{filteredCards.length !== 1 ? 's' : ''} encontrada{filteredCards.length !== 1 ? 's' : ''}
+                </div>
+
+                {/* Cards Grid */}
+                <div className="grid grid-cols-2 gap-4">
+                  {filteredCards.map((card) => (
+                    <article 
+                      key={card.id} 
+                      className="p-5 rounded-xl bg-atlas-surface border border-atlas-border hover:border-[#2f4a35] transition-colors relative group cursor-pointer"
+                      onClick={() => alert(`Ficha selecionada: ${card.name}\n\n${card.summary}`)}
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-[#242924] flex items-center justify-center text-atlas-textMuted mb-3">
+                        <span className="material-symbols-outlined text-[18px] text-app-highlight">
+                          {card.category === 'Personagem' ? 'person' : card.category === 'Local' ? 'location_on' : 'category'}
+                        </span>
+                      </div>
+                      <h3 className="text-base font-bold text-white mb-1 group-hover:text-emerald-300 transition-colors">
+                        {card.name}
+                      </h3>
+                      <span className="text-[10px] tracking-wider font-semibold text-atlas-textDim uppercase block mb-2">
+                        {card.category} · {card.status}
+                      </span>
+                      <p className="text-xs text-atlas-textMuted line-clamp-2 leading-relaxed">
+                        {card.summary}
+                      </p>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            </div>
+          </main>
+
+          {/* Right Drawer: "Criar Ficha" Form */}
+          {isDrawerOpen && (
+            <aside className="w-[480px] max-w-full bg-[#181a18] border-l border-atlas-border flex flex-col h-full shadow-2xl relative z-50 shrink-0">
+              <div className="px-6 py-5 flex items-center justify-between border-b border-atlas-border/60">
+                <h2 className="text-xl font-serif font-bold text-white tracking-tight">Criar ficha</h2>
+                <button
+                  onClick={() => setIsDrawerOpen(false)}
+                  className="text-atlas-textMuted hover:text-white p-1 rounded-lg hover:bg-atlas-card transition-colors text-base"
+                  aria-label="Fechar"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Form Body */}
+              <form onSubmit={handleCreateCard} className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-[11px] font-bold tracking-wider text-atlas-accent uppercase block mb-1">Nova Ficha</span>
+                    <h3 className="text-2xl font-serif font-bold text-white tracking-tight">Registrar no universo</h3>
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#1d2d20] text-emerald-400 border border-emerald-900/40">
+                    Na nuvem
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-atlas-textMuted mb-2">Categoria</label>
+                    <div className="relative">
+                      <select
+                        value={newForm.category}
+                        onChange={(e) => setNewForm({ ...newForm, category: e.target.value })}
+                        className="w-full bg-[#1e221e] border border-atlas-border rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-atlas-accent appearance-none cursor-pointer pr-9"
+                      >
+                        <option>Personagem</option>
+                        <option>Local</option>
+                        <option>Organização</option>
+                        <option>Objeto</option>
+                      </select>
+                      <span className="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-atlas-textMuted pointer-events-none text-[18px]">
+                        expand_more
+                      </span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-atlas-textMuted mb-2">Situação</label>
+                    <div className="relative">
+                      <select
+                        value={newForm.status}
+                        onChange={(e) => setNewForm({ ...newForm, status: e.target.value })}
+                        className="w-full bg-[#1e221e] border border-atlas-border rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-atlas-accent appearance-none cursor-pointer pr-9"
+                      >
+                        <option>Em construção</option>
+                        <option>Finalizado</option>
+                        <option>Cânone</option>
+                        <option>Descartado</option>
+                      </select>
+                      <span className="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-atlas-textMuted pointer-events-none text-[18px]">
+                        expand_more
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-atlas-textMuted mb-2">Modelo de ficha</label>
+                  <div className="p-3.5 rounded-xl border border-emerald-700/60 bg-[#1d271f]">
+                    <div className="font-bold text-sm text-white mb-0.5">{newForm.category}</div>
+                    <div className="text-xs text-atlas-textMuted">
+                      {newForm.category === 'Personagem' && 'Psicologia, arco, corpo e relações de fricção.'}
+                      {newForm.category === 'Local' && 'Geografia, atmosfera sensorial, história e pontos focais.'}
+                      {newForm.category === 'Organização' && 'Hierarquia, dogmas, influência política e recursos.'}
+                      {newForm.category === 'Objeto' && 'Origem mística, posse, limitações e simbolismo.'}
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-atlas-textMuted mb-2">Nome *</label>
+                  <input
+                    type="text"
+                    required
+                    value={newForm.name}
+                    onChange={(e) => setNewForm({ ...newForm, name: e.target.value })}
+                    placeholder="Nome pelo qual será citado com @"
+                    className="w-full bg-[#1e221e] border border-atlas-border rounded-xl px-4 py-2.5 text-sm text-white placeholder-atlas-textDim focus:outline-none focus:border-atlas-accent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-atlas-textMuted mb-2">Outros nomes / apelidos</label>
+                  <input
+                    type="text"
+                    value={newForm.aliases}
+                    onChange={(e) => setNewForm({ ...newForm, aliases: e.target.value })}
+                    placeholder="Apelidos separados por vírgula"
+                    className="w-full bg-[#1e221e] border border-atlas-border rounded-xl px-4 py-2.5 text-sm text-white placeholder-atlas-textDim focus:outline-none focus:border-atlas-accent"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-atlas-textMuted mb-2">Resumo rápido</label>
+                  <textarea
+                    rows={4}
+                    value={newForm.summary}
+                    onChange={(e) => setNewForm({ ...newForm, summary: e.target.value })}
+                    placeholder="O essencial para lembrar durante a escrita."
+                    className="w-full bg-[#1e221e] border border-atlas-border rounded-xl px-4 py-3 text-sm text-white placeholder-atlas-textDim focus:outline-none focus:border-atlas-accent resize-none"
+                  />
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    className="w-full py-3 px-4 rounded-full bg-[#9bc4a5] hover:bg-[#a9d0b3] text-[#141b15] font-semibold text-sm flex items-center justify-center gap-2 shadow-sm transition-colors cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">check</span>
+                    Salvar e criar ficha
+                  </button>
+                </div>
+              </form>
+            </aside>
+          )}
+        </div>
+      );
+    }
+
+    // --- SCREEN 3: UNIVERSE & RELATIONAL GRAPH ---
+    function UniverseGraphScreen() {
+      const navigate = useNavigate();
+      const [nodes, setNodes] = useState([
+        { id: 'casa', name: 'Casa', type: 'local' },
+        { id: 'universe', name: 'Universo de Meu pri...', type: 'root', sub: 'Meu primeiro livro' },
+        { id: 'igor', name: 'Igor', type: 'character' }
+      ]);
+      const [relations, setRelations] = useState([
+        { id: 1, source: 'Casa', relation: 'conhece', target: 'Igor' }
+      ]);
+      const [selectedNode, setSelectedNode] = useState('universe');
+      const [newRelationNode, setNewRelationNode] = useState('Casa');
+
+      const handleAddRelation = () => {
+        const nextRel = {
+          id: Date.now(),
+          source: newRelationNode,
+          relation: 'influencia',
+          target: newRelationNode === 'Casa' ? 'Igor' : 'Casa'
+        };
+        setRelations([...relations, nextRel]);
+      };
+
+      const handleRemoveRelation = (id) => {
+        setRelations(relations.filter(r => r.id !== id));
+      };
+
+      return (
+        <div className="flex h-full w-full overflow-hidden bg-app-bg">
+          <LeftChapterSidebar activeChapter="Chegada" />
+
+          {/* Main Universe Canvas */}
+          <main className="flex-1 flex flex-col h-full overflow-hidden">
+            {/* Top Workflow Breadcrumb Header */}
+            <header className="h-16 px-6 border-b border-app-border/30 flex items-center justify-between shrink-0">
+              <nav aria-label="Fluxo de Criação" className="flex items-center gap-2 text-xs font-medium">
+                <button 
+                  onClick={() => alert('Projeto Principal')} 
+                  className="px-3 py-1.5 rounded-full bg-emerald-950/40 text-emerald-300 border border-emerald-800/40 hover:bg-emerald-900/50 transition"
+                >
+                  Projeto
+                </button>
+                <span className="material-symbols-outlined text-gray-500 text-[14px]">arrow_forward</span>
+                
+                <button 
+                  className="px-3 py-1.5 rounded-full bg-[#253d29] text-white border border-[#3b593f] transition font-semibold"
+                >
+                  Universo
+                </button>
+                <span className="material-symbols-outlined text-gray-500 text-[14px]">arrow_forward</span>
+
+                <button 
+                  onClick={() => navigate('/')} 
+                  className="px-3 py-1.5 rounded-full bg-app-card text-gray-300 border border-app-border hover:border-gray-500 transition"
+                >
+                  Obras
+                </button>
+                <span className="material-symbols-outlined text-gray-500 text-[14px]">arrow_forward</span>
+
+                <button 
+                  onClick={() => navigate('/encyclopedia')} 
+                  className="px-3 py-1.5 rounded-full bg-app-card text-gray-300 border border-app-border hover:border-gray-500 transition"
+                >
+                  Fichas e relações
+                </button>
+              </nav>
+
+              <FloatingNavbar />
+
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => navigate('/encyclopedia')}
+                  className="w-8 h-8 rounded-full bg-app-card hover:bg-app-cardHover border border-app-border text-gray-300 flex items-center justify-center transition" 
+                  title="Leitura / Referência"
+                >
+                  <span className="material-symbols-outlined text-[16px]">menu_book</span>
+                </button>
+                <button 
+                  onClick={() => alert('Ferramentas de Universo')}
+                  className="w-8 h-8 rounded-full bg-app-card hover:bg-app-cardHover border border-app-border text-gray-300 flex items-center justify-center transition" 
+                  title="Ferramentas"
+                >
+                  <span className="material-symbols-outlined text-[16px]">build</span>
+                </button>
+              </div>
+            </header>
+
+            {/* Central Workspace Columns */}
+            <div className="flex-1 flex overflow-hidden p-6 gap-6">
+              {/* Column 1: Projects / Universes List */}
+              <section className="w-80 shrink-0 flex flex-col gap-4">
+                <div className="bg-app-card/40 border border-app-border/60 rounded-2xl p-4 flex flex-col gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-7 h-7 rounded-lg bg-emerald-950/30 flex items-center justify-center text-emerald-400">
+                      <span className="material-symbols-outlined text-[18px]">map</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-bold text-gray-400 tracking-wider uppercase block">Projeto</span>
+                      <h2 className="text-sm font-semibold text-gray-100">Meu primeiro livro</h2>
+                    </div>
+                  </div>
+
+                  {/* Nested Universe Card */}
+                  <div className="mt-1 bg-emerald-950/20 border border-emerald-500/50 rounded-xl p-3 flex items-center justify-between cursor-pointer hover:border-emerald-400 transition">
+                    <div className="flex items-start gap-2.5">
+                      <span className="material-symbols-outlined text-emerald-400 text-[18px] mt-0.5 shrink-0">hub</span>
+                      <div className="flex flex-col">
+                        <span className="text-xs font-semibold text-gray-100">Universo de Meu primeiro livro</span>
+                        <span className="text-[11px] text-gray-400">1 obra(s) · 2 fichas ativas</span>
+                      </div>
+                    </div>
+                    <span className="text-emerald-400 font-bold text-sm">✓</span>
+                  </div>
+                </div>
+
+                <div className="p-4 bg-app-card/30 border border-app-border/40 rounded-xl">
+                  <h3 className="text-xs font-semibold text-white mb-1.5 flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-app-highlight text-[16px]">insights</span>
+                    Topologia Relacional
+                  </h3>
+                  <p className="text-[11px] text-app-muted leading-relaxed">
+                    Nós conectados representam conexões lógicas e de enredo citadas diretamente através dos manuscritos.
+                  </p>
+                </div>
+              </section>
+
+              {/* Column 2: Selected Universe & Interactive Graph Viewport */}
+              <section className="flex-1 bg-app-card/30 border border-app-border/60 rounded-2xl p-6 flex flex-col overflow-y-auto">
+                <header className="flex items-start gap-3.5 mb-6 shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-emerald-950/40 border border-emerald-700/40 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5">
+                    <span className="material-symbols-outlined text-[20px]">hub</span>
+                  </div>
+                  <div>
+                    <span className="text-[11px] font-bold tracking-wider text-emerald-400 uppercase">Universo Selecionado</span>
+                    <h2 className="text-xl font-bold text-gray-100 tracking-tight">Universo de Meu primeiro livro</h2>
+                    <p className="text-xs text-gray-400 mt-0.5">Política de cânone: compartilhado</p>
+                  </div>
+                </header>
+
+                {/* Visual Canvas with Interactive Node Hierarchy */}
+                <div className="relative flex-1 min-h-[400px] bg-[#161816] rounded-xl border border-app-border/40 flex flex-col items-center justify-center p-8 select-none overflow-hidden">
+                  {/* Subtle graph background grid */}
+                  <div 
+                    className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+                    style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '24px 24px' }}
+                  ></div>
+
+                  {/* Node 1: Top Node (Casa) */}
+                  <div className="relative z-10">
+                    <button 
+                      onClick={() => setSelectedNode('casa')}
+                      className={`px-5 py-1.5 rounded-full bg-[#1b1f1c] border text-xs font-medium text-gray-200 shadow-md cursor-pointer transition transform hover:scale-105 ${
+                        selectedNode === 'casa' ? 'border-emerald-400 ring-2 ring-emerald-500/20' : 'border-emerald-900/60 hover:border-emerald-500/80'
+                      }`}
+                    >
+                      Casa (Local)
+                    </button>
+                  </div>
+
+                  {/* Vertical Connector Line (Casa -> Universe) */}
+                  <div className="w-[1.5px] h-14 bg-emerald-900/80"></div>
+
+                  {/* Node 2: Center Primary Node (Universe) */}
+                  <div className="relative z-10">
+                    <button 
+                      onClick={() => setSelectedNode('universe')}
+                      className={`px-6 py-3.5 rounded-xl bg-[#1b201d] border shadow-lg flex flex-col items-center gap-1.5 min-w-[210px] cursor-pointer transition transform hover:scale-105 ${
+                        selectedNode === 'universe' ? 'border-emerald-400 ring-2 ring-emerald-500/20' : 'border-emerald-500/80'
+                      }`}
+                    >
+                      <span className="material-symbols-outlined text-emerald-400 text-[18px]">hub</span>
+                      <span className="text-xs font-bold text-gray-100">Universo de Meu pri...</span>
+                      <div className="flex items-center gap-1.5 text-[11px] text-gray-400">
+                        <span className="material-symbols-outlined text-[13px] text-gray-500">book</span>
+                        <span>Meu primeiro livro</span>
+                      </div>
+                    </button>
+                  </div>
+
+                  {/* Vertical Connector Line (Universe -> Igor) */}
+                  <div className="w-[1.5px] h-14 bg-emerald-900/80"></div>
+
+                  {/* Node 3: Bottom Node (Igor) */}
+                  <div className="relative z-10">
+                    <button 
+                      onClick={() => setSelectedNode('igor')}
+                      className={`px-5 py-1.5 rounded-full bg-[#1b1f1c] border text-xs font-medium text-gray-200 shadow-md cursor-pointer transition transform hover:scale-105 ${
+                        selectedNode === 'igor' ? 'border-emerald-400 ring-2 ring-emerald-500/20' : 'border-emerald-900/60 hover:border-emerald-500/80'
+                      }`}
+                    >
+                      Igor (Personagem)
+                    </button>
+                  </div>
+                </div>
+
+                {/* Graph Relations Footer */}
+                <footer className="mt-6 pt-2 grid grid-cols-1 md:grid-cols-2 gap-6 shrink-0">
+                  {/* Relações Ativas */}
+                  <div className="space-y-2">
+                    <span className="text-[11px] font-bold tracking-wider text-gray-400 uppercase">Relações do Grafo ({relations.length})</span>
+                    <div className="space-y-2 max-h-32 overflow-y-auto pr-1">
+                      {relations.map((rel) => (
+                        <div key={rel.id} className="p-2.5 rounded-xl bg-[#171a18] border border-app-border/40 flex items-center justify-between text-xs">
+                          <div className="flex items-center gap-2 text-gray-300">
+                            <span className="font-medium text-gray-200">{rel.source}</span>
+                            <span className="px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 text-[10px] font-mono border border-emerald-800/40">
+                              {rel.relation}
+                            </span>
+                            <span className="material-symbols-outlined text-gray-500 text-[13px]">arrow_forward</span>
+                            <span className="font-medium text-gray-200">{rel.target}</span>
+                          </div>
+                          <button 
+                            onClick={() => handleRemoveRelation(rel.id)}
+                            className="text-gray-500 hover:text-red-400 transition p-1" 
+                            title="Desconectar"
+                          >
+                            <span className="material-symbols-outlined text-[15px]">delete</span>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Nova Relação Form Column */}
+                  <div className="space-y-2">
+                    <span className="text-[11px] font-bold tracking-wider text-gray-400 uppercase">Criar Nova Relação</span>
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <select 
+                          value={newRelationNode}
+                          onChange={(e) => setNewRelationNode(e.target.value)}
+                          className="w-full bg-[#171a18] border border-app-border/50 rounded-xl px-3 py-2 text-xs text-gray-200 focus:outline-none focus:border-emerald-500 appearance-none pr-8 cursor-pointer"
+                        >
+                          <option>Casa</option>
+                          <option>Igor</option>
+                          <option>Universo de Meu primeiro livro</option>
+                        </select>
+                        <span className="material-symbols-outlined absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-[16px]">
+                          expand_more
+                        </span>
+                      </div>
+                      <button
+                        onClick={handleAddRelation}
+                        className="px-3 py-2 bg-emerald-900/60 hover:bg-emerald-800/80 border border-emerald-700 text-emerald-200 rounded-xl text-xs font-semibold flex items-center gap-1 transition"
+                      >
+                        <span className="material-symbols-outlined text-[14px]">add</span>
+                        Conectar
+                      </button>
+                    </div>
+                  </div>
+                </footer>
+              </section>
+            </div>
+          </main>
+
+          {/* Floating Action Button */}
+          <button 
+            onClick={() => alert('Grafo sincronizado com todos os documentos do universo!')}
+            className="fixed bottom-5 right-5 w-10 h-10 rounded-full bg-[#1e231f] hover:bg-[#272f29] border border-app-border text-gray-300 hover:text-white flex items-center justify-center shadow-2xl transition z-50" 
+            title="Ações Rápidas / Configurações do Grafo"
+          >
+            <span className="material-symbols-outlined text-[18px]">account_tree</span>
+          </button>
+        </div>
+      );
+    }
+
+    // --- MAIN APPLICATION WRAPPER & ROUTER ---
+    function App() {
+      return (
+        <MemoryRouter initialEntries={["/"]}>
+          <Routes>
+            <Route path="/" element={<ManuscriptEditorScreen />} />
+            <Route path="/encyclopedia" element={<EncyclopediaScreen />} />
+            <Route path="/universe" element={<UniverseGraphScreen />} />
+          </Routes>
+        </MemoryRouter>
+      );
+    }
+
+    const container = document.getElementById('root');
+    const root = createRoot(container);
+    root.render(<App />);
+  </script>
+</body>
+</html>

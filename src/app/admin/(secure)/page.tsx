@@ -1,4 +1,4 @@
-import { Activity, FileText, Flag, Headphones, PackageCheck, Shield, Users } from 'lucide-react';
+import { Activity, FileText, Flag, Headphones, Megaphone, PackageCheck, Shield, Users } from 'lucide-react';
 import Link from 'next/link';
 
 import { requireAdmin } from '@/features/admin/auth';
@@ -8,6 +8,7 @@ export default async function AdminHomePage({ searchParams }: { searchParams: Pr
   const admin = await requireAdmin();
   const { error } = await searchParams;
   const modules = [
+    { href: '/admin/publish', permission: 'communications.read' as const, icon: Megaphone, title: 'OmniPublish', copy: 'Campanhas multicanal, revisão e entregas rastreáveis.' },
     { href: '/admin/users', permission: 'users.read' as const, icon: Users, title: 'Usuários', copy: 'Status, grupos de acesso e tags operacionais.' },
     { href: '/admin/extensions', permission: 'features.read' as const, icon: PackageCheck, title: 'Extensões', copy: 'Catálogo, publicação, preço e elegibilidade.' },
     { href: '/admin/sound', permission: 'features.read' as const, icon: Headphones, title: 'Media & Sound', copy: 'Faixas, capas, licenças e provas de audiolivro.' },
@@ -17,8 +18,8 @@ export default async function AdminHomePage({ searchParams }: { searchParams: Pr
     { href: '/admin/audit', permission: 'audit.read' as const, icon: Activity, title: 'Auditoria', copy: 'Histórico imutável das alterações.' },
   ].filter((module) => hasAdminPermission(admin.role, module.permission));
   return <div>
-    {error === 'forbidden' && <div className="mb-6 rounded-control border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-100" role="alert">Seu papel não possui permissão para executar essa ação.</div>}
-    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-300">The Vault · Product Control</p><h1 className="mt-2 text-3xl font-semibold">Centro de controle</h1><p className="mt-3 max-w-2xl text-white/55">Sessão validada para {adminRoleLabels[admin.role]}. Mudanças sensíveis passam por RBAC e são registradas na trilha de auditoria.</p>
-    <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" aria-label="Módulos administrativos">{modules.map(({ href, icon: Icon, title, copy }) => <Link key={href} href={href} className="group rounded-card border border-white/10 bg-white/[0.035] p-5 transition-colors hover:border-emerald-400/35 hover:bg-white/[0.06]"><Icon className="size-5 text-emerald-300" /><h2 className="mt-5 font-medium group-hover:text-emerald-100">{title}</h2><p className="mt-1 text-sm text-white/45">{copy}</p></Link>)}</section>
+    {error === 'forbidden' && <div className="mb-6 rounded-control border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-danger" role="alert">Seu papel não possui permissão para executar essa ação.</div>}
+    <section className="overflow-hidden rounded-[1.75rem] border border-line bg-surface p-6 shadow-soft sm:p-9"><p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">Operação do produto</p><h1 className="mt-3 max-w-3xl font-serif text-3xl font-semibold sm:text-4xl">Centro de controle do Autor Copilot</h1><p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted">Sessão validada para {adminRoleLabels[admin.role]}. Mudanças sensíveis respeitam as permissões da equipe e entram automaticamente na trilha de auditoria.</p><div className="mt-7 flex flex-wrap gap-2"><span className="rounded-full bg-success-subtle px-3 py-1.5 text-xs font-medium text-success">Sessão protegida</span><span className="rounded-full bg-accent-subtle px-3 py-1.5 text-xs font-medium text-accent">{modules.length} módulos disponíveis</span></div></section>
+    <section className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-label="Módulos administrativos">{modules.map(({ href, icon: Icon, title, copy }) => <Link key={href} href={href} className="group rounded-2xl border border-line bg-surface p-5 shadow-soft transition-[border-color,transform,box-shadow] hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-floating"><span className="flex size-10 items-center justify-center rounded-xl bg-accent-subtle text-accent"><Icon className="size-5" /></span><h2 className="mt-5 font-serif text-lg font-semibold group-hover:text-accent">{title}</h2><p className="mt-1 text-sm leading-relaxed text-muted">{copy}</p></Link>)}</section>
   </div>;
 }

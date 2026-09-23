@@ -2,7 +2,7 @@ import { ACCESSIBILITY_STORAGE_KEY } from './preferences';
 
 export const accessibilityBootstrapScript = `
   try {
-    const defaults = { theme: 'system', fontSize: 19, lineHeight: 1.65, textWidth: 68, reduceMotion: false };
+    const defaults = { theme: 'system', fontSize: 19, lineHeight: 1.65, textWidth: 68, reduceMotion: false, highContrast: false };
     const raw = localStorage.getItem('${ACCESSIBILITY_STORAGE_KEY}');
     const saved = raw ? JSON.parse(raw) : {};
     const root = document.documentElement;
@@ -16,6 +16,9 @@ export const accessibilityBootstrapScript = `
 
     if (saved.reduceMotion === true) root.dataset.reduceMotion = 'true';
     else root.removeAttribute('data-reduce-motion');
+
+    if (saved.highContrast === true) root.dataset.highContrast = 'true';
+    else root.removeAttribute('data-high-contrast');
 
     root.style.setProperty('--editor-font-size', (fontSize / 16) + 'rem');
     root.style.setProperty('--editor-line-height', String(lineHeight));

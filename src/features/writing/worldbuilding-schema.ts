@@ -121,6 +121,20 @@ export const povDistances = [
   { level: 5, label: 'Fluxo sensorial bruto', example: 'Pensamento, sensação e linguagem quase se confundem.' },
 ] as const;
 
+export const foundationPresets = [
+  { id: 'character-first', label: 'Personagem primeiro', description: 'Parte do conflito íntimo e expande o mundo quando a trama pedir.', methodology: 'bottom_up', miceFocus: 'character', genres: [] as string[], povMode: 'third_limited', assets: ['character-core', 'relationship-map', 'voice-sheet'], accent: 'Da pessoa para o mundo' },
+  { id: 'epic-architecture', label: 'Universo épico', description: 'Organiza sistemas, história, geografia e poder antes de aproximar a lente.', methodology: 'top_down', miceFocus: 'milieu', genres: ['epic_science_fantasy'], povMode: 'multiple', assets: ['world-atlas', 'timeline-layers', 'magic-system'], accent: 'Do sistema para a cena' },
+  { id: 'mystery-grid', label: 'Mistério investigativo', description: 'Estrutura pergunta, evidências redundantes, instituições e revelações.', methodology: 'inside_out', miceFocus: 'idea', genres: ['mystery_historical'], povMode: 'third_limited', assets: ['clue-board', 'event-timeline', 'evidence-checklist'], accent: 'Da pergunta para a verdade' },
+  { id: 'romantic-tension', label: 'Romance e tensão', description: 'Constrói o mundo pelas forças que aproximam, separam e transformam o par.', methodology: 'bottom_up', miceFocus: 'character', genres: ['romantasy'], povMode: 'multiple', assets: ['relationship-map', 'emotional-arc', 'proximity-map'], accent: 'Do vínculo para o conflito' },
+] as const;
+
+export const foundationAssetLabels: Record<string, string> = {
+  'character-core': 'Ficha central de personagem', 'relationship-map': 'Mapa de relações', 'voice-sheet': 'Folha de voz',
+  'world-atlas': 'Atlas do universo', 'timeline-layers': 'Linha do tempo em camadas', 'magic-system': 'Checklist de sistema',
+  'clue-board': 'Quadro de pistas', 'event-timeline': 'Cronologia de eventos', 'evidence-checklist': 'Regra das três pistas',
+  'emotional-arc': 'Arco emocional', 'proximity-map': 'Mapa de proximidade forçada',
+};
+
 export function templatesForType(type: EncyclopediaEntryType) {
   return entryTemplates.filter((template) => template.type === type);
 }
